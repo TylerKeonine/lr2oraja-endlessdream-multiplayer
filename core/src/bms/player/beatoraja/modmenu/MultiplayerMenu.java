@@ -8,22 +8,23 @@ import imgui.type.ImString;
 
 import static bms.player.beatoraja.modmenu.ImGuiRenderer.*;
 
-import org.apache.commons.codec.binary.StringUtils;
+import bms.player.beatoraja.PlayerConfig;
 
 public class MultiplayerMenu {
 
     public static ImBoolean MULTIPLAYER_ENABLED = new ImBoolean(false);
 
+    private static boolean inLobby = false;
+    private static String statusText = "";
+    private static ImString ipInputText = new ImString(20);
+    private static ImString passwordInputText = new ImString(25);
+    private static boolean isTyping = false; // to be used later to disable keybinds if true
+    private static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));;
+
     public static void show(ImBoolean showMultiplayer) {
         float relativeX = windowWidth * 0.47f;
         float relativeY = windowHeight * 0.06f;
         ImGui.setNextWindowPos(relativeX, relativeY, ImGuiCond.FirstUseEver);
-
-        boolean inLobby = false;
-        String statusText = "";
-        ImString ipInputText = new ImString("00.000.000.000:00000");
-        ImString passwordInputText = new ImString(30);
-        boolean isTyping = false; // to be used later to disable keybinds if true
 
         if(ImGui.begin("Multiplayer", showMultiplayer, ImGuiWindowFlags.AlwaysAutoResize)) {
             if(inLobby==false){
@@ -31,16 +32,14 @@ public class MultiplayerMenu {
                 ImGui.text("Connect and play with others online.");
                 ImGui.text("Enter an IP address or host a lobby.");
 
-                if(ImGui.inputText("IP Address",ipInputText, 260)){
-                    statusText = ipInputText.get();
-                    isTyping = true;
-                }else isTyping=false;
+                boolean ipInput = ImGui.inputText("IP Address",ipInputText, 260);
+                boolean passInput = ImGui.inputText("Password",passwordInputText, 260);
 
-                if(ImGui.inputText("Password",passwordInputText, 260)){
-                    statusText = passwordInputText.get();
-                    isTyping = true;
-                }else isTyping=false;
+                if(ipInput) statusText = ipInputText.get();
+                if(passInput) statusText = passwordInputText.get();
 
+                //if(ipInput||passInput) isTyping = true; else isTyping = false;
+                
                 if(ImGui.button("Join")) {
                     inLobby = true;
                 }
@@ -60,7 +59,7 @@ public class MultiplayerMenu {
                 }           
             }
             ImGui.text(statusText); 
-            ImGui.text(String.valueOf(isTyping)); 
+            ImGui.text(playerName); 
         }
         ImGui.end();
     }

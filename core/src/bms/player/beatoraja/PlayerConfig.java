@@ -39,7 +39,7 @@ public class PlayerConfig {
     /**
      * プレイヤーネーム
      */
-    private String name = "NO NAME";
+    public static String name = "NO NAME";
 
 	/**
 	 * ゲージの種類
