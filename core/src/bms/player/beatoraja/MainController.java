@@ -206,9 +206,6 @@ public class MainController {
 		timer = new TimerManager();
 		sound = new SystemSoundManager(this);
 		
-		if(config.isUseDiscordRPC()) {
-			stateListener.add(new DiscordListener());
-		}
 	}
 
 	public SkinOffset getOffset(int index) {

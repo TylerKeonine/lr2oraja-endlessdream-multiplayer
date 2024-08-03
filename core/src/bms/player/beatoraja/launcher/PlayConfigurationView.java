@@ -267,9 +267,6 @@ public class PlayConfigurationView implements Initializable {
 	private RequestToken requestToken = null;
 
 	@FXML
-	public CheckBox discord;
-
-	@FXML
 	public CheckBox clipboardScreenshot;
 
 	static void initComboBox(ComboBox<Integer> combo, final String[] values) {
@@ -374,7 +371,6 @@ public class PlayConfigurationView implements Initializable {
         // int b = Boolean.valueOf(config.getJKOC()).compareTo(false);
 
         usecim.setSelected(config.isCacheSkinImage());
-        discord.setSelected(config.isUseDiscordRPC());
         clipboardScreenshot.setSelected(config.isSetClipboardWhenScreenshot());
 
 		enableIpfs.setSelected(config.isEnableIpfs());
@@ -514,7 +510,6 @@ public class PlayConfigurationView implements Initializable {
 		config.setEnableIpfs(enableIpfs.isSelected());
 		config.setIpfsUrl(ipfsurl.getText());
 
-		config.setUseDiscordRPC(discord.isSelected());
 		config.setClipboardWhenScreenshot(clipboardScreenshot.isSelected());
 
 		commitPlayer();

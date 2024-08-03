@@ -81,7 +81,6 @@ dependencies {
     implementation(libs.commons.compress)
     implementation(libs.commons.dbutils)
 
-    implementation(libs.javadiscord)
     implementation(libs.twitter4j)
 
     // non-gradle managed file dependencies. jportaudio not on maven. "custom" scares me.
