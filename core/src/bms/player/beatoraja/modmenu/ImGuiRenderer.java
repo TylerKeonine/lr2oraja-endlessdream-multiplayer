@@ -37,6 +37,8 @@ public class ImGuiRenderer {
     private static ImBoolean SHOW_RANDOM_TRAINER = new ImBoolean(false);
 
     private static ImBoolean SHOW_FREQ_PLUS = new ImBoolean(false);
+    
+    private static ImBoolean SHOW_MULTIPLAYER = new ImBoolean(false);
 
 
     public static void init() {
@@ -94,11 +96,15 @@ public class ImGuiRenderer {
 
             ImGui.checkbox("Show Rate Modifier Window", SHOW_FREQ_PLUS);
             ImGui.checkbox("Show Random Trainer Window", SHOW_RANDOM_TRAINER);
+            ImGui.checkbox("Show Multiplayer Window", SHOW_MULTIPLAYER);
             if (SHOW_FREQ_PLUS.get()) {
                 FreqTrainerMenu.show(SHOW_FREQ_PLUS);
             }
             if (SHOW_RANDOM_TRAINER.get()) {
                 RandomTrainerMenu.show(SHOW_RANDOM_TRAINER);
+            }
+            if (SHOW_MULTIPLAYER.get()) {
+                MultiplayerMenu.show(SHOW_MULTIPLAYER);
             }
 
 
