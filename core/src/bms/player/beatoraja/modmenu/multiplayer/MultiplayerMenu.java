@@ -1,4 +1,4 @@
-package bms.player.beatoraja.modmenu;
+package bms.player.beatoraja.modmenu.multiplayer;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
@@ -6,6 +6,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static bms.player.beatoraja.modmenu.ImGuiRenderer.*;

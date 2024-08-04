@@ -1,6 +1,7 @@
 package bms.player.beatoraja.modmenu;
 
 import bms.player.beatoraja.controller.Lwjgl3ControllerManager;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
