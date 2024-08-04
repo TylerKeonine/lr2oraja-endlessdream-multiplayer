@@ -20,7 +20,6 @@ public class MultiplayerMenu {
     // GUI variables
     public static String statusText = "";
     private static ImString ipInputText = new ImString(20);
-    private static ImString passwordInputText = new ImString(25);
     private static boolean isTyping = false; // to be used later to disable keybinds if true
 
     public static void show(ImBoolean showMultiplayer) {
@@ -35,12 +34,8 @@ public class MultiplayerMenu {
                 ImGui.text("Enter an IP address or host a lobby.");
 
                 boolean ipInput = ImGui.inputText("IP Address",ipInputText, 260);
-                // boolean passInput = ImGui.inputText("Password",passwordInputText, 260);
 
                 if(ipInput) statusText = ipInputText.get();
-                // if(passInput) statusText = passwordInputText.get();
-
-                //if(ipInput||passInput) isTyping = true; else isTyping = false;
                 
                 if(ImGui.button("Join")) {
                     Multiplayer.joinLobby();
@@ -55,8 +50,6 @@ public class MultiplayerMenu {
             }else{
                 // Lobby GUI
                 ImGui.text("00.000.000.000:00000");
-                // ImGui.sameLine();
-                // ImGui.text("PasswordPasswordPasswordP");
                 ImGui.text("Artist - Song [Chart]"); // this needs to be capped
                 ImGui.text("Random: 1234567");
                 ImGui.sameLine();
@@ -86,6 +79,7 @@ public class MultiplayerMenu {
                     // Kick button later?
                 }
                 // for loop for each player
+                
                 ImGui.text("Player 1");
                 if(ImGui.isItemClicked()){
                     statusText = "player clicked";
