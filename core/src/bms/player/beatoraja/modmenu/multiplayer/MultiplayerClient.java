@@ -16,8 +16,8 @@ import java.io.IOException;
 
 public class MultiplayerClient {
     private static Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+    private static BufferedReader bufferedReader;
+    private static BufferedWriter bufferedWriter;
     private static String username = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
 
     public MultiplayerClient(Socket socket){
@@ -30,24 +30,26 @@ public class MultiplayerClient {
         }
     }
 
-    public void sendMessage(){
+    public void sendJoin(){
         try{
             bufferedWriter.write(username);
             bufferedWriter.newLine();
             bufferedWriter.flush();
-
-            /*
-            while(socket.isConnected()){
-                String messageToSend = scanner.nextLine();
-                bufferedWriter.write(username+": "+messageToSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-            }
-            */
         }catch(IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
+
+    public static void sendReady(){
+        try{
+            bufferedWriter.write(username+" isReady: "+Multiplayer.isReady);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+        }catch(IOException e){
+            closeEverything(socket, bufferedReader, bufferedWriter);
+        }
+    }
+
 
     public void listenForMessage(){
         new Thread(new Runnable(){
@@ -58,7 +60,7 @@ public class MultiplayerClient {
                 while(socket.isConnected()){
                     try{
                         msgFromGroupChat = bufferedReader.readLine();
-                        MultiplayerMenu.statusText = "A new client has connected!";
+                        MultiplayerMenu.statusText = msgFromGroupChat;
                     }catch(IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
@@ -67,7 +69,7 @@ public class MultiplayerClient {
         }).start();
     }
 
-    public void closeEverything(Socket socket,BufferedReader bufferedReader, BufferedWriter bufferedWriter){
+    public static void closeEverything(Socket socket,BufferedReader bufferedReader, BufferedWriter bufferedWriter){
         try{
             if(bufferedReader!=null){
                 bufferedReader.close();
@@ -99,7 +101,7 @@ public class MultiplayerClient {
             socket = new Socket("localhost",1234);
             MultiplayerClient client = new MultiplayerClient(socket);
             client.listenForMessage();
-            client.sendMessage();
+            client.sendJoin();
         } catch (UnknownHostException e) {
             closeSocket();
         } catch (IOException e) {

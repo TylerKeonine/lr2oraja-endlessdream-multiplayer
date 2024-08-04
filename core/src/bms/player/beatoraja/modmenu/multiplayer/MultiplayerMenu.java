@@ -35,10 +35,10 @@ public class MultiplayerMenu {
                 ImGui.text("Enter an IP address or host a lobby.");
 
                 boolean ipInput = ImGui.inputText("IP Address",ipInputText, 260);
-                boolean passInput = ImGui.inputText("Password",passwordInputText, 260);
+                // boolean passInput = ImGui.inputText("Password",passwordInputText, 260);
 
                 if(ipInput) statusText = ipInputText.get();
-                if(passInput) statusText = passwordInputText.get();
+                // if(passInput) statusText = passwordInputText.get();
 
                 //if(ipInput||passInput) isTyping = true; else isTyping = false;
                 
@@ -55,8 +55,8 @@ public class MultiplayerMenu {
             }else{
                 // Lobby GUI
                 ImGui.text("00.000.000.000:00000");
-                ImGui.sameLine();
-                ImGui.text("PasswordPasswordPasswordP");
+                // ImGui.sameLine();
+                // ImGui.text("PasswordPasswordPasswordP");
                 ImGui.text("Artist - Song [Chart]"); // this needs to be capped
                 ImGui.text("Random: 1234567");
                 ImGui.sameLine();
@@ -64,11 +64,11 @@ public class MultiplayerMenu {
                 
                 if (Multiplayer.isReady){
                     if(ImGui.button("Unready")) {
-                        Multiplayer.isReady = false;
+                        Multiplayer.readyPressed();
                     }                    
                 }else{
                     if(ImGui.button("Ready")) {
-                        Multiplayer.isReady = true;
+                        Multiplayer.readyPressed();
                     }                      
                 }
 

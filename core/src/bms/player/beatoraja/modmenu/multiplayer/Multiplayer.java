@@ -13,7 +13,6 @@ import java.net.*;
 public class Multiplayer {
     // Client variables
     public static boolean inLobby = false;
-    public static ArrayList<String> playerListIp = new ArrayList<String>(); 
     // Server variables
 
     // Player Information
@@ -26,7 +25,7 @@ public class Multiplayer {
         inLobby = true;
         isHost = true;
         MultiplayerServer.hostLobby();
-        //MultiplayerClient.joinLobby();
+        MultiplayerClient.joinLobby();
     }
 
     public static void joinLobby(){
@@ -38,17 +37,25 @@ public class Multiplayer {
     }
 
     public static void leaveLobby(){
-        transferHost();
         inLobby = false;
         isReady = false;
-        // clear all lobby info
-        playerListIp.clear();
+        MultiplayerClient.closeSocket();
+        MultiplayerServer.closeServerSocket();
     }
 
     public static void transferHost(){
         // check if host
         // tell target client to hostLobby
         // copy over info to new host
+    }
+
+    public static void readyPressed(){
+        if (isReady){
+            isReady = false;
+        }else{
+            isReady = true;
+        }
+        MultiplayerClient.sendReady();
     }
 
 
