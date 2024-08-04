@@ -17,7 +17,7 @@ public class MultiplayerMenu {
     public static ImBoolean MULTIPLAYER_ENABLED = new ImBoolean(false);
 
     // GUI variables
-    private static String statusText = "";
+    public static String statusText = "";
     private static ImString ipInputText = new ImString(20);
     private static ImString passwordInputText = new ImString(25);
     private static boolean isTyping = false; // to be used later to disable keybinds if true
@@ -42,15 +42,13 @@ public class MultiplayerMenu {
                 //if(ipInput||passInput) isTyping = true; else isTyping = false;
                 
                 if(ImGui.button("Join")) {
-                    Multiplayer.inLobby = true;
-                    Multiplayer.isHost = false;
+                    Multiplayer.joinLobby();
                 }
 
                 ImGui.sameLine();
 
                 if(ImGui.button("Host")) {
-                    Multiplayer.inLobby = true;
-                    Multiplayer.isHost = true;
+                    Multiplayer.hostLobby();
                 }
 
             }else{
