@@ -21,15 +21,6 @@ public class MultiplayerMenu {
     private static ImString ipInputText = new ImString(20);
     private static ImString passwordInputText = new ImString(25);
     private static boolean isTyping = false; // to be used later to disable keybinds if true
-    // Client variables
-    private static boolean inLobby = false;
-    private static ArrayList<String> playerListIp = new ArrayList<String>(); 
-    // Server variables
-
-    // Player Information
-    private static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
-    private static boolean isReady = false;
-    private static boolean isHost = true;
 
     public static void show(ImBoolean showMultiplayer) {
         float relativeX = windowWidth * 0.47f;
@@ -37,7 +28,7 @@ public class MultiplayerMenu {
         ImGui.setNextWindowPos(relativeX, relativeY, ImGuiCond.FirstUseEver);
 
         if(ImGui.begin("Multiplayer", showMultiplayer, ImGuiWindowFlags.AlwaysAutoResize)) {
-            if(inLobby==false){
+            if(Multiplayer.inLobby==false){
                 // Connection GUI
                 ImGui.text("Connect and play with others online.");
                 ImGui.text("Enter an IP address or host a lobby.");
@@ -51,15 +42,15 @@ public class MultiplayerMenu {
                 //if(ipInput||passInput) isTyping = true; else isTyping = false;
                 
                 if(ImGui.button("Join")) {
-                    inLobby = true;
-                    isHost = false;
+                    Multiplayer.inLobby = true;
+                    Multiplayer.isHost = false;
                 }
 
                 ImGui.sameLine();
 
                 if(ImGui.button("Host")) {
-                    inLobby = true;
-                    isHost = true;
+                    Multiplayer.inLobby = true;
+                    Multiplayer.isHost = true;
                 }
 
             }else{
@@ -72,33 +63,50 @@ public class MultiplayerMenu {
                 ImGui.sameLine();
                 ImGui.text("Freq: 100%");
                 
-                if (isReady){
+                if (Multiplayer.isReady){
                     if(ImGui.button("Unready")) {
-                        isReady = false;
+                        Multiplayer.isReady = false;
                     }                    
                 }else{
                     if(ImGui.button("Ready")) {
-                        isReady = true;
+                        Multiplayer.isReady = true;
                     }                      
                 }
 
                 ImGui.sameLine();
 
                 if(ImGui.button("Leave")) {
-                    leaveLobby();
+                    Multiplayer.leaveLobby();
                 }
 
-                if(isHost){
+                if(Multiplayer.isHost){
                     ImGui.sameLine();
                     if(ImGui.button("Transfer")) {
-                        isHost = false;
+                        Multiplayer.isHost = false;
                     }
                     // Kick button later?
                 }
                 // for loop for each player
                 ImGui.text("Player 1");
+                if(ImGui.isItemClicked()){
+                    statusText = "player clicked";
+                }
+                if (ImGui.isItemHovered()) {
+                    ImGui.beginTooltip();
+                    ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
+                    ImGui.textUnformatted("00.000.000.000:00000");
+                    ImGui.popTextWrapPos();
+                    ImGui.endTooltip();
+                }
                 ImGui.sameLine();
-                ImGui.text("(H)"); // have these hoverable to show text
+                ImGui.textDisabled("(H)");
+                if (ImGui.isItemHovered()) {
+                    ImGui.beginTooltip();
+                    ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
+                    ImGui.textUnformatted("Host");
+                    ImGui.popTextWrapPos();
+                    ImGui.endTooltip();
+                }
                 ImGui.sameLine();
                 //  have these 2 colored gold silver etc depending on placement
                 ImGui.text("EX: 1000");
@@ -107,33 +115,9 @@ public class MultiplayerMenu {
                 
             }
             ImGui.text(statusText); 
-            ImGui.text(playerName); 
+            ImGui.text(Multiplayer.playerName); 
         }
         ImGui.end();
-    }
-
-    private static void hostLobby(){ // hostLobby is different from pressing the host button. must be compatitable for pressing the host button AND being transfered host.
-        // set up server
-        
-    }
-
-    private static void joinLobby(){
-        // checks for connection
-        // if connection succeeds, have host send info
-    }
-
-    private static void leaveLobby(){
-        transferHost();
-        inLobby = false;
-        isReady = false;
-        // clear all lobby info
-        playerListIp.clear();
-    }
-
-    private static void transferHost(){
-        // check if host
-        // tell target client to hostLobby
-        // copy over info to new host
     }
 
 }
