@@ -39,7 +39,7 @@ public class Multiplayer {
     public static void leaveLobby(){
         inLobby = false;
         isReady = false;
-        MultiplayerClient.closeSocket();
+        MultiplayerClient.closeSocket(); // TODO bug when leaving and rejoining as client. something not closing properly?
         MultiplayerServer.closeServerSocket();
     }
 

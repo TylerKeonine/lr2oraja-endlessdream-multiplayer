@@ -7,46 +7,40 @@ import java.util.Scanner;
 
 import bms.player.beatoraja.PlayerConfig;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import java.io.*;
 
 
 public class MultiplayerClient {
     private static Socket socket;
-    private static BufferedReader bufferedReader;
-    private static BufferedWriter bufferedWriter;
+    private static DataInputStream dataInputStream;
+    private static DataOutputStream dataOutputStream;
     private static String username = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
 
     public MultiplayerClient(Socket socket){
         try {
             this.socket = socket;
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
         }catch(IOException e){
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
 
     public void sendJoin(){
         try{
-            bufferedWriter.write(username);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            dataOutputStream.writeUTF(username);
+            dataOutputStream.flush();
         }catch(IOException e){
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
 
     public static void sendReady(){
         try{
-            bufferedWriter.write(username+" isReady: "+Multiplayer.isReady);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
+            dataOutputStream.flush();
         }catch(IOException e){
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
 
@@ -59,26 +53,26 @@ public class MultiplayerClient {
 
                 while(socket.isConnected()){
                     try{
-                        msgFromGroupChat = bufferedReader.readLine();
+                        msgFromGroupChat = dataInputStream.readUTF();
                         MultiplayerMenu.statusText = msgFromGroupChat;
                     }catch(IOException e){
-                        closeEverything(socket, bufferedReader, bufferedWriter);
+                        closeEverything(socket, dataInputStream, dataOutputStream);
                     }
                 }
             }
         }).start();
     }
 
-    public static void closeEverything(Socket socket,BufferedReader bufferedReader, BufferedWriter bufferedWriter){
+    public static void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
         try{
-            if(bufferedReader!=null){
-                bufferedReader.close();
+            if(dIn!=null){
+                dIn.close();
             }
-            if(bufferedWriter!=null){
-                bufferedWriter.close();
+            if(dOut!=null){
+                dOut.close();
             }
-            if(socket!=null){
-                socket.close();
+            if(skt!=null){
+                skt.close();
             }
         }catch(IOException e){
             e.printStackTrace();

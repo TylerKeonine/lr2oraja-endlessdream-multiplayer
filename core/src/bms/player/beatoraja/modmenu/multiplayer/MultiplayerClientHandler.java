@@ -2,30 +2,31 @@ package bms.player.beatoraja.modmenu.multiplayer;
 
 import java.net.Socket;
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import java.io.*;
 
 public class MultiplayerClientHandler implements Runnable{
 
+    // Socket Variables
     public static ArrayList<MultiplayerClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
     private String clientUsername;
+
+    // Lobby Information
+    public static ArrayList<String> playerNames = new ArrayList<>();
+
 
     public MultiplayerClientHandler(Socket socket){
         try{
             this.socket = socket;
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.clientUsername = bufferedReader.readLine();
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.clientUsername = dataInputStream.readUTF();
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
         }catch(IOException e){
-            closeEverything(socket,bufferedReader,bufferedWriter);
+            closeEverything(socket,dataInputStream,dataOutputStream);
         }
     }
 
@@ -35,10 +36,10 @@ public class MultiplayerClientHandler implements Runnable{
 
         while(socket.isConnected()){
             try{
-                messageFromClient = bufferedReader.readLine();
+                messageFromClient = dataInputStream.readUTF();
                 broadcastMessage(messageFromClient);
             }catch(IOException e){
-                closeEverything(socket,bufferedReader,bufferedWriter);
+                closeEverything(socket,dataInputStream,dataOutputStream);
                 break;
             }
         }
@@ -47,11 +48,10 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastMessage(String messageToSend){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.bufferedWriter.write(messageToSend);
-                clientHandler.bufferedWriter.newLine();
-                clientHandler.bufferedWriter.flush();
+                clientHandler.dataOutputStream.writeUTF(messageToSend); //
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,bufferedReader,bufferedWriter);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -61,17 +61,17 @@ public class MultiplayerClientHandler implements Runnable{
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
     }
 
-    public void closeEverything(Socket socket,BufferedReader bufferedReader, BufferedWriter bufferedWriter){
+    public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
         removeClientHandler();
         try{
-            if(bufferedReader!=null){
-                bufferedReader.close();
+            if(dIn!=null){
+                dIn.close();
             }
-            if(bufferedWriter!=null){
-                bufferedWriter.close();
+            if(dOut!=null){
+                dOut.close();
             }
-            if(socket!=null){
-                socket.close();
+            if(skt!=null){
+                skt.close();
             }
         }catch(IOException e){
             e.printStackTrace();
