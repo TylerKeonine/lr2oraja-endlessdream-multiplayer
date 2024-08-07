@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import bms.player.beatoraja.PlayerConfig;
 import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
 import bms.player.beatoraja.song.SongData;
+import imgui.type.ImString;
 
 import java.io.*;
 import java.net.*;
@@ -43,6 +44,7 @@ public class Multiplayer {
         isReady = false;
         MultiplayerClient.closeSocket();
         MultiplayerServer.closeServerSocket();
+        MultiplayerMenu.statusText = "You have left the lobby.";
     }
 
     public static void transferHost(){
