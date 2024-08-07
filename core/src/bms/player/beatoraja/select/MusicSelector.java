@@ -24,6 +24,7 @@ import bms.player.beatoraja.select.bar.*;
 import bms.player.beatoraja.skin.SkinType;
 import bms.player.beatoraja.song.SongData;
 import bms.player.beatoraja.song.SongDatabaseAccessor;
+import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
 
 /**
  * 選曲部分。 楽曲一覧とカーソルが指す楽曲のステータスを表示し、選択した楽曲を 曲決定部分に渡す。
@@ -261,9 +262,28 @@ public class MusicSelector extends MainState {
 		timer.switchTimer(TIMER_IR_CONNECT_BEGIN, irstate == RankingData.ACCESS);
 		timer.switchTimer(TIMER_IR_CONNECT_SUCCESS, irstate == RankingData.FINISH);
 		timer.switchTimer(TIMER_IR_CONNECT_FAIL, irstate == RankingData.FAIL);
+		
 
 		if (play != null) {
-			if (current instanceof SongBar) {
+			// Multiplayer
+			if (Multiplayer.inLobby){
+				if (Multiplayer.isHost){
+					if(current instanceof SongBar){
+						SongData song = ((SongBar) current).getSongData();
+						if(resource.setBMSFile(Paths.get(song.getPath()), play)){
+							//  save the song in multiplayer
+							main.getMessageRenderer().addMessage("Song has been selected : Waiting for others", 2400, Color.TEAL, 1);
+						}else{
+							main.getMessageRenderer().addMessage("Multiplayer : Failed to load BMS", 1200, Color.RED, 1);
+						}
+					}else{
+						main.getMessageRenderer().addMessage("Multiplayer : File is not supported", 1200, Color.RED, 1);
+					}
+				}else{
+					main.getMessageRenderer().addMessage("Multiplayer : Please wait for host", 1200, Color.RED, 1);
+				}
+			}// Normal functionality
+			else if (current instanceof SongBar) {
 				SongData song = ((SongBar) current).getSongData();
 				if (((SongBar) current).existsSong()) {
 					resource.clear();

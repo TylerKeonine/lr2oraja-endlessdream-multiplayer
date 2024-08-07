@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import bms.player.beatoraja.PlayerConfig;
 import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
+import bms.player.beatoraja.song.SongData;
 
 import java.io.*;
 import java.net.*;
@@ -14,6 +15,7 @@ public class Multiplayer {
     // Client variables
     public static boolean inLobby = false;
     // Server variables
+    public static SongData selectedSong;
 
     // Player Information
     public static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));

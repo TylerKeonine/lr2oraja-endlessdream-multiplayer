@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import static bms.player.beatoraja.modmenu.ImGuiRenderer.*;
 
+import bms.player.beatoraja.MainController;
 import bms.player.beatoraja.PlayerConfig;
 
 public class MultiplayerMenu {
@@ -32,6 +33,7 @@ public class MultiplayerMenu {
                 // Connection GUI
                 ImGui.text("Connect and play with others online.");
                 ImGui.text("Enter an IP address or host a lobby.");
+                ImGui.text(MainController.getVersion());
 
                 boolean ipInput = ImGui.inputText("IP Address",ipInputText, 260);
 
