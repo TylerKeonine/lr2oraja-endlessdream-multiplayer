@@ -75,14 +75,15 @@ public class MultiplayerClient {
         }
     }
 
-    public static void joinLobby(){
+    public static void joinLobby(String ipInput){
         Socket socket;
         try {
-            socket = new Socket("localhost",1234);
+            socket = new Socket(ipInput,5730);
             MultiplayerClient client = new MultiplayerClient(socket);
             client.listenForMessage();
             client.sendJoin();
             Multiplayer.inLobby = true;
+            Multiplayer.hostIp = ipInput;
         } catch (UnknownHostException e) {
             closeSocket();
         } catch (IOException e) {

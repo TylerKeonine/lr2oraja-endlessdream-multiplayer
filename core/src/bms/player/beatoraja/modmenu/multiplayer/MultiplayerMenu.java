@@ -20,7 +20,7 @@ public class MultiplayerMenu {
 
     // GUI variables
     public static String statusText = "";
-    private static ImString ipInputText = new ImString(20);
+    public static ImString ipInputText = new ImString(20);
     private static boolean isTyping = false; // to be used later to disable keybinds if true
 
     public static void show(ImBoolean showMultiplayer) {
@@ -50,11 +50,13 @@ public class MultiplayerMenu {
 
             }else{
                 // Lobby GUI
-                ImGui.text("00.000.000.000:00000");
+                ImGui.text(Multiplayer.hostIp.toString());
                 ImGui.text("Artist - Song [Chart]"); // this needs to be capped
+                /* Later feature
                 ImGui.text("Random: 1234567");
                 ImGui.sameLine();
                 ImGui.text("Freq: 100%");
+                */
                 
                 if (Multiplayer.isHost){
                     if(ImGui.button("Start")) {

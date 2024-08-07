@@ -1,6 +1,7 @@
 package bms.player.beatoraja.modmenu.multiplayer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -43,9 +44,10 @@ public class MultiplayerServer {
     public static void hostLobby(){
         try {
             ServerSocket serverSocket;
-            serverSocket = new ServerSocket(1234);
+            serverSocket = new ServerSocket(5730,0,InetAddress.getLocalHost()); // manual ip input for host later
             MultiplayerServer server = new MultiplayerServer(serverSocket);
             new Thread(() -> server.startServer()).start();
+            Multiplayer.hostIp = serverSocket.getInetAddress().getHostAddress();
         } catch (IOException e) {
             closeServerSocket();
         }

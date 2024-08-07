@@ -15,6 +15,7 @@ public class Multiplayer {
     // Client variables
     public static boolean inLobby = false;
     // Server variables
+    public static String hostIp = "";
     public static SongData selectedSong;
 
     // Player Information
@@ -26,7 +27,7 @@ public class Multiplayer {
         // set up server
         isHost = true;
         MultiplayerServer.hostLobby();
-        MultiplayerClient.joinLobby();
+        MultiplayerClient.joinLobby(hostIp);
     }
 
     public static void joinLobby(){
@@ -34,7 +35,7 @@ public class Multiplayer {
         // checks for connection
         // if connection succeeds, have host send info
         isHost = false;
-        MultiplayerClient.joinLobby();
+        MultiplayerClient.joinLobby(MultiplayerMenu.ipInputText.get());
         MultiplayerMenu.statusText = "Failed to join lobby.";
     }
 
