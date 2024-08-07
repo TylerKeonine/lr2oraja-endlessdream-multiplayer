@@ -33,6 +33,7 @@ public class MultiplayerServer {
         try{
             if(serverSocket!=null){
                 serverSocket.close();
+                serverSocket = null; // TODO server stays running despite host leaving? unable to join though
             }
         }catch(IOException e){
             e.printStackTrace();

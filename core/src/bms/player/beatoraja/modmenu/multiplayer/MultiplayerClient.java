@@ -34,7 +34,6 @@ public class MultiplayerClient {
             @Override
             public void run(){
                 String msgFromGroupChat;
-
                 while(socket.isConnected()){
                     try{
                         msgFromGroupChat = dataInputStream.readUTF();
@@ -43,6 +42,7 @@ public class MultiplayerClient {
                         closeEverything(socket, dataInputStream, dataOutputStream);
                     }
                 }
+                closeSocket();  //TODO loop doesn't know when host leaves
             }
         }).start();
     }

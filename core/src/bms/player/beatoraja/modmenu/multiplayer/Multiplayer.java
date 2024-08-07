@@ -30,6 +30,7 @@ public class Multiplayer {
     }
 
     public static void joinLobby(){
+        // check if not currently playing e.g. in song select
         // checks for connection
         // if connection succeeds, have host send info
         isHost = false;
