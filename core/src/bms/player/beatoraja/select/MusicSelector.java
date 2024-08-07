@@ -270,11 +270,49 @@ public class MusicSelector extends MainState {
 				if (Multiplayer.isHost){
 					if(current instanceof SongBar){
 						SongData song = ((SongBar) current).getSongData();
-						if(resource.setBMSFile(Paths.get(song.getPath()), play)){
-							//  save the song in multiplayer
-							main.getMessageRenderer().addMessage("Song has been selected : Waiting for others", 2400, Color.TEAL, 1);
-						}else{
-							main.getMessageRenderer().addMessage("Multiplayer : Failed to load BMS", 1200, Color.RED, 1);
+						if (((SongBar) current).existsSong()) {
+							resource.clear();
+							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
+								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
+								/* 
+								final Queue<DirectoryBar> dir = manager.getDirectory();
+								if(dir.size > 0 && !(dir.last() instanceof SameFolderBar)) {
+									Array<String> urls = new Array<String>(resource.getConfig().getTableURL());
+		
+									boolean isdtable = false;
+									for (DirectoryBar bar : dir) {
+										if (bar instanceof TableBar) {
+											String currenturl = ((TableBar) bar).getUrl();
+											if (currenturl != null && urls.contains(currenturl, false)) {
+												isdtable = true;
+												resource.setTablename(bar.getTitle());
+											}
+										}
+										if (bar instanceof HashBar && isdtable) {
+											resource.setTablelevel(bar.getTitle());
+											break;
+										}
+									}
+								}
+								
+								if(main.getIRStatus().length > 0 && currentir == null) {
+									currentir = new RankingData();
+									main.getRankingDataCache().put(song, config.getLnmode(), currentir);
+								}
+								resource.setRankingData(currentir);
+								resource.setRivalScoreData(current.getRivalScore());
+								
+								playedsong = song;
+								main.changeState(MainStateType.DECIDE);
+								*/
+							} else {
+								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 1200, Color.RED, 1);
+							}
+						} else if (song.getIpfs() != null && main.getMusicDownloadProcessor() != null
+								&& main.getMusicDownloadProcessor().isAlive()) {
+							execute(MusicSelectCommand.DOWNLOAD_IPFS);
+						} else {
+							execute(MusicSelectCommand.OPEN_DOWNLOAD_SITE);
 						}
 					}else{
 						main.getMessageRenderer().addMessage("Multiplayer : File is not supported", 1200, Color.RED, 1);
