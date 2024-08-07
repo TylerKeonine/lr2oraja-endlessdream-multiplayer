@@ -25,6 +25,7 @@ public class MultiplayerClientHandler implements Runnable{
             this.clientUsername = dataInputStream.readUTF();
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
+            playerNames.add(clientUsername);
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -50,6 +51,7 @@ public class MultiplayerClientHandler implements Runnable{
             try{
                 clientHandler.dataOutputStream.writeUTF(messageToSend); //
                 clientHandler.dataOutputStream.flush();
+                MultiplayerMenu.statusText = String.join(", ", playerNames);
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
             }
@@ -59,6 +61,7 @@ public class MultiplayerClientHandler implements Runnable{
     public void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
+        playerNames.remove(clientUsername);
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
