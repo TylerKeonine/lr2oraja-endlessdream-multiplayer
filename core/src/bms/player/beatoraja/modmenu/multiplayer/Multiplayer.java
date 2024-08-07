@@ -22,7 +22,6 @@ public class Multiplayer {
 
     public static void hostLobby(){ // hostLobby is different from pressing the host button. must be compatitable for pressing the host button AND being transfered host.
         // set up server
-        inLobby = true;
         isHost = true;
         MultiplayerServer.hostLobby();
         MultiplayerClient.joinLobby();
@@ -31,15 +30,14 @@ public class Multiplayer {
     public static void joinLobby(){
         // checks for connection
         // if connection succeeds, have host send info
-        inLobby = true;
         isHost = false;
         MultiplayerClient.joinLobby();
+        MultiplayerMenu.statusText = "Failed to join lobby.";
     }
 
     public static void leaveLobby(){
-        inLobby = false;
         isReady = false;
-        MultiplayerClient.closeSocket(); // TODO bug when leaving and rejoining as client. something not closing properly?
+        MultiplayerClient.closeSocket();
         MultiplayerServer.closeServerSocket();
     }
 

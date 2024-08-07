@@ -83,6 +83,8 @@ public class MultiplayerClient {
         try{
             if(socket!=null){
                 socket.close();
+                Multiplayer.inLobby = false;
+                MultiplayerMenu.statusText = String.valueOf(socket.isClosed());
             }
         }catch(IOException e){
             e.printStackTrace();
@@ -96,6 +98,7 @@ public class MultiplayerClient {
             MultiplayerClient client = new MultiplayerClient(socket);
             client.listenForMessage();
             client.sendJoin();
+            Multiplayer.inLobby = true;
         } catch (UnknownHostException e) {
             closeSocket();
         } catch (IOException e) {

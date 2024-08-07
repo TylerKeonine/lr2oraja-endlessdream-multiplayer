@@ -93,7 +93,7 @@ public class ImGuiRenderer {
         ImGui.setNextWindowPos(relativeX, relativeY, ImGuiCond.Once);
 
         if (SHOW_MOD_MENU.get()) {
-            ImGui.begin("Endless Dream", ImGuiWindowFlags.AlwaysAutoResize);
+            ImGui.begin("Endless Peam", ImGuiWindowFlags.AlwaysAutoResize);
 
             ImGui.checkbox("Show Rate Modifier Window", SHOW_FREQ_PLUS);
             ImGui.checkbox("Show Random Trainer Window", SHOW_RANDOM_TRAINER);
