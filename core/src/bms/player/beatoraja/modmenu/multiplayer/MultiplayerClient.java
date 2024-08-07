@@ -11,6 +11,7 @@ import java.io.*;
 
 
 public class MultiplayerClient {
+    // Class
     private static Socket socket;
     private static DataInputStream dataInputStream;
     private static DataOutputStream dataOutputStream;
@@ -26,24 +27,7 @@ public class MultiplayerClient {
         }
     }
 
-    public void sendJoin(){
-        try{
-            dataOutputStream.writeUTF(username);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
-    }
-
-    public static void sendReady(){
-        try{
-            dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
-    }
-
+    // Socket Control
 
     public void listenForMessage(){
         new Thread(new Runnable(){
@@ -104,5 +88,35 @@ public class MultiplayerClient {
         } catch (IOException e) {
             closeSocket();
         }
+    }
+
+    // Commands
+    public void sendJoin(){
+        try{
+            dataOutputStream.writeUTF(username);
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    public static void sendReady(){
+        try{
+            dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    public static void sendSong(){
+        /*
+        try{
+            dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+        */
     }
 }

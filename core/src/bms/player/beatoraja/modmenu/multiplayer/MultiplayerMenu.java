@@ -33,7 +33,6 @@ public class MultiplayerMenu {
                 // Connection GUI
                 ImGui.text("Connect and play with others online.");
                 ImGui.text("Enter an IP address or host a lobby.");
-                ImGui.text(MainController.getVersion());
 
                 boolean ipInput = ImGui.inputText("IP Address",ipInputText, 260);
 
@@ -57,7 +56,11 @@ public class MultiplayerMenu {
                 ImGui.sameLine();
                 ImGui.text("Freq: 100%");
                 
-                if (Multiplayer.isReady){
+                if (Multiplayer.isHost){
+                    if(ImGui.button("Start")) {
+                        Multiplayer.startPressed();
+                    }      
+                }else if(Multiplayer.isReady){
                     if(ImGui.button("Unready")) {
                         Multiplayer.readyPressed();
                     }                    

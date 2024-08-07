@@ -58,5 +58,16 @@ public class Multiplayer {
         MultiplayerClient.sendReady();
     }
 
+    public static void startPressed(){
+        if(isHost){ 
+            // send start message
+        }
+    }
+
+    public static void selectSong(SongData song){
+        if(isHost){
+            MultiplayerClient.sendSong();
+        }
+    }
 
 }

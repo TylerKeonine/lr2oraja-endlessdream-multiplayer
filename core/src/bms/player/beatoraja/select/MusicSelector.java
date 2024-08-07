@@ -273,6 +273,7 @@ public class MusicSelector extends MainState {
 						if (((SongBar) current).existsSong()) {
 							resource.clear();
 							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
+								// send song info
 								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
 								/* 
 								final Queue<DirectoryBar> dir = manager.getDirectory();
@@ -306,7 +307,7 @@ public class MusicSelector extends MainState {
 								main.changeState(MainStateType.DECIDE);
 								*/
 							} else {
-								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 1200, Color.RED, 1);
+								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 							}
 						} else if (song.getIpfs() != null && main.getMusicDownloadProcessor() != null
 								&& main.getMusicDownloadProcessor().isAlive()) {
@@ -315,10 +316,10 @@ public class MusicSelector extends MainState {
 							execute(MusicSelectCommand.OPEN_DOWNLOAD_SITE);
 						}
 					}else{
-						main.getMessageRenderer().addMessage("Multiplayer : File is not supported", 1200, Color.RED, 1);
+						main.getMessageRenderer().addMessage("Multiplayer : File is not supported", 2400, Color.RED, 1);
 					}
 				}else{
-					main.getMessageRenderer().addMessage("Multiplayer : Please wait for host", 1200, Color.RED, 1);
+					main.getMessageRenderer().addMessage("Multiplayer : Please wait for host", 2400, Color.RED, 1);
 				}
 			}// Normal functionality
 			else if (current instanceof SongBar) {
