@@ -84,7 +84,7 @@ public class MultiplayerClient {
             if(socket!=null){
                 socket.close();
                 Multiplayer.inLobby = false;
-                MultiplayerMenu.statusText = String.valueOf(socket.isClosed());
+                socket = null;
             }
         }catch(IOException e){
             e.printStackTrace();
