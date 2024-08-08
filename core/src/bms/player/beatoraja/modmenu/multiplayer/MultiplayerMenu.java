@@ -100,25 +100,26 @@ public class MultiplayerMenu {
                     // Kick button later?
                 }
                 // for loop for each player
-                
-                ImGui.text("Player 1");
-                if(ImGui.isItemClicked()){
-                    //statusText = "player clicked";
+                for(int i=0;i<Multiplayer.playerNames.size();i++){
+                    ImGui.text(Multiplayer.playerNames.get(i));
+                    if(ImGui.isItemClicked()){
+                        //statusText = "player clicked";
+                    }
+                    if (ImGui.isItemHovered()) {
+                        tooltip("00.000.000.000:00000");
+                    }
+                    ImGui.sameLine();
+                    ImGui.textDisabled("(H)");
+                    if (ImGui.isItemHovered()) {
+                        tooltip("Host");
+                    }
+                    ImGui.sameLine();
+                    //  have these 2 colored gold silver etc depending on placement
+                    ImGui.text("EX: 1000");
+                    ImGui.sameLine();
+                    ImGui.text("#1");                    
                 }
-                if (ImGui.isItemHovered()) {
-                    tooltip("00.000.000.000:00000");
-                }
-                ImGui.sameLine();
-                ImGui.textDisabled("(H)");
-                if (ImGui.isItemHovered()) {
-                    tooltip("Host");
-                }
-                ImGui.sameLine();
-                //  have these 2 colored gold silver etc depending on placement
-                ImGui.text("EX: 1000");
-                ImGui.sameLine();
-                ImGui.text("#1");
-                
+
             }
             ImGui.text(statusText); 
             ImGui.text(Multiplayer.playerName); 
