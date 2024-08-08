@@ -34,8 +34,10 @@ public class MultiplayerClient {
             @Override
             public void run(){
                 String msgFromGroupChat;
+                Byte msgType;
                 while(socket.isConnected()){
                     try{
+                        msgType = dataInputStream.readByte();
                         msgFromGroupChat = dataInputStream.readUTF();
                         MultiplayerMenu.statusText = msgFromGroupChat;
                     }catch(IOException e){
@@ -103,6 +105,7 @@ public class MultiplayerClient {
 
     public static void sendReady(){
         try{
+            dataOutputStream.writeByte(0);
             dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
             dataOutputStream.flush();
         }catch(IOException e){

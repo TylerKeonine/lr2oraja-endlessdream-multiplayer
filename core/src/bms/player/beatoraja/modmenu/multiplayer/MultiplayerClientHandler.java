@@ -25,6 +25,7 @@ public class MultiplayerClientHandler implements Runnable{
             this.clientUsername = dataInputStream.readUTF();
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
+            // every list needs to be added to
             playerNames.add(clientUsername);
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
@@ -34,9 +35,11 @@ public class MultiplayerClientHandler implements Runnable{
     @Override
     public void run(){
         String messageFromClient;
+        Byte msgType;
 
         while(socket.isConnected()){
             try{
+                msgType = dataInputStream.readByte();
                 messageFromClient = dataInputStream.readUTF();
                 broadcastMessage(messageFromClient);
             }catch(IOException e){
@@ -49,7 +52,8 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastMessage(String messageToSend){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.dataOutputStream.writeUTF(messageToSend); //
+                clientHandler.dataOutputStream.writeByte(0); // note these will be a different set of msgTypes
+                clientHandler.dataOutputStream.writeUTF(messageToSend);
                 clientHandler.dataOutputStream.flush();
                 MultiplayerMenu.statusText = String.join(", ", playerNames);
             }catch(IOException e){
@@ -61,7 +65,9 @@ public class MultiplayerClientHandler implements Runnable{
     public void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
-        playerNames.remove(clientUsername);
+        // every list needs to be updated
+        int index = playerNames.indexOf(clientUsername);
+        playerNames.remove(index);
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
