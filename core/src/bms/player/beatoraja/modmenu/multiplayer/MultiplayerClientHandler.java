@@ -12,8 +12,11 @@ public class MultiplayerClientHandler implements Runnable{
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private String clientUsername;
+    private String clientSocket;
 
     // Lobby Information
+    // 3d Arrays might be better? desync between arraylists could be possible
+    public static ArrayList<String> socketList = new ArrayList<>();
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
 
@@ -24,9 +27,11 @@ public class MultiplayerClientHandler implements Runnable{
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
             this.dataInputStream = new DataInputStream(socket.getInputStream());
             this.clientUsername = dataInputStream.readUTF();
+            this.clientSocket = dataInputStream.readUTF();
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
+            socketList.add(clientSocket);  // add client socket
             playerNames.add(clientUsername);
             playerStates.add("Not Ready");
             // update new player to current info
@@ -41,14 +46,33 @@ public class MultiplayerClientHandler implements Runnable{
     public void run(){
         String messageFromClient;
         Byte msgType;
+        int index;
 
         while(socket.isConnected()){
             try{
                 msgType = dataInputStream.readByte();
                 switch(msgType){
-                    case(0):
-                    messageFromClient = dataInputStream.readUTF();
-                    broadcastMessage(messageFromClient);                   
+                    case(0): // test
+                        messageFromClient = dataInputStream.readUTF();
+                        broadcastMessage(messageFromClient); 
+                    break;
+                    case(1): // 
+                        messageFromClient = dataInputStream.readUTF();
+                        index = socketList.indexOf(messageFromClient);
+                        //MultiplayerMenu.statusText = String.join(", ", socketList);
+                        //MultiplayerMenu.statusText = messageFromClient;
+                        //MultiplayerMenu.statusText = Integer.toString(index); // cannot find
+                        if(playerStates.get(index).equals("Ready")){
+                            playerStates.set(index,"Not Ready");
+                        }else{
+                            playerStates.set(index,"Ready");
+                        }
+                        sendPlayerStates();
+                    break;
+                    case(2):
+                        messageFromClient = dataInputStream.readUTF();
+                        playerStates.set(socketList.indexOf(messageFromClient),"Host");
+                        sendPlayerStates();                    
                     break;
                 }
             }catch(IOException e){
@@ -105,7 +129,8 @@ public class MultiplayerClientHandler implements Runnable{
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
         // every list needs to be updated
-        int index = playerNames.indexOf(clientUsername);
+        int index = socketList.indexOf(clientSocket.toString());
+        socketList.remove(index);
         playerNames.remove(index);
         playerStates.remove(index);
 

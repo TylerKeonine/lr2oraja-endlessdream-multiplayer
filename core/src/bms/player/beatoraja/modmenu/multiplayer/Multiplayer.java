@@ -31,6 +31,7 @@ public class Multiplayer {
         isHost = true;
         MultiplayerServer.hostLobby();
         MultiplayerClient.joinLobby(hostIp);
+        MultiplayerClient.sendHost();
     }
 
     public static void joinLobby(){

@@ -122,7 +122,7 @@ public class MultiplayerMenu {
                             ImGui.sameLine();
                         break;
                         case("Ready"):
-                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,0,255));
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
                             ImGui.text("(R)");
                             ImGui.popStyleColor();
                             if (ImGui.isItemHovered()) {

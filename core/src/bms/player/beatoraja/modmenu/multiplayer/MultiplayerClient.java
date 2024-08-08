@@ -38,7 +38,7 @@ public class MultiplayerClient {
                 int repeats;
                 while(socket.isConnected()){
                     try{
-                        MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
+                        //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
                         msgType = dataInputStream.readByte();
                         switch(msgType){
                             case(0): // test messages
@@ -52,7 +52,7 @@ public class MultiplayerClient {
                                     Multiplayer.playerNames.add(dataInputStream.readUTF());
                                 }
                             break;
-                            case(2):
+                            case(2): // update player states
                                 repeats = dataInputStream.readInt();
                                 Multiplayer.playerStates.clear();
                                 for(int i=0;i<repeats;i++){
@@ -117,6 +117,7 @@ public class MultiplayerClient {
     public void sendJoin(){
         try{
             dataOutputStream.writeUTF(username);
+            dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
@@ -125,8 +126,20 @@ public class MultiplayerClient {
 
     public static void sendReady(){
         try{
-            dataOutputStream.writeByte(0);
-            dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
+            dataOutputStream.writeByte(1);
+            MultiplayerMenu.statusText = socket.toString();
+            dataOutputStream.writeUTF(socket.toString());
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    // Requests for host status
+    public static void sendHost(){
+        try{
+            dataOutputStream.writeByte(2);
+            dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
