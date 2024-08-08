@@ -27,6 +27,8 @@ public class MultiplayerClientHandler implements Runnable{
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
             playerNames.add(clientUsername);
+            
+            sendPlayerNames();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -59,12 +61,27 @@ public class MultiplayerClientHandler implements Runnable{
                 clientHandler.dataOutputStream.writeByte(0); // note these will be a different set of msgTypes
                 clientHandler.dataOutputStream.writeUTF(messageToSend);
                 clientHandler.dataOutputStream.flush();
-                //MultiplayerMenu.statusText = String.join(", ", playerNames);
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
+
+    public void sendPlayerNames(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.dataOutputStream.writeByte(1);
+                int repeats = playerNames.size();
+                clientHandler.dataOutputStream.writeInt(repeats);
+                for(int i=0;i<repeats;i++){
+                    clientHandler.dataOutputStream.writeUTF(playerNames.get(i));
+                }
+            }catch(IOException e){
+                closeEverything(socket,dataInputStream,dataOutputStream);
+            }
+        }
+    }
+
 
     public void removeClientHandler(){
         clientHandlers.remove(this);
@@ -72,6 +89,9 @@ public class MultiplayerClientHandler implements Runnable{
         // every list needs to be updated
         int index = playerNames.indexOf(clientUsername);
         playerNames.remove(index);
+
+        // send info to others
+        sendPlayerNames();
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){

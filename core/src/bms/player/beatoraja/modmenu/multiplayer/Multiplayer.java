@@ -15,9 +15,10 @@ import java.net.*;
 public class Multiplayer {
     // Client variables
     public static boolean inLobby = false;
-    // Server variables
+    // Lobby Info
     public static String hostIp = "";
     public static SongData selectedSong;
+    public static ArrayList<String> playerNames = new ArrayList<>();
 
     // Player Information
     public static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
