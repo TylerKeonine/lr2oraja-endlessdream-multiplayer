@@ -40,8 +40,12 @@ public class MultiplayerClientHandler implements Runnable{
         while(socket.isConnected()){
             try{
                 msgType = dataInputStream.readByte();
-                messageFromClient = dataInputStream.readUTF();
-                broadcastMessage(messageFromClient);
+                switch(msgType){
+                    case(0):
+                    messageFromClient = dataInputStream.readUTF();
+                    broadcastMessage(messageFromClient);                   
+                    break;
+                }
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
                 break;
@@ -55,7 +59,7 @@ public class MultiplayerClientHandler implements Runnable{
                 clientHandler.dataOutputStream.writeByte(0); // note these will be a different set of msgTypes
                 clientHandler.dataOutputStream.writeUTF(messageToSend);
                 clientHandler.dataOutputStream.flush();
-                MultiplayerMenu.statusText = String.join(", ", playerNames);
+                //MultiplayerMenu.statusText = String.join(", ", playerNames);
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
             }

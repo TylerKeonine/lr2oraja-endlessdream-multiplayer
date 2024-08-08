@@ -38,8 +38,12 @@ public class MultiplayerClient {
                 while(socket.isConnected()){
                     try{
                         msgType = dataInputStream.readByte();
-                        msgFromGroupChat = dataInputStream.readUTF();
-                        MultiplayerMenu.statusText = msgFromGroupChat;
+                        switch(msgType){
+                            case(0):
+                            msgFromGroupChat = dataInputStream.readUTF();
+                            MultiplayerMenu.statusText = msgFromGroupChat;                           
+                            break;
+                        }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
                     }
