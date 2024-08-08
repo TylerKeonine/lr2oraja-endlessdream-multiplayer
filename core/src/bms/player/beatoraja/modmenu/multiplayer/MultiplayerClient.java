@@ -35,21 +35,29 @@ public class MultiplayerClient {
             public void run(){
                 String msgFromGroupChat;
                 Byte msgType;
+                int repeats;
                 while(socket.isConnected()){
                     try{
                         MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
                         msgType = dataInputStream.readByte();
                         switch(msgType){
                             case(0): // test messages
-                            msgFromGroupChat = dataInputStream.readUTF();
-                            MultiplayerMenu.statusText = msgFromGroupChat;
+                                msgFromGroupChat = dataInputStream.readUTF();
+                                MultiplayerMenu.statusText = msgFromGroupChat;
                             break;
                             case(1): //update lobby player names
-                            int repeats = dataInputStream.readInt();
-                            Multiplayer.playerNames.clear();
-                            for(int i=0;i<repeats;i++){
-                                Multiplayer.playerNames.add(dataInputStream.readUTF());
-                            }
+                                repeats = dataInputStream.readInt();
+                                Multiplayer.playerNames.clear();
+                                for(int i=0;i<repeats;i++){
+                                    Multiplayer.playerNames.add(dataInputStream.readUTF());
+                                }
+                            break;
+                            case(2):
+                                repeats = dataInputStream.readInt();
+                                Multiplayer.playerStates.clear();
+                                for(int i=0;i<repeats;i++){
+                                    Multiplayer.playerStates.add(dataInputStream.readUTF());
+                                }                                
                             break;
                         }
                     }catch(IOException e){

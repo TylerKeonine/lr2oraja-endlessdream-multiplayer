@@ -15,6 +15,7 @@ public class MultiplayerClientHandler implements Runnable{
 
     // Lobby Information
     public static ArrayList<String> playerNames = new ArrayList<>();
+    public static ArrayList<String> playerStates = new ArrayList<>();
 
 
     public MultiplayerClientHandler(Socket socket){
@@ -27,8 +28,10 @@ public class MultiplayerClientHandler implements Runnable{
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
             playerNames.add(clientUsername);
-            
+            playerStates.add("Not Ready");
+            // update new player to current info
             sendPlayerNames();
+            sendPlayerStates();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -82,6 +85,21 @@ public class MultiplayerClientHandler implements Runnable{
         }
     }
 
+    public void sendPlayerStates(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.dataOutputStream.writeByte(2);
+                int repeats = playerStates.size();
+                clientHandler.dataOutputStream.writeInt(repeats);
+                for(int i=0;i<repeats;i++){
+                    clientHandler.dataOutputStream.writeUTF(playerStates.get(i));
+                }
+            }catch(IOException e){
+                closeEverything(socket,dataInputStream,dataOutputStream);
+            }
+        }
+    }
+
 
     public void removeClientHandler(){
         clientHandlers.remove(this);
@@ -89,9 +107,11 @@ public class MultiplayerClientHandler implements Runnable{
         // every list needs to be updated
         int index = playerNames.indexOf(clientUsername);
         playerNames.remove(index);
+        playerStates.remove(index);
 
         // send info to others
         sendPlayerNames();
+        sendPlayerStates();
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){

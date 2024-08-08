@@ -19,10 +19,11 @@ public class Multiplayer {
     public static String hostIp = "";
     public static SongData selectedSong;
     public static ArrayList<String> playerNames = new ArrayList<>();
+    public static ArrayList<String> playerStates = new ArrayList<>();
 
     // Player Information
     public static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
-    public static boolean isReady = false;
+    public static boolean isReady = false; // could completely remove isReady and replace with playerState
     public static boolean isHost = true;
 
     public static void hostLobby(){ // hostLobby is different from pressing the host button. must be compatitable for pressing the host button AND being transfered host.

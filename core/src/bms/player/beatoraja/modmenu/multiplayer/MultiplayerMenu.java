@@ -1,6 +1,8 @@
 package bms.player.beatoraja.modmenu.multiplayer;
 
+import imgui.ImColor;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
@@ -109,11 +111,45 @@ public class MultiplayerMenu {
                         tooltip("00.000.000.000:00000");
                     }
                     ImGui.sameLine();
-                    ImGui.textDisabled("(H)");
-                    if (ImGui.isItemHovered()) {
-                        tooltip("Host");
+                    switch(Multiplayer.playerStates.get(i)){
+                        case("Host"):
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
+                            ImGui.text("(H)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Host");
+                            }
+                            ImGui.sameLine();
+                        break;
+                        case("Ready"):
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,0,255));
+                            ImGui.text("(R)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Ready");
+                            }
+                            ImGui.sameLine();
+                        break;
+                        case("Not Ready"):
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
+                            ImGui.text("(N)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Not Ready");
+                            }
+                            ImGui.sameLine();
+                        break;
+
+                        default:
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,255,255));
+                            ImGui.text("(?)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Unknown");
+                            }
+                            ImGui.sameLine();
                     }
-                    ImGui.sameLine();
+
                     //  have these 2 colored gold silver etc depending on placement
                     ImGui.text("EX: 1000");
                     ImGui.sameLine();
