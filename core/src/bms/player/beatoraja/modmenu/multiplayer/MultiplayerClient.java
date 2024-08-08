@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import bms.player.beatoraja.PlayerConfig;
+import bms.player.beatoraja.select.MusicSelector;
 
 import java.io.*;
 
@@ -58,6 +59,9 @@ public class MultiplayerClient {
                                 for(int i=0;i<repeats;i++){
                                     Multiplayer.playerStates.add(dataInputStream.readUTF());
                                 }                                
+                            break;
+                            case(3): // start message
+                                // do playSong from MusicSelector.java using Multiplayer.selectedSong
                             break;
                         }
                     }catch(IOException e){
@@ -146,10 +150,20 @@ public class MultiplayerClient {
         }
     }
 
-    public static void sendSong(){
-        /*
+    public static void sendStart(){
         try{
-            dataOutputStream.writeUTF(username+" isReady: "+Multiplayer.isReady);
+            dataOutputStream.writeByte(3);
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    public static void sendSong(){
+        /* 
+        try{
+            dataOutputStream.writeByte(3);
+            dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);

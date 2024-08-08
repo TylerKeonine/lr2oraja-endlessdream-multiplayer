@@ -275,37 +275,7 @@ public class MusicSelector extends MainState {
 							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
 								// send song info
 								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
-								/* 
-								final Queue<DirectoryBar> dir = manager.getDirectory();
-								if(dir.size > 0 && !(dir.last() instanceof SameFolderBar)) {
-									Array<String> urls = new Array<String>(resource.getConfig().getTableURL());
-		
-									boolean isdtable = false;
-									for (DirectoryBar bar : dir) {
-										if (bar instanceof TableBar) {
-											String currenturl = ((TableBar) bar).getUrl();
-											if (currenturl != null && urls.contains(currenturl, false)) {
-												isdtable = true;
-												resource.setTablename(bar.getTitle());
-											}
-										}
-										if (bar instanceof HashBar && isdtable) {
-											resource.setTablelevel(bar.getTitle());
-											break;
-										}
-									}
-								}
-								
-								if(main.getIRStatus().length > 0 && currentir == null) {
-									currentir = new RankingData();
-									main.getRankingDataCache().put(song, config.getLnmode(), currentir);
-								}
-								resource.setRankingData(currentir);
-								resource.setRivalScoreData(current.getRivalScore());
-								
-								playedsong = song;
-								main.changeState(MainStateType.DECIDE);
-								*/
+								//playSong(song);
 							} else {
 								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 							}
@@ -422,6 +392,41 @@ public class MusicSelector extends MainState {
 			}
 			play = null;
 		}
+	}
+
+	// Multiplayer
+
+	public void playSong(SongData song){
+		/* // not sure what this code does? if something doesn't work in multiplayer it's probably in here
+		final Queue<DirectoryBar> dir = manager.getDirectory();
+		if(dir.size > 0 && !(dir.last() instanceof SameFolderBar)) {
+			Array<String> urls = new Array<String>(resource.getConfig().getTableURL());
+
+			boolean isdtable = false;
+			for (DirectoryBar bar : dir) {
+				if (bar instanceof TableBar) {
+					String currenturl = ((TableBar) bar).getUrl();
+					if (currenturl != null && urls.contains(currenturl, false)) {
+						isdtable = true;
+						resource.setTablename(bar.getTitle());
+					}
+				}
+				if (bar instanceof HashBar && isdtable) {
+					resource.setTablelevel(bar.getTitle());
+					break;
+				}
+			}
+		}
+		//  what does everything above here do?
+		if(main.getIRStatus().length > 0 && currentir == null) {
+			currentir = new RankingData();
+			main.getRankingDataCache().put(song, config.getLnmode(), currentir);
+		}
+		resource.setRankingData(currentir);
+		resource.setRivalScoreData(current.getRivalScore());
+		*/
+		playedsong = song;
+		main.changeState(MainStateType.DECIDE);
 	}
 
 	public void input() {

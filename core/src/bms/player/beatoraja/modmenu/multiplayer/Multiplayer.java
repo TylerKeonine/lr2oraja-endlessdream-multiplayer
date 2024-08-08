@@ -67,7 +67,7 @@ public class Multiplayer {
 
     public static void startPressed(){
         if(isHost){ 
-            // send start message
+            MultiplayerClient.sendStart();// send start message
         }
     }
 

@@ -56,12 +56,9 @@ public class MultiplayerClientHandler implements Runnable{
                         messageFromClient = dataInputStream.readUTF();
                         broadcastMessage(messageFromClient); 
                     break;
-                    case(1): // 
+                    case(1): // ready
                         messageFromClient = dataInputStream.readUTF();
                         index = socketList.indexOf(messageFromClient);
-                        //MultiplayerMenu.statusText = String.join(", ", socketList);
-                        //MultiplayerMenu.statusText = messageFromClient;
-                        //MultiplayerMenu.statusText = Integer.toString(index); // cannot find
                         if(playerStates.get(index).equals("Ready")){
                             playerStates.set(index,"Not Ready");
                         }else{
@@ -69,11 +66,14 @@ public class MultiplayerClientHandler implements Runnable{
                         }
                         sendPlayerStates();
                     break;
-                    case(2):
+                    case(2): // host
                         messageFromClient = dataInputStream.readUTF();
                         playerStates.set(socketList.indexOf(messageFromClient),"Host");
                         sendPlayerStates();                    
                     break;
+                    case(3): // start
+                        broadcastStart();
+                    break;               
                 }
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
@@ -118,6 +118,17 @@ public class MultiplayerClientHandler implements Runnable{
                 for(int i=0;i<repeats;i++){
                     clientHandler.dataOutputStream.writeUTF(playerStates.get(i));
                 }
+            }catch(IOException e){
+                closeEverything(socket,dataInputStream,dataOutputStream);
+            }
+        }
+    }
+
+    public void broadcastStart(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.dataOutputStream.writeByte(3);
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
             }
