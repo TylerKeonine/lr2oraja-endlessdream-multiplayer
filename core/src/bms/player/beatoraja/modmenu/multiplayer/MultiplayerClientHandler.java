@@ -9,8 +9,8 @@ public class MultiplayerClientHandler implements Runnable{
     // Socket Variables
     public static ArrayList<MultiplayerClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
     private String clientUsername;
     private String clientSocket;
 
@@ -24,10 +24,10 @@ public class MultiplayerClientHandler implements Runnable{
     public MultiplayerClientHandler(Socket socket){
         try{
             this.socket = socket;
-            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            this.dataInputStream = new DataInputStream(socket.getInputStream());
-            this.clientUsername = dataInputStream.readUTF();
-            this.clientSocket = dataInputStream.readUTF();
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
+            this.clientUsername = objectInputStream.readUTF();
+            this.clientSocket = objectInputStream.readUTF();
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
@@ -37,8 +37,9 @@ public class MultiplayerClientHandler implements Runnable{
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
+            broadcastUpdate();
         }catch(IOException e){
-            closeEverything(socket,dataInputStream,dataOutputStream);
+            closeEverything(socket,objectInputStream,objectOutputStream);
         }
     }
 
@@ -50,14 +51,14 @@ public class MultiplayerClientHandler implements Runnable{
 
         while(socket.isConnected()){
             try{
-                msgType = dataInputStream.readByte();
+                msgType = objectInputStream.readByte();
                 switch(msgType){
                     case(0): // test
-                        messageFromClient = dataInputStream.readUTF();
+                        messageFromClient = objectInputStream.readUTF();
                         broadcastMessage(messageFromClient); 
                     break;
                     case(1): // ready
-                        messageFromClient = dataInputStream.readUTF();
+                        messageFromClient = objectInputStream.readUTF();
                         index = socketList.indexOf(messageFromClient);
                         if(playerStates.get(index).equals("Ready")){
                             playerStates.set(index,"Not Ready");
@@ -67,16 +68,20 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerStates();
                     break;
                     case(2): // host
-                        messageFromClient = dataInputStream.readUTF();
+                        messageFromClient = objectInputStream.readUTF();
                         playerStates.set(socketList.indexOf(messageFromClient),"Host");
                         sendPlayerStates();                    
                     break;
                     case(3): // start
                         broadcastStart();
                     break;               
+                    case(4): // update
+                        broadcastUpdate();
+                    break;
                 }
+                
             }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
+                closeEverything(socket,objectInputStream,objectOutputStream);
                 break;
             }
         }
@@ -85,11 +90,11 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastMessage(String messageToSend){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.dataOutputStream.writeByte(0); // note these will be a different set of msgTypes
-                clientHandler.dataOutputStream.writeUTF(messageToSend);
-                clientHandler.dataOutputStream.flush();
+                clientHandler.objectOutputStream.writeByte(0); // note these will be a different set of msgTypes
+                clientHandler.objectOutputStream.writeUTF(messageToSend);
+                clientHandler.objectOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
+                closeEverything(socket,objectInputStream,objectOutputStream);
             }
         }
     }
@@ -97,14 +102,14 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendPlayerNames(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.dataOutputStream.writeByte(1);
+                clientHandler.objectOutputStream.writeByte(1);
                 int repeats = playerNames.size();
-                clientHandler.dataOutputStream.writeInt(repeats);
+                clientHandler.objectOutputStream.writeInt(repeats);
                 for(int i=0;i<repeats;i++){
-                    clientHandler.dataOutputStream.writeUTF(playerNames.get(i));
+                    clientHandler.objectOutputStream.writeUTF(playerNames.get(i));
                 }
             }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
+                closeEverything(socket,objectInputStream,objectOutputStream);
             }
         }
     }
@@ -112,14 +117,14 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendPlayerStates(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.dataOutputStream.writeByte(2);
+                clientHandler.objectOutputStream.writeByte(2);
                 int repeats = playerStates.size();
-                clientHandler.dataOutputStream.writeInt(repeats);
+                clientHandler.objectOutputStream.writeInt(repeats);
                 for(int i=0;i<repeats;i++){
-                    clientHandler.dataOutputStream.writeUTF(playerStates.get(i));
+                    clientHandler.objectOutputStream.writeUTF(playerStates.get(i));
                 }
             }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
+                closeEverything(socket,objectInputStream,objectOutputStream);
             }
         }
     }
@@ -127,14 +132,24 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastStart(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.dataOutputStream.writeByte(3);
-                clientHandler.dataOutputStream.flush();
+                clientHandler.objectOutputStream.writeByte(3);
+                clientHandler.objectOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
+                closeEverything(socket,objectInputStream,objectOutputStream);
             }
         }
     }
 
+    public void broadcastUpdate(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.objectOutputStream.writeByte(4);
+                clientHandler.objectOutputStream.flush();
+            }catch(IOException e){
+                closeEverything(socket,objectInputStream,objectOutputStream);
+            }
+        }
+    }
 
     public void removeClientHandler(){
         clientHandlers.remove(this);
@@ -148,9 +163,11 @@ public class MultiplayerClientHandler implements Runnable{
         // send info to others
         sendPlayerNames();
         sendPlayerStates();
+
+        broadcastUpdate();
     }
 
-    public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
+    public void closeEverything(Socket skt,ObjectInputStream dIn, ObjectOutputStream dOut){
         removeClientHandler();
         try{
             if(dIn!=null){

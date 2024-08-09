@@ -14,17 +14,17 @@ import java.io.*;
 public class MultiplayerClient {
     // Class
     private static Socket socket;
-    private static DataInputStream dataInputStream;
-    private static DataOutputStream dataOutputStream;
+    private static ObjectInputStream objectInputStream;
+    private static ObjectOutputStream objectOutputStream;
     private static String username = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
 
     public MultiplayerClient(Socket socket){
         try {
             this.socket = socket;
-            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
         }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
@@ -40,32 +40,35 @@ public class MultiplayerClient {
                 while(socket.isConnected()){
                     try{
                         //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
-                        msgType = dataInputStream.readByte();
+                        msgType = objectInputStream.readByte();
                         switch(msgType){
                             case(0): // test messages
-                                msgFromGroupChat = dataInputStream.readUTF();
+                                msgFromGroupChat = objectInputStream.readUTF();
                                 MultiplayerMenu.statusText = msgFromGroupChat;
                             break;
                             case(1): //update lobby player names
-                                repeats = dataInputStream.readInt();
+                                repeats = objectInputStream.readInt();
                                 Multiplayer.playerNames.clear();
                                 for(int i=0;i<repeats;i++){
-                                    Multiplayer.playerNames.add(dataInputStream.readUTF());
+                                    Multiplayer.playerNames.add(objectInputStream.readUTF());
                                 }
                             break;
                             case(2): // update player states
-                                repeats = dataInputStream.readInt();
+                                repeats = objectInputStream.readInt();
                                 Multiplayer.playerStates.clear();
                                 for(int i=0;i<repeats;i++){
-                                    Multiplayer.playerStates.add(dataInputStream.readUTF());
+                                    Multiplayer.playerStates.add(objectInputStream.readUTF());
                                 }                                
                             break;
                             case(3): // start message
                                 // do playSong from MusicSelector.java using Multiplayer.selectedSong
                             break;
+                            case(4): //update gui.
+                                // switching to from data to object streams doesn't update the gui without having to run an empty byte. not sure why
+                            break;
                         }
                     }catch(IOException e){
-                        closeEverything(socket, dataInputStream, dataOutputStream);
+                        closeEverything(socket, objectInputStream, objectOutputStream);
                     }
                 }
                 closeSocket();  //TODO loop doesn't know when host leaves
@@ -73,7 +76,7 @@ public class MultiplayerClient {
         }).start();
     }
 
-    public static void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
+    public static void closeEverything(Socket skt,ObjectInputStream dIn, ObjectOutputStream dOut){
         try{
             if(dIn!=null){
                 dIn.close();
@@ -108,6 +111,7 @@ public class MultiplayerClient {
             MultiplayerClient client = new MultiplayerClient(socket);
             client.listenForMessage();
             client.sendJoin();
+            requestUpdate();
             Multiplayer.inLobby = true;
             Multiplayer.hostIp = ipInput;
         } catch (UnknownHostException e) {
@@ -120,53 +124,66 @@ public class MultiplayerClient {
     // Commands
     public void sendJoin(){
         try{
-            dataOutputStream.writeUTF(username);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
+            objectOutputStream.writeUTF(username);
+            objectOutputStream.writeUTF(socket.toString());
+            objectOutputStream.flush();
+            requestUpdate();
         }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
     public static void sendReady(){
         try{
-            dataOutputStream.writeByte(1);
+            objectOutputStream.write(1);
             MultiplayerMenu.statusText = socket.toString();
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
+            objectOutputStream.writeUTF(socket.toString());
+            objectOutputStream.flush();
+            requestUpdate();
         }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
     // Requests for host status
     public static void sendHost(){
         try{
-            dataOutputStream.writeByte(2);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
+            objectOutputStream.write(2);
+            objectOutputStream.writeUTF(socket.toString());
+            objectOutputStream.flush();
+            requestUpdate();
         }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
     public static void sendStart(){
         try{
-            dataOutputStream.writeByte(3);
-            dataOutputStream.flush();
+            objectOutputStream.write(3);
+            objectOutputStream.flush();
+            requestUpdate();
         }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        }
+    }
+
+    public static void requestUpdate(){
+        try{
+            objectOutputStream.write(4);
+            objectOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
     public static void sendSong(){
         /* 
         try{
-            dataOutputStream.writeByte(3);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
+            objectOutputStream.write(3);
+            objectOutputStream.writeUTF(socket.toString());
+            objectOutputStream.flush();
         }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
         */
     }
