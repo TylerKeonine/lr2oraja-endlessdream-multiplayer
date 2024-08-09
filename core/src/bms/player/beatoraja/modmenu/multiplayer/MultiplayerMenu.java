@@ -67,7 +67,7 @@ public class MultiplayerMenu {
                 }else{
                     copytext = "Click to copy me!";
                 }
-                ImGui.text("Artist - Song [Chart]"); // this needs to be capped
+                ImGui.text(Multiplayer.selectedSong); // this needs to be capped
                 /* Later feature
                 ImGui.text("Random: 1234567");
                 ImGui.sameLine();

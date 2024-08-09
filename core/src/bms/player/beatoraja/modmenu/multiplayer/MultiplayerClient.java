@@ -66,6 +66,10 @@ public class MultiplayerClient {
                             case(4): //update gui.
                                 // switching to from data to object streams doesn't update the gui without having to run an empty byte. not sure why
                             break;
+                            case(5): // update song
+                                msgFromGroupChat = objectInputStream.readUTF();
+                                Multiplayer.selectedSong = msgFromGroupChat;
+                            break;
                         }
                     }catch(IOException e){
                         closeEverything(socket, objectInputStream, objectOutputStream);
@@ -176,15 +180,13 @@ public class MultiplayerClient {
         }
     }
 
-    public static void sendSong(){
-        /* 
+    public static void sendSong(String song){
         try{
-            objectOutputStream.write(3);
-            objectOutputStream.writeUTF(socket.toString());
+            objectOutputStream.write(5);
+            objectOutputStream.writeUTF(song);
             objectOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
-        */
     }
 }

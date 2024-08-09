@@ -19,6 +19,7 @@ public class MultiplayerClientHandler implements Runnable{
     public static ArrayList<String> socketList = new ArrayList<>();
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
+    public static String selectedSong = "";
 
 
     public MultiplayerClientHandler(Socket socket){
@@ -37,6 +38,7 @@ public class MultiplayerClientHandler implements Runnable{
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
+            sendSelectedSong();
             broadcastUpdate();
         }catch(IOException e){
             closeEverything(socket,objectInputStream,objectOutputStream);
@@ -77,6 +79,11 @@ public class MultiplayerClientHandler implements Runnable{
                     break;               
                     case(4): // update
                         broadcastUpdate();
+                    break;
+                    case(5): // select song
+                        messageFromClient = objectInputStream.readUTF();
+                        selectedSong = messageFromClient;
+                        sendSelectedSong();
                     break;
                 }
                 
@@ -144,6 +151,18 @@ public class MultiplayerClientHandler implements Runnable{
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
                 clientHandler.objectOutputStream.writeByte(4);
+                clientHandler.objectOutputStream.flush();
+            }catch(IOException e){
+                closeEverything(socket,objectInputStream,objectOutputStream);
+            }
+        }
+    }
+
+    public void sendSelectedSong(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.objectOutputStream.writeByte(5);
+                clientHandler.objectOutputStream.writeUTF(selectedSong);
                 clientHandler.objectOutputStream.flush();
             }catch(IOException e){
                 closeEverything(socket,objectInputStream,objectOutputStream);

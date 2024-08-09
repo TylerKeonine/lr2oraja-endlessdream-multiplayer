@@ -277,6 +277,7 @@ public class MusicSelector extends MainState {
 								// send song info
 								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
 								MultiplayerMenu.statusText = findSong(song.getFullTitle()).getFullTitle();
+								Multiplayer.selectSong(song.getFullTitle());
 								//playSong(song);
 							} else {
 								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
