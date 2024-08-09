@@ -25,6 +25,7 @@ import bms.player.beatoraja.skin.SkinType;
 import bms.player.beatoraja.song.SongData;
 import bms.player.beatoraja.song.SongDatabaseAccessor;
 import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
 
 /**
  * 選曲部分。 楽曲一覧とカーソルが指す楽曲のステータスを表示し、選択した楽曲を 曲決定部分に渡す。
@@ -269,12 +270,13 @@ public class MusicSelector extends MainState {
 			if (Multiplayer.inLobby){
 				if (Multiplayer.isHost){
 					if(current instanceof SongBar){
-						SongData song = ((SongBar) current).getSongData();
+						SongData song = ((SongBar) current).getSongData(); // use selected song
 						if (((SongBar) current).existsSong()) {
 							resource.clear();
 							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
 								// send song info
 								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
+								MultiplayerMenu.statusText = findSong(song.getFullTitle()).getFullTitle();
 								//playSong(song);
 							} else {
 								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
@@ -427,6 +429,14 @@ public class MusicSelector extends MainState {
 		*/
 		playedsong = song;
 		main.changeState(MainStateType.DECIDE);
+	}
+
+	public SongData findSong(String fullTitle){
+		SongData[] arr = getSongDatabase().getSongDatasByText(fullTitle);
+		if(arr.length>0){
+			return arr[0];
+		}
+		return null;
 	}
 
 	public void input() {
