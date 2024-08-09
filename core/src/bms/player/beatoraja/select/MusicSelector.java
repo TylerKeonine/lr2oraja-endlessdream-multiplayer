@@ -409,9 +409,13 @@ public class MusicSelector extends MainState {
 
 	public void playSong(String fullTitle){
 		// Can't figure out how to play song from this function so I'm having render() do it
-		multiplayerSong = findSong(fullTitle);
-		multiplayerStart = true;
-		play = BMSPlayerMode.PLAY;
+		if(fullTitle.equals("")||fullTitle==null){
+			MultiplayerMenu.statusText = "No song selected.";
+		}else{
+			multiplayerSong = findSong(fullTitle);
+			multiplayerStart = true;
+			play = BMSPlayerMode.PLAY;			
+		}
 	}
 
 	public SongData findSong(String fullTitle){
