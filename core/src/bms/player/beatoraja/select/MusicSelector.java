@@ -98,6 +98,8 @@ public class MusicSelector extends MainState {
 	private int panelstate;
 
 	private BMSPlayerMode play = null;
+	private Boolean multiplayerStart = false;
+	private SongData multiplayerSong;
 
 	private SongData playedsong = null;
 	private CourseData playedcourse = null;
@@ -268,19 +270,23 @@ public class MusicSelector extends MainState {
 		if (play != null) {
 			// Multiplayer
 			if (Multiplayer.inLobby){
-				if (Multiplayer.isHost){
-					if(current instanceof SongBar){
+				if (multiplayerStart){
+					resource.clear();
+					if (resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play)) {
+						playedsong = multiplayerSong;
+						main.changeState(MainStateType.DECIDE);
+					} else {
+						main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
+					}
+				}else if(Multiplayer.isHost){
+				if(current instanceof SongBar){
 						SongData song = ((SongBar) current).getSongData(); // use selected song
 						if (((SongBar) current).existsSong()) {
 							resource.clear();
 							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
 								// send song info
-								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
-								//MultiplayerMenu.statusText = findSong(song.getFullTitle()).getFullTitle();
 								Multiplayer.selectSong(song.getFullTitle());
-								//playSong(Multiplayer.selectedSong);
-								//playedsong = song;
-								//main.changeState(MainStateType.DECIDE);
+								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
 							} else {
 								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 							}
@@ -289,7 +295,7 @@ public class MusicSelector extends MainState {
 							execute(MusicSelectCommand.DOWNLOAD_IPFS);
 						} else {
 							execute(MusicSelectCommand.OPEN_DOWNLOAD_SITE);
-						}
+						}							
 					}else{
 						main.getMessageRenderer().addMessage("Multiplayer : File is not supported", 2400, Color.RED, 1);
 					}
@@ -402,41 +408,10 @@ public class MusicSelector extends MainState {
 	// Multiplayer
 
 	public void playSong(String fullTitle){
-		SongData song = findSong(fullTitle);
-		//resource.setBMSFile(Paths.get(song.getPath()), play);
-		/*// not sure what this code does? if something doesn't work in multiplayer it's probably in here
-		final Queue<DirectoryBar> dir = manager.getDirectory();
-		if(dir.size > 0 && !(dir.last() instanceof SameFolderBar)) {
-			Array<String> urls = new Array<String>(resource.getConfig().getTableURL());
-
-			boolean isdtable = false;
-			for (DirectoryBar bar : dir) {
-				if (bar instanceof TableBar) {
-					String currenturl = ((TableBar) bar).getUrl();
-					if (currenturl != null && urls.contains(currenturl, false)) {
-						isdtable = true;
-						resource.setTablename(bar.getTitle());
-					}
-				}
-				if (bar instanceof HashBar && isdtable) {
-					resource.setTablelevel(bar.getTitle());
-					break;
-				}
-			}
-		}
-		//  what does everything above here do?
-		if(main.getIRStatus().length > 0 && currentir == null) {
-			currentir = new RankingData();
-			main.getRankingDataCache().put(song, config.getLnmode(), currentir);
-		}
-		resource.setRankingData(currentir);
-		resource.setRivalScoreData(current.getRivalScore());
-		*/
-
-		//playedsong = song; //  also crash here
-		//main.changeState(MainStateType.DECIDE); // crash here!! some context in render() that doesn't happen here
-		MultiplayerMenu.statusText = song.getFullArtist();
-		//play = null;
+		// Can't figure out how to play song from this function so I'm having render() do it
+		multiplayerSong = findSong(fullTitle);
+		multiplayerStart = true;
+		play = BMSPlayerMode.PLAY;
 	}
 
 	public SongData findSong(String fullTitle){
