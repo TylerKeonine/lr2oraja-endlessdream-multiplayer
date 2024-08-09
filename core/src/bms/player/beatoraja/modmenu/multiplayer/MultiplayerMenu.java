@@ -68,11 +68,6 @@ public class MultiplayerMenu {
                     copytext = "Click to copy me!";
                 }
                 ImGui.text(Multiplayer.selectedSong); // this needs to be capped
-                /* Later feature
-                ImGui.text("Random: 1234567");
-                ImGui.sameLine();
-                ImGui.text("Freq: 100%");
-                */
                 
                 if (Multiplayer.isHost){
                     if(ImGui.button("Start")) {
@@ -94,21 +89,11 @@ public class MultiplayerMenu {
                     Multiplayer.leaveLobby();
                 }
 
-                if(Multiplayer.isHost){
-                    ImGui.sameLine();
-                    if(ImGui.button("Transfer")) {
-                        Multiplayer.isHost = false;
-                    }
-                    // Kick button later?
-                }
                 // for loop for each player
                 for(int i=0;i<Multiplayer.playerNames.size();i++){
                     ImGui.text(Multiplayer.playerNames.get(i));
                     if(ImGui.isItemClicked()){
                         //statusText = "player clicked";
-                    }
-                    if (ImGui.isItemHovered()) {
-                        tooltip("00.000.000.000:00000");
                     }
                     ImGui.sameLine();
                     switch(Multiplayer.playerStates.get(i)){
