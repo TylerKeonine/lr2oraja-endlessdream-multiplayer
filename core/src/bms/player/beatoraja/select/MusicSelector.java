@@ -276,9 +276,11 @@ public class MusicSelector extends MainState {
 							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
 								// send song info
 								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
-								MultiplayerMenu.statusText = findSong(song.getFullTitle()).getFullTitle();
+								//MultiplayerMenu.statusText = findSong(song.getFullTitle()).getFullTitle();
 								Multiplayer.selectSong(song.getFullTitle());
-								//playSong(song);
+								//playSong(Multiplayer.selectedSong);
+								//playedsong = song;
+								//main.changeState(MainStateType.DECIDE);
 							} else {
 								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 							}
@@ -399,8 +401,10 @@ public class MusicSelector extends MainState {
 
 	// Multiplayer
 
-	public void playSong(SongData song){
-		/* // not sure what this code does? if something doesn't work in multiplayer it's probably in here
+	public void playSong(String fullTitle){
+		SongData song = findSong(fullTitle);
+		//resource.setBMSFile(Paths.get(song.getPath()), play);
+		/*// not sure what this code does? if something doesn't work in multiplayer it's probably in here
 		final Queue<DirectoryBar> dir = manager.getDirectory();
 		if(dir.size > 0 && !(dir.last() instanceof SameFolderBar)) {
 			Array<String> urls = new Array<String>(resource.getConfig().getTableURL());
@@ -428,8 +432,11 @@ public class MusicSelector extends MainState {
 		resource.setRankingData(currentir);
 		resource.setRivalScoreData(current.getRivalScore());
 		*/
-		playedsong = song;
-		main.changeState(MainStateType.DECIDE);
+
+		//playedsong = song; //  also crash here
+		//main.changeState(MainStateType.DECIDE); // crash here!! some context in render() that doesn't happen here
+		MultiplayerMenu.statusText = song.getFullArtist();
+		//play = null;
 	}
 
 	public SongData findSong(String fullTitle){

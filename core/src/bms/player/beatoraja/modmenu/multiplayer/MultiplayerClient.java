@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import bms.player.beatoraja.PlayerConfig;
 import bms.player.beatoraja.select.MusicSelector;
+import bms.player.beatoraja.song.SongData;
 
 import java.io.*;
 
@@ -17,6 +18,8 @@ public class MultiplayerClient {
     private static ObjectInputStream objectInputStream;
     private static ObjectOutputStream objectOutputStream;
     private static String username = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
+
+    public static MusicSelector selector;
 
     public MultiplayerClient(Socket socket){
         try {
@@ -62,6 +65,11 @@ public class MultiplayerClient {
                             break;
                             case(3): // start message
                                 // do playSong from MusicSelector.java using Multiplayer.selectedSong
+                                // prone to crashing ever since adding this? happens on selecting a song too fast, not even pressing start.
+                                if(selector!=null){
+                                    //MultiplayerMenu.statusText = "Start!";
+                                    selector.playSong(Multiplayer.selectedSong);
+                                }
                             break;
                             case(4): //update gui.
                                 // switching to from data to object streams doesn't update the gui without having to run an empty byte. not sure why

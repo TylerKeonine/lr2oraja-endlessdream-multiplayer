@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import bms.player.beatoraja.modmenu.ImGuiRenderer;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -343,6 +345,10 @@ public class MainController {
 
 		resource = new PlayerResource(audio, config, player);
 		selector = new MusicSelector(this, songUpdated);
+
+		// For Multiplayer
+		MultiplayerClient.selector = selector;
+
 		if(player.getRequestEnable()) {
 		    streamController = new StreamController(selector, (player.getRequestNotify() ? messageRenderer : null));
 	        streamController.run();
