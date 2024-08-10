@@ -92,48 +92,60 @@ public class MultiplayerMenu {
                 // for loop for each player
                 for(int i=0;i<Multiplayer.playerNames.size();i++){
                     ImGui.text(Multiplayer.playerNames.get(i));
-                    if(ImGui.isItemClicked()){
-                        //statusText = "player clicked";
+                    ImGui.sameLine();
+                    if(Multiplayer.lobbyPlaying){
+                        if(Multiplayer.playerPlaying.get(i)){
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,150,0));
+                            ImGui.text("(P)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Playing");
+                            }                            
+                        }else{
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(150,0,0));
+                            ImGui.text("(F)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Finished");
+                            }     
+                        }
+                    }else{
+                        switch(Multiplayer.playerStates.get(i)){
+                            case("Host"):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
+                                ImGui.text("(H)");
+                                ImGui.popStyleColor();
+                                if (ImGui.isItemHovered()) {
+                                    tooltip("Host");
+                                }
+                            break;
+                            case("Ready"):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
+                                ImGui.text("(R)");
+                                ImGui.popStyleColor();
+                                if (ImGui.isItemHovered()) {
+                                    tooltip("Ready");
+                                }
+                            break;
+                            case("Not Ready"):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
+                                ImGui.text("(N)");
+                                ImGui.popStyleColor();
+                                if (ImGui.isItemHovered()) {
+                                    tooltip("Not Ready");
+                                }
+                            break;
+
+                            default:
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,255,255));
+                                ImGui.text("(?)");
+                                ImGui.popStyleColor();
+                                if (ImGui.isItemHovered()) {
+                                    tooltip("Unknown");
+                                }
+                        }          
                     }
                     ImGui.sameLine();
-                    switch(Multiplayer.playerStates.get(i)){
-                        case("Host"):
-                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
-                            ImGui.text("(H)");
-                            ImGui.popStyleColor();
-                            if (ImGui.isItemHovered()) {
-                                tooltip("Host");
-                            }
-                            ImGui.sameLine();
-                        break;
-                        case("Ready"):
-                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
-                            ImGui.text("(R)");
-                            ImGui.popStyleColor();
-                            if (ImGui.isItemHovered()) {
-                                tooltip("Ready");
-                            }
-                            ImGui.sameLine();
-                        break;
-                        case("Not Ready"):
-                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
-                            ImGui.text("(N)");
-                            ImGui.popStyleColor();
-                            if (ImGui.isItemHovered()) {
-                                tooltip("Not Ready");
-                            }
-                            ImGui.sameLine();
-                        break;
-
-                        default:
-                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,255,255));
-                            ImGui.text("(?)");
-                            ImGui.popStyleColor();
-                            if (ImGui.isItemHovered()) {
-                                tooltip("Unknown");
-                            }
-                            ImGui.sameLine();
-                    }
 
                     //  have these 2 colored gold silver etc depending on placement
                     ImGui.text("EX: 1000");

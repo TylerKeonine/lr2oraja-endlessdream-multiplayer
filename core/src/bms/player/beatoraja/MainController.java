@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import bms.player.beatoraja.modmenu.ImGuiRenderer;
+import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
 import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
 
 import com.badlogic.gdx.*;
@@ -251,7 +252,14 @@ public class MainController {
 	}
 
 	public void changeState(MainStateType state) {
+
+		// For Multiplayer
+		if(Multiplayer.lobbyPlaying&&state!=MainStateType.PLAY&&state!=MainStateType.DECIDE){
+			MultiplayerClient.sendPlaying(false);
+		}
+
 		MainState newState = null;
+
 		switch (state) {
 		case MUSICSELECT:
 			if (this.bmsfile != null) {

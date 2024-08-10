@@ -19,6 +19,7 @@ public class MultiplayerClientHandler implements Runnable{
     public static ArrayList<String> socketList = new ArrayList<>();
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
+    public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
     public static String selectedSong = "";
 
 
@@ -35,10 +36,12 @@ public class MultiplayerClientHandler implements Runnable{
             socketList.add(clientSocket);  // add client socket
             playerNames.add(clientUsername);
             playerStates.add("Not Ready");
+            playerPlaying.add(false);
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
             sendSelectedSong();
+            sendPlayerPlaying();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -49,6 +52,7 @@ public class MultiplayerClientHandler implements Runnable{
         String messageFromClient;
         Byte msgType;
         int index;
+        Boolean bool;
 
         while(socket.isConnected()){
             try{
@@ -83,6 +87,13 @@ public class MultiplayerClientHandler implements Runnable{
                         messageFromClient = dataInputStream.readUTF();
                         selectedSong = messageFromClient;
                         sendSelectedSong();
+                    break;
+                    case(6): // playing status
+                        messageFromClient = dataInputStream.readUTF();
+                        index = socketList.indexOf(messageFromClient);
+                        bool = dataInputStream.readBoolean();
+                        playerPlaying.set(index, bool);
+                        sendPlayerPlaying();
                     break;
                 }
                 
@@ -169,6 +180,22 @@ public class MultiplayerClientHandler implements Runnable{
         }
     }
 
+    public void sendPlayerPlaying(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.dataOutputStream.writeByte(6);
+                int repeats = playerStates.size();
+                clientHandler.dataOutputStream.writeInt(repeats);
+                for(int i=0;i<repeats;i++){
+                    clientHandler.dataOutputStream.writeBoolean(playerPlaying.get(i));
+                }
+                clientHandler.dataOutputStream.flush();
+            }catch(IOException e){
+                closeEverything(socket,dataInputStream,dataOutputStream);
+            }
+        }
+    }
+
     public void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
@@ -177,10 +204,12 @@ public class MultiplayerClientHandler implements Runnable{
         socketList.remove(index);
         playerNames.remove(index);
         playerStates.remove(index);
+        playerPlaying.remove(index);
 
         // send info to others
         sendPlayerNames();
         sendPlayerStates();
+        sendPlayerPlaying();
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){

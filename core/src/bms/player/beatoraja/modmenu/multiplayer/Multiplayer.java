@@ -15,11 +15,13 @@ import java.net.*;
 public class Multiplayer {
     // Client variables
     public static boolean inLobby = false;
+    public static boolean lobbyPlaying = false;
     // Lobby Info
     public static String hostIp = "";
     public static String selectedSong = "";
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
+    public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
 
     // Player Information
     public static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));

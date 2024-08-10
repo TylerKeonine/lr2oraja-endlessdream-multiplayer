@@ -77,6 +77,18 @@ public class MultiplayerClient {
                                 msgFromGroupChat = dataInputStream.readUTF();
                                 Multiplayer.selectedSong = msgFromGroupChat;
                             break;
+                            case(6):
+                                repeats = dataInputStream.readInt();
+                                Multiplayer.playerPlaying.clear();
+                                for(int i=0;i<repeats;i++){
+                                    Multiplayer.playerPlaying.add(dataInputStream.readBoolean());
+                                }
+                                if(Multiplayer.playerPlaying.contains(true)){
+                                    Multiplayer.lobbyPlaying = true;
+                                }else{
+                                    Multiplayer.lobbyPlaying = false;
+                                }
+                            break;
                         }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
@@ -145,7 +157,6 @@ public class MultiplayerClient {
     public static void sendReady(){
         try{
             dataOutputStream.write(1);
-            MultiplayerMenu.statusText = socket.toString();
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
         }catch(IOException e){
@@ -186,6 +197,17 @@ public class MultiplayerClient {
         try{
             dataOutputStream.write(5);
             dataOutputStream.writeUTF(song);
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    public static void sendPlaying(Boolean playing){
+        try{
+            dataOutputStream.write(6);
+            dataOutputStream.writeUTF(socket.toString());
+            dataOutputStream.writeBoolean(playing);
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);

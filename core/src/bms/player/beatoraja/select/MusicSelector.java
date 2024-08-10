@@ -25,6 +25,7 @@ import bms.player.beatoraja.skin.SkinType;
 import bms.player.beatoraja.song.SongData;
 import bms.player.beatoraja.song.SongDatabaseAccessor;
 import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
 import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
 
 /**
@@ -275,6 +276,7 @@ public class MusicSelector extends MainState {
 					if (resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play)) { // This function builds up memory
 						playedsong = multiplayerSong;
 						main.changeState(MainStateType.DECIDE);
+						MultiplayerClient.sendPlaying(true);
 					} else {
 						main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 					}
