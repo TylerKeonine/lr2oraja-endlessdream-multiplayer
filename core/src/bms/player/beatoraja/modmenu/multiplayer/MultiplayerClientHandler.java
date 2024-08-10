@@ -9,8 +9,8 @@ public class MultiplayerClientHandler implements Runnable{
     // Socket Variables
     public static ArrayList<MultiplayerClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
-    private ObjectInputStream objectInputStream;
-    private ObjectOutputStream objectOutputStream;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
     private String clientUsername;
     private String clientSocket;
 
@@ -25,10 +25,10 @@ public class MultiplayerClientHandler implements Runnable{
     public MultiplayerClientHandler(Socket socket){
         try{
             this.socket = socket;
-            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
-            this.clientUsername = objectInputStream.readUTF();
-            this.clientSocket = objectInputStream.readUTF();
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.clientUsername = dataInputStream.readUTF();
+            this.clientSocket = dataInputStream.readUTF();
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
@@ -41,7 +41,7 @@ public class MultiplayerClientHandler implements Runnable{
             sendSelectedSong();
             broadcastUpdate();
         }catch(IOException e){
-            closeEverything(socket,objectInputStream,objectOutputStream);
+            closeEverything(socket,dataInputStream,dataOutputStream);
         }
     }
 
@@ -53,14 +53,14 @@ public class MultiplayerClientHandler implements Runnable{
 
         while(socket.isConnected()){
             try{
-                msgType = objectInputStream.readByte();
+                msgType = dataInputStream.readByte();
                 switch(msgType){
                     case(0): // test
-                        messageFromClient = objectInputStream.readUTF();
+                        messageFromClient = dataInputStream.readUTF();
                         broadcastMessage(messageFromClient); 
                     break;
                     case(1): // ready
-                        messageFromClient = objectInputStream.readUTF();
+                        messageFromClient = dataInputStream.readUTF();
                         index = socketList.indexOf(messageFromClient);
                         if(playerStates.get(index).equals("Ready")){
                             playerStates.set(index,"Not Ready");
@@ -70,7 +70,7 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerStates();
                     break;
                     case(2): // host
-                        messageFromClient = objectInputStream.readUTF();
+                        messageFromClient = dataInputStream.readUTF();
                         playerStates.set(socketList.indexOf(messageFromClient),"Host");
                         sendPlayerStates();                    
                     break;
@@ -81,14 +81,14 @@ public class MultiplayerClientHandler implements Runnable{
                         broadcastUpdate();
                     break;
                     case(5): // select song
-                        messageFromClient = objectInputStream.readUTF();
+                        messageFromClient = dataInputStream.readUTF();
                         selectedSong = messageFromClient;
                         sendSelectedSong();
                     break;
                 }
                 
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
                 break;
             }
         }
@@ -97,11 +97,11 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastMessage(String messageToSend){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.objectOutputStream.writeByte(0); // note these will be a different set of msgTypes
-                clientHandler.objectOutputStream.writeUTF(messageToSend);
-                clientHandler.objectOutputStream.flush();
+                clientHandler.dataOutputStream.writeByte(0); // note these will be a different set of msgTypes
+                clientHandler.dataOutputStream.writeUTF(messageToSend);
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -109,14 +109,14 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendPlayerNames(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.objectOutputStream.writeByte(1);
+                clientHandler.dataOutputStream.writeByte(1);
                 int repeats = playerNames.size();
-                clientHandler.objectOutputStream.writeInt(repeats);
+                clientHandler.dataOutputStream.writeInt(repeats);
                 for(int i=0;i<repeats;i++){
-                    clientHandler.objectOutputStream.writeUTF(playerNames.get(i));
+                    clientHandler.dataOutputStream.writeUTF(playerNames.get(i));
                 }
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -124,14 +124,14 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendPlayerStates(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.objectOutputStream.writeByte(2);
+                clientHandler.dataOutputStream.writeByte(2);
                 int repeats = playerStates.size();
-                clientHandler.objectOutputStream.writeInt(repeats);
+                clientHandler.dataOutputStream.writeInt(repeats);
                 for(int i=0;i<repeats;i++){
-                    clientHandler.objectOutputStream.writeUTF(playerStates.get(i));
+                    clientHandler.dataOutputStream.writeUTF(playerStates.get(i));
                 }
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -139,10 +139,10 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastStart(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.objectOutputStream.writeByte(3);
-                clientHandler.objectOutputStream.flush();
+                clientHandler.dataOutputStream.writeByte(3);
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -150,10 +150,10 @@ public class MultiplayerClientHandler implements Runnable{
     public void broadcastUpdate(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.objectOutputStream.writeByte(4);
-                clientHandler.objectOutputStream.flush();
+                clientHandler.dataOutputStream.writeByte(4);
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -161,11 +161,11 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendSelectedSong(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                clientHandler.objectOutputStream.writeByte(5);
-                clientHandler.objectOutputStream.writeUTF(selectedSong);
-                clientHandler.objectOutputStream.flush();
+                clientHandler.dataOutputStream.writeByte(5);
+                clientHandler.dataOutputStream.writeUTF(selectedSong);
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
-                closeEverything(socket,objectInputStream,objectOutputStream);
+                closeEverything(socket,dataInputStream,dataOutputStream);
             }
         }
     }
@@ -186,7 +186,7 @@ public class MultiplayerClientHandler implements Runnable{
         broadcastUpdate();
     }
 
-    public void closeEverything(Socket skt,ObjectInputStream dIn, ObjectOutputStream dOut){
+    public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
         removeClientHandler();
         try{
             if(dIn!=null){
