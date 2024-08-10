@@ -96,10 +96,13 @@ public class MultiplayerMenu {
                     Multiplayer.leaveLobby();
                 }
 
-                // for loop for each player
+                ImGui.beginTable("Players", 4);
                 for(int i=0;i<Multiplayer.playerNames.size();i++){
+                    ImGui.tableNextRow();
+                    ImGui.tableSetColumnIndex(0);
                     ImGui.text(Multiplayer.playerNames.get(i));
-                    ImGui.sameLine();
+                    //ImGui.sameLine();
+                    ImGui.tableSetColumnIndex(1);
                     if(Multiplayer.lobbyPlaying){
                         if(Multiplayer.playerPlaying.get(i)){
                             ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,150,0));
@@ -152,14 +155,98 @@ public class MultiplayerMenu {
                                 }
                         }          
                     }
-                    ImGui.sameLine();
+                    //ImGui.sameLine();
+                    ImGui.tableSetColumnIndex(2);
+                    ImGui.text("SCORE: 1000");
+                    if(ImGui.isItemHovered()){
+                        ImGui.beginTooltip();
+                        ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
+                        ImGui.beginTable(Multiplayer.playerNames.get(i), 4);
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text(Multiplayer.playerNames.get(i));
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("SCORE: 0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("MISS COUNT: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("MAX COMBO: 0");
 
-                    //  have these 2 colored gold silver etc depending on placement
-                    ImGui.text("EX: 1000");
-                    ImGui.sameLine();
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text("PERFECT:");
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text("GREAT:");
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text("GOOD:");
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text("BAD:");
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text("POOR:");
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(0);
+                        ImGui.text("MISS:");
+                        ImGui.tableSetColumnIndex(1);
+                        ImGui.text("0");
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.tableNextRow();
+                        ImGui.tableSetColumnIndex(2);
+                        ImGui.text("EARLY: 0");
+                        ImGui.tableSetColumnIndex(3);
+                        ImGui.text("LATE: 0");
+
+                        ImGui.endTable();
+                        ImGui.popTextWrapPos();
+                        ImGui.endTooltip();
+                    }
+                    //ImGui.sameLine();
+                    ImGui.tableSetColumnIndex(3);
                     ImGui.text("#1");                    
                 }
-
+                ImGui.endTable();
             }
             ImGui.text(statusText); 
             ImGui.text(Multiplayer.playerName); 
