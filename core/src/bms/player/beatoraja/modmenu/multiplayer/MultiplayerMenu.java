@@ -70,9 +70,16 @@ public class MultiplayerMenu {
                 ImGui.text(Multiplayer.selectedSong); // this needs to be capped
                 
                 if (Multiplayer.isHost){
-                    if(ImGui.button("Start")) {
-                        Multiplayer.startPressed();
-                    }      
+                    if(Multiplayer.lobbyPlaying){
+                        if(ImGui.button("Force End")) {
+                            Multiplayer.endPressed();
+                        }                          
+                    }else{
+                        if(ImGui.button("Start")) {
+                            Multiplayer.startPressed();
+                        }                              
+                    }
+
                 }else if(Multiplayer.isReady){
                     if(ImGui.button("Unready")) {
                         Multiplayer.readyPressed();

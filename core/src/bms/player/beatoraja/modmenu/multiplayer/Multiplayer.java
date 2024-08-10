@@ -79,4 +79,10 @@ public class Multiplayer {
         }
     }
 
+    public static void endPressed(){
+        if(isHost){ 
+            MultiplayerClient.sendEnd();// send start message
+        }
+    }
+
 }

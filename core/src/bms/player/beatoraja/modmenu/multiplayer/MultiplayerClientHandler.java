@@ -95,6 +95,10 @@ public class MultiplayerClientHandler implements Runnable{
                         playerPlaying.set(index, bool);
                         sendPlayerPlaying();
                     break;
+                    case(7): // force end
+                        playerPlaying.replaceAll(e -> false);
+                        broadcastEnd();
+                    break;
                 }
                 
             }catch(IOException e){
@@ -189,6 +193,17 @@ public class MultiplayerClientHandler implements Runnable{
                 for(int i=0;i<repeats;i++){
                     clientHandler.dataOutputStream.writeBoolean(playerPlaying.get(i));
                 }
+                clientHandler.dataOutputStream.flush();
+            }catch(IOException e){
+                closeEverything(socket,dataInputStream,dataOutputStream);
+            }
+        }
+    }
+
+    public void broadcastEnd(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.dataOutputStream.writeByte(7);
                 clientHandler.dataOutputStream.flush();
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);

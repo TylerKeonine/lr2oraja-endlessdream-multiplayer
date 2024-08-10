@@ -77,7 +77,7 @@ public class MultiplayerClient {
                                 msgFromGroupChat = dataInputStream.readUTF();
                                 Multiplayer.selectedSong = msgFromGroupChat;
                             break;
-                            case(6):
+                            case(6): // update playing
                                 repeats = dataInputStream.readInt();
                                 Multiplayer.playerPlaying.clear();
                                 for(int i=0;i<repeats;i++){
@@ -88,6 +88,10 @@ public class MultiplayerClient {
                                 }else{
                                     Multiplayer.lobbyPlaying = false;
                                 }
+                            break;
+                            case(7): // force end
+                                Multiplayer.playerPlaying.replaceAll(e -> false);
+                                Multiplayer.lobbyPlaying = false;
                             break;
                         }
                     }catch(IOException e){
@@ -208,6 +212,15 @@ public class MultiplayerClient {
             dataOutputStream.write(6);
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.writeBoolean(playing);
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    public static void sendEnd(){
+        try{
+            dataOutputStream.write(7);
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
