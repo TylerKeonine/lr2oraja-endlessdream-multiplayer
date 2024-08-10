@@ -270,7 +270,7 @@ public class MusicSelector extends MainState {
 		if (play != null) {
 			// Multiplayer
 			if (Multiplayer.inLobby){
-				if (multiplayerStart){
+				if (Boolean.TRUE.equals(multiplayerStart)){
 					resource.clear();
 					if (resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play)) {
 						playedsong = multiplayerSong;
@@ -278,27 +278,23 @@ public class MusicSelector extends MainState {
 					} else {
 						main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 					}
-				}else if(Multiplayer.isHost){
-				if(current instanceof SongBar){
+				}else if(Boolean.TRUE.equals(Multiplayer.isHost)){
+					// vvv SOMETHING HERE CAUSES CRASH  vvv
+					if(current instanceof SongBar){
 						SongData song = ((SongBar) current).getSongData(); // use selected song
-						if (((SongBar) current).existsSong()) {
-							resource.clear();
-							if (resource.setBMSFile(Paths.get(song.getPath()), play)) {
-								// send song info
-								Multiplayer.selectSong(song.getFullTitle());
-								main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
-							} else {
-								main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
-							}
+						if (((SongBar) current).existsSong()) { 
+							Multiplayer.selectSong(song.getFullTitle());
+							main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
 						} else if (song.getIpfs() != null && main.getMusicDownloadProcessor() != null
 								&& main.getMusicDownloadProcessor().isAlive()) {
 							execute(MusicSelectCommand.DOWNLOAD_IPFS);
 						} else {
 							execute(MusicSelectCommand.OPEN_DOWNLOAD_SITE);
-						}							
+						}					
 					}else{
 						main.getMessageRenderer().addMessage("Multiplayer : File is not supported", 2400, Color.RED, 1);
 					}
+					// ^^^
 				}else{
 					main.getMessageRenderer().addMessage("Multiplayer : Please wait for host", 2400, Color.RED, 1);
 				}
@@ -413,6 +409,7 @@ public class MusicSelector extends MainState {
 			MultiplayerMenu.statusText = "No song selected.";
 		}else{
 			multiplayerSong = findSong(fullTitle);
+			//resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play);
 			multiplayerStart = true;
 			play = BMSPlayerMode.PLAY;			
 		}
