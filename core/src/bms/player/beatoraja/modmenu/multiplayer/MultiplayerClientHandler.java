@@ -39,7 +39,6 @@ public class MultiplayerClientHandler implements Runnable{
             sendPlayerNames();
             sendPlayerStates();
             sendSelectedSong();
-            broadcastUpdate();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -182,8 +181,6 @@ public class MultiplayerClientHandler implements Runnable{
         // send info to others
         sendPlayerNames();
         sendPlayerStates();
-
-        broadcastUpdate();
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){

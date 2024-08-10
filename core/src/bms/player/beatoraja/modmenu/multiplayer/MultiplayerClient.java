@@ -122,7 +122,6 @@ public class MultiplayerClient {
             MultiplayerClient client = new MultiplayerClient(socket);
             client.listenForMessage();
             client.sendJoin();
-            //requestUpdate();
             Multiplayer.inLobby = true;
             Multiplayer.hostIp = ipInput;
         } catch (UnknownHostException e) {
@@ -138,7 +137,6 @@ public class MultiplayerClient {
             dataOutputStream.writeUTF(username);
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
-            //requestUpdate();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
@@ -150,7 +148,6 @@ public class MultiplayerClient {
             MultiplayerMenu.statusText = socket.toString();
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
-            //requestUpdate();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
@@ -162,7 +159,6 @@ public class MultiplayerClient {
             dataOutputStream.write(2);
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
-            //requestUpdate();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
@@ -172,7 +168,6 @@ public class MultiplayerClient {
         try{
             dataOutputStream.write(3);
             dataOutputStream.flush();
-            //requestUpdate();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
