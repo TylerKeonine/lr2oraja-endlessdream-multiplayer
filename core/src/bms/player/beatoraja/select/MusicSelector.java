@@ -274,6 +274,33 @@ public class MusicSelector extends MainState {
 				if (Boolean.TRUE.equals(multiplayerStart)){
 					resource.clear();
 					if (resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play)) { // This function builds up memory
+						final Queue<DirectoryBar> dir = manager.getDirectory();
+						if(dir.size > 0 && !(dir.last() instanceof SameFolderBar)) {
+							Array<String> urls = new Array<String>(resource.getConfig().getTableURL());
+
+							boolean isdtable = false;
+							for (DirectoryBar bar : dir) {
+								if (bar instanceof TableBar) {
+									String currenturl = ((TableBar) bar).getUrl();
+									if (currenturl != null && urls.contains(currenturl, false)) {
+										isdtable = true;
+										resource.setTablename(bar.getTitle());
+									}
+								}
+								if (bar instanceof HashBar && isdtable) {
+									resource.setTablelevel(bar.getTitle());
+									break;
+								}
+							}
+						}
+						
+						if(main.getIRStatus().length > 0 && currentir == null) {
+							currentir = new RankingData();
+							main.getRankingDataCache().put(multiplayerSong, config.getLnmode(), currentir);
+						}
+						resource.setRankingData(currentir);
+						resource.setRivalScoreData(current.getRivalScore());
+
 						playedsong = multiplayerSong;
 						main.changeState(MainStateType.DECIDE);
 						MultiplayerClient.sendPlaying(true);
