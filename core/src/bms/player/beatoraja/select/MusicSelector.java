@@ -272,12 +272,13 @@ public class MusicSelector extends MainState {
 			if (Multiplayer.inLobby){
 				if (Boolean.TRUE.equals(multiplayerStart)){
 					resource.clear();
-					if (resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play)) {
+					if (resource.setBMSFile(Paths.get(multiplayerSong.getPath()), play)) { // This function builds up memory
 						playedsong = multiplayerSong;
 						main.changeState(MainStateType.DECIDE);
 					} else {
 						main.getMessageRenderer().addMessage("Failed to loading BMS : Song not found, or Song has error", 2400, Color.RED, 1);
 					}
+				multiplayerStart = false;
 				}else if(Boolean.TRUE.equals(Multiplayer.isHost)){
 					if(current instanceof SongBar){
 						SongData song = ((SongBar) current).getSongData();
