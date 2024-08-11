@@ -228,6 +228,8 @@ public class MultiplayerClientHandler implements Runnable{
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
+        Multiplayer.leaveLobby();
+        MultiplayerMenu.statusText = "SERVER ERROR";
         removeClientHandler();
         try{
             if(dIn!=null){

@@ -100,12 +100,13 @@ public class MultiplayerClient {
                         closeEverything(socket, dataInputStream, dataOutputStream);
                     }
                 }
-                closeSocket();  //TODO loop doesn't know when host leaves
             }
         }).start();
     }
 
     public static void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
+        Multiplayer.leaveLobby(); // A bit of lag after host crashes? immediately fixed after pressing join
+        MultiplayerMenu.statusText = "CLIENT LOST CONNECTION";
         try{
             if(dIn!=null){
                 dIn.close();
@@ -230,6 +231,15 @@ public class MultiplayerClient {
     }
 
     public static void sendScore(){
-
+        /*
+        try{
+            dataOutputStream.write(8);
+            dataOutputStream.writeUTF(socket.toString());
+            dataOutputStream.writeInt(liveScoreData.getExscore());
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+        */
     }
 }
