@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import bms.player.beatoraja.PlayerConfig;
+import bms.player.beatoraja.ScoreData;
 import bms.player.beatoraja.select.MusicSelector;
 import bms.player.beatoraja.song.SongData;
 
@@ -20,6 +21,7 @@ public class MultiplayerClient {
     private static String username = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
 
     public static MusicSelector selector;
+    public static ScoreData liveScoreData;
 
     public MultiplayerClient(Socket socket){
         try {
@@ -225,5 +227,9 @@ public class MultiplayerClient {
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
+    }
+
+    public static void sendScore(){
+
     }
 }

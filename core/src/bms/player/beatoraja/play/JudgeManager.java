@@ -11,6 +11,8 @@ import bms.model.*;
 import bms.player.beatoraja.*;
 import bms.player.beatoraja.audio.AudioDriver;
 import bms.player.beatoraja.input.BMSPlayerInputProcessor;
+import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
 import bms.player.beatoraja.play.JudgeProperty.MissCondition;
 import bms.player.beatoraja.play.JudgeProperty.NoteType;
 import bms.player.beatoraja.skin.SkinPropertyMapper;
@@ -142,6 +144,7 @@ public class JudgeManager {
         judgefast = new long[judgeregion];
         mjudgefast = new long[judgeregion];
         score = new ScoreData(orgmode);
+        MultiplayerClient.liveScoreData = score; // Multiplayer
         score.setNotes(model.getTotalNotes());
         score.setSha256(model.getSHA256());
         ghost = new int[model.getTotalNotes()];

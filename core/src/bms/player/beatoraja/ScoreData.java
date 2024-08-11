@@ -2,6 +2,9 @@ package bms.player.beatoraja;
 
 import bms.model.Mode;
 import bms.player.beatoraja.input.BMSPlayerInputDevice;
+import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
 import bms.player.beatoraja.play.BMSPlayerRule;
 import bms.player.beatoraja.play.JudgeAlgorithm;
 
@@ -307,6 +310,8 @@ public class ScoreData implements Validatable {
 			}
 			break;
 		}
+		// For Multiplayer
+		MultiplayerClient.sendScore();
 	}
 
 	public int getCombo() {
