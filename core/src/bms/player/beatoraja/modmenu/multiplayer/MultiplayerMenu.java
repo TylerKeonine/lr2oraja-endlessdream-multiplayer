@@ -101,7 +101,6 @@ public class MultiplayerMenu {
                     ImGui.tableNextRow();
                     ImGui.tableSetColumnIndex(0);
                     ImGui.text(Multiplayer.playerNames.get(i));
-                    //ImGui.sameLine();
                     ImGui.tableSetColumnIndex(1);
                     if(Multiplayer.lobbyPlaying){
                         if(Multiplayer.playerPlaying.get(i)){
@@ -155,9 +154,9 @@ public class MultiplayerMenu {
                                 }
                         }          
                     }
-                    //ImGui.sameLine();
                     ImGui.tableSetColumnIndex(2);
                     ImGui.text("SCORE: 1000");
+                    /* later feature
                     if(ImGui.isItemHovered()){
                         ImGui.beginTooltip();
                         ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
@@ -242,7 +241,7 @@ public class MultiplayerMenu {
                         ImGui.popTextWrapPos();
                         ImGui.endTooltip();
                     }
-                    //ImGui.sameLine();
+                    */
                     ImGui.tableSetColumnIndex(3);
                     ImGui.text("#1");                    
                 }
