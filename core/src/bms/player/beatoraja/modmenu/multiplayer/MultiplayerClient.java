@@ -3,6 +3,7 @@ package bms.player.beatoraja.modmenu.multiplayer;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import bms.player.beatoraja.PlayerConfig;
@@ -94,6 +95,15 @@ public class MultiplayerClient {
                             case(7): // force end
                                 Multiplayer.playerPlaying.replaceAll(e -> false);
                                 Multiplayer.lobbyPlaying = false;
+                            break;
+                            case(8): // update score
+                                repeats = dataInputStream.readInt();
+                                int[][] temparr = new int[repeats][12];
+                                for(int i=0;i<12*repeats;i++){
+                                    temparr[i/12][i%12] = dataInputStream.readInt();
+                                }
+                                Multiplayer.playerScoreData = temparr;
+                                MultiplayerMenu.statusText = Arrays.toString(Multiplayer.playerScoreData[0]);
                             break;
                         }
                     }catch(IOException e){
@@ -231,15 +241,19 @@ public class MultiplayerClient {
     }
 
     public static void sendScore(){
-        /*
         try{
             dataOutputStream.write(8);
             dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.writeInt(liveScoreData.getExscore());
+            for(int i=0;i<12;i++){
+                if(i%2==0){
+                    dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, true));
+                }else{
+                    dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, false));
+                }
+            }
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
-        */
     }
 }

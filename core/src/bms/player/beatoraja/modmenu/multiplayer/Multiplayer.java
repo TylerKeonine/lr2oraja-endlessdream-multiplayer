@@ -22,6 +22,7 @@ public class Multiplayer {
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
+    public static int[][] playerScoreData = new int[0][12];
 
     // Player Information
     public static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));

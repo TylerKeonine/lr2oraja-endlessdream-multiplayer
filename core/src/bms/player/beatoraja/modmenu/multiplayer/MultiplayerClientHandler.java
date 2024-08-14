@@ -2,6 +2,7 @@ package bms.player.beatoraja.modmenu.multiplayer;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.io.*;
 
 public class MultiplayerClientHandler implements Runnable{
@@ -20,6 +21,7 @@ public class MultiplayerClientHandler implements Runnable{
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
+    public static int[][] playerScoreData = new int[0][12];
     public static String selectedSong = "";
 
 
@@ -37,11 +39,15 @@ public class MultiplayerClientHandler implements Runnable{
             playerNames.add(clientUsername);
             playerStates.add("Not Ready");
             playerPlaying.add(false);
+            playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
+            playerScoreData[playerScoreData.length-1] = new int[12];
+            //Arrays.fill(playerScoreData[playerScoreData.length-1], 0);
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
             sendSelectedSong();
             sendPlayerPlaying();
+            sendPlayerScoreData();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -98,6 +104,15 @@ public class MultiplayerClientHandler implements Runnable{
                     case(7): // force end
                         playerPlaying.replaceAll(e -> false);
                         broadcastEnd();
+                    break;
+                    case(8): // send score
+                        messageFromClient = dataInputStream.readUTF();
+                        index = socketList.indexOf(messageFromClient);
+                        playerScoreData[index] = new int[12];
+                        for(int i=0;i<12;i++){
+                            playerScoreData[index][i] = dataInputStream.readInt(); 
+                        }
+                        sendPlayerScoreData();
                     break;
                 }
                 
@@ -211,6 +226,20 @@ public class MultiplayerClientHandler implements Runnable{
         }
     }
 
+    public void sendPlayerScoreData() {
+        //MultiplayerMenu.statusText = Arrays.toString(playerScoreData[0]);
+        try{
+            dataOutputStream.write(8);
+            dataOutputStream.writeInt(playerScoreData.length);
+            for(int i=0;i<12*playerScoreData.length;i++){
+                dataOutputStream.writeInt(playerScoreData[i/12][i%12]);
+            }
+            dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
     public void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
@@ -220,15 +249,20 @@ public class MultiplayerClientHandler implements Runnable{
         playerNames.remove(index);
         playerStates.remove(index);
         playerPlaying.remove(index);
+        for(int i=index;i<playerScoreData.length-1;i++){
+            playerScoreData[i]=playerScoreData[i+1];
+        }
+        playerScoreData = Arrays.copyOfRange(playerScoreData, 0, playerScoreData.length-1);
 
         // send info to others
         sendPlayerNames();
         sendPlayerStates();
         sendPlayerPlaying();
+        sendPlayerScoreData();
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
-        Multiplayer.leaveLobby();
+        //Multiplayer.leaveLobby();
         MultiplayerMenu.statusText = "SERVER ERROR";
         removeClientHandler();
         try{

@@ -155,93 +155,97 @@ public class MultiplayerMenu {
                         }          
                     }
                     ImGui.tableSetColumnIndex(2);
-                    ImGui.text("SCORE: 1000");
-                    /* later feature
-                    if(ImGui.isItemHovered()){
-                        ImGui.beginTooltip();
-                        ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
-                        ImGui.beginTable(Multiplayer.playerNames.get(i), 4);
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text(Multiplayer.playerNames.get(i));
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("SCORE: 0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("MISS COUNT: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("MAX COMBO: 0");
+                    try{
+                        ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][0]*2+Multiplayer.playerScoreData[i][1]*2)+(Multiplayer.playerScoreData[i][2]+Multiplayer.playerScoreData[i][3])));
+                        /* later feature
+                        if(ImGui.isItemHovered()){
+                            ImGui.beginTooltip();
+                            ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
+                            ImGui.beginTable(Multiplayer.playerNames.get(i), 4);
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text(Multiplayer.playerNames.get(i));
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("SCORE: 0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("MISS COUNT: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("MAX COMBO: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text("PERFECT:");
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text("PERFECT:");
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text("GREAT:");
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text("GREAT:");
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text("GOOD:");
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text("GOOD:");
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text("BAD:");
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text("BAD:");
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text("POOR:");
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text("POOR:");
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(0);
-                        ImGui.text("MISS:");
-                        ImGui.tableSetColumnIndex(1);
-                        ImGui.text("0");
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(0);
+                            ImGui.text("MISS:");
+                            ImGui.tableSetColumnIndex(1);
+                            ImGui.text("0");
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.tableNextRow();
-                        ImGui.tableSetColumnIndex(2);
-                        ImGui.text("EARLY: 0");
-                        ImGui.tableSetColumnIndex(3);
-                        ImGui.text("LATE: 0");
+                            ImGui.tableNextRow();
+                            ImGui.tableSetColumnIndex(2);
+                            ImGui.text("EARLY: 0");
+                            ImGui.tableSetColumnIndex(3);
+                            ImGui.text("LATE: 0");
 
-                        ImGui.endTable();
-                        ImGui.popTextWrapPos();
-                        ImGui.endTooltip();
+                            ImGui.endTable();
+                            ImGui.popTextWrapPos();
+                            ImGui.endTooltip();
+                        }
+                        */
+                    }catch(ArrayIndexOutOfBoundsException e){
+                        ImGui.text("Loading...");
                     }
-                    */
                     ImGui.tableSetColumnIndex(3);
                     ImGui.text("#1");                    
                 }
