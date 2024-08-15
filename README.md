@@ -11,6 +11,7 @@ A fork of [Endless Dream](https://github.com/seraxis/lr2oraja-endlessdream) that
 * Support for unlimited players in a lobby
 
 ### Planned Features
+* Transfer host with support for multiple hosts
 * Integration with other Endless Dream mods (such as same randoms or displaying rate)
 * Live opponent target score
 * Support for standalone servers
