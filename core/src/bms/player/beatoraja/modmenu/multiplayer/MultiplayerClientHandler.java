@@ -228,12 +228,12 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendPlayerScoreData() {
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             try{
-                dataOutputStream.write(8);
-                dataOutputStream.writeInt(playerScoreData.length);
+                clientHandler.dataOutputStream.write(8);
+                clientHandler.dataOutputStream.writeInt(playerScoreData.length);
                 for(int i=0;i<12*playerScoreData.length;i++){
-                    dataOutputStream.writeInt(playerScoreData[i/12][i%12]);
+                    clientHandler.dataOutputStream.writeInt(playerScoreData[i/12][i%12]);
                 }
-                dataOutputStream.flush();
+                clientHandler.dataOutputStream.flush();
             }catch(IOException e){
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }
