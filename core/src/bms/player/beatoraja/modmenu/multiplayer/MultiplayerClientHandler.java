@@ -40,8 +40,7 @@ public class MultiplayerClientHandler implements Runnable{
             playerStates.add("Not Ready");
             playerPlaying.add(false);
             playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
-            playerScoreData[playerScoreData.length-1] = new int[12];
-            //Arrays.fill(playerScoreData[playerScoreData.length-1], 0);
+            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0};
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
@@ -227,19 +226,19 @@ public class MultiplayerClientHandler implements Runnable{
     }
 
     public void sendPlayerScoreData() {
-        //MultiplayerMenu.statusText = Arrays.toString(playerScoreData[0]);
-        try{
-            dataOutputStream.write(8);
-            dataOutputStream.writeInt(playerScoreData.length);
-            for(int i=0;i<12*playerScoreData.length;i++){
-                dataOutputStream.writeInt(playerScoreData[i/12][i%12]);
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                dataOutputStream.write(8);
+                dataOutputStream.writeInt(playerScoreData.length);
+                for(int i=0;i<12*playerScoreData.length;i++){
+                    dataOutputStream.writeInt(playerScoreData[i/12][i%12]);
+                }
+                dataOutputStream.flush();
+            }catch(IOException e){
+                closeEverything(socket, dataInputStream, dataOutputStream);
             }
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
-
     public void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");

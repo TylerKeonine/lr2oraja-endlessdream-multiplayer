@@ -98,12 +98,13 @@ public class MultiplayerClient {
                             break;
                             case(8): // update score
                                 repeats = dataInputStream.readInt();
+                                //MultiplayerMenu.statusText = Integer.toString(repeats);
                                 int[][] temparr = new int[repeats][12];
                                 for(int i=0;i<12*repeats;i++){
                                     temparr[i/12][i%12] = dataInputStream.readInt();
                                 }
                                 Multiplayer.playerScoreData = temparr;
-                                MultiplayerMenu.statusText = Arrays.toString(Multiplayer.playerScoreData[0]);
+                                //MultiplayerMenu.statusText = Arrays.toString(Multiplayer.playerScoreData[0]);
                             break;
                         }
                     }catch(IOException e){
