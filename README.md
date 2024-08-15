@@ -1,20 +1,24 @@
-# LR2oraja \~Endless Dream\~
+# Multiplayer Mod - LR2oraja \~Endless Dream\~
+A fork of [Endless Dream](https://github.com/seraxis/lr2oraja-endlessdream) that includes lobby multiplayer functionality and which aims to be non-intrusive and simple to use.
 
-Endless Dream is a community fork and drop-in replacement for [beatoraja](https://github.com/exch-bms2/beatoraja) that integrates quality of life patches and new features not present in the upstream version of the game.
+**Note: As of now, Discord Rich Presence has been removed and will not work in this fork due to me struggling to compile the game with it.**
 
-Based on [LR2oraja](https://github.com/wcko87/lr2oraja), which is itself a fork with LR2 judges and gauges, Endless Dream aims to fix some of the outstanding issues with the upstream project while being a central place for modifications and extensions that may never be accepted by upstream.
+### Multiplayer Mod Key Features
+* Multiplayer menu found in the Endless Dream mod menu (F5/Insert)
+* Peer-to-peer TCP connectivity
+  * Automatically sync song select
+  * Live score display with leaderboard
+* Support for unlimited players in a lobby
 
-### Key Features
-* Increased perfomance by using the latest graphics backends available to libgdx
-* Faster BMS folder processing than stock (up to 20x)
-* Faster Table Processing
-* Compatible with pre and post beatoraja 0.8.7 installs
-* Built in Mod Menu, accessible using **`F5` or `Insert`**
+### Planned Features
+* Integration with other Endless Dream mods (such as same randoms or displaying rate)
+* Support for standalone servers
+    * Arena with rank system
+    * Browse public lobbies
+* [LR2Arena](https://github.com/SayakaIsBaka/LR2Arena) crossplay (big maybe!)
 
 ### Downloads
-Development builds are created for every commit and published as [releases](https://github.com/seraxis/lr2oraja-endlessdream/releases)
-- [**Windows Download**](https://github.com/seraxis/lr2oraja-endlessdream/releases/download/v0.2.1/lr2oraja-0.8.7-endlessdream-windows-0.2.1.zip)
-- [**Linux Download**](https://github.com/seraxis/lr2oraja-endlessdream/releases/download/v0.2.1/lr2oraja-0.8.7-endlessdream-linux-0.2.1.zip)
+Download the latest release under the 'Releases' tab [here](https://github.com/TylerKeonine/lr2oraja-endlessdream/releases)
 
 ### Installing from scratch
 If you don't have an existing beatoraja installation download the latest [`beatoraja-0.8.7 JRE`](https://mocha-repository.info/download/beatoraja0.8.7-jre-win64.zip) bundled version, or choose a version yourself from the [release page](https://mocha-repository.info/download.php).
@@ -48,8 +52,3 @@ Configure the `runDir` system property to point to a beatoraja install or leave 
 ```powershell
 .\gradlew.bat core:runShadow -Dplatform=windows -DrunDir="C:\beatoraja0.8.7"
 ```
-
-## Contributing
-Please state the impact your changes will have on drop-in compatibility with an upstream beatoraja install.
-
-TBD
