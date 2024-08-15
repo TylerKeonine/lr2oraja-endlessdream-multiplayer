@@ -12,6 +12,7 @@ A fork of [Endless Dream](https://github.com/seraxis/lr2oraja-endlessdream) that
 
 ### Planned Features
 * Integration with other Endless Dream mods (such as same randoms or displaying rate)
+* Live opponent target score
 * Support for standalone servers
     * Arena with rank system
     * Browse public lobbies
