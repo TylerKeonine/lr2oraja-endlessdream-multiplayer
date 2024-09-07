@@ -97,6 +97,7 @@ public class MultiplayerMenu {
                 }
 
                 ImGui.beginTable("Players", 4);
+                try{
                 for(int i=0;i<Multiplayer.playerNames.size();i++){
                     ImGui.tableNextRow();
                     ImGui.tableSetColumnIndex(0);
@@ -154,9 +155,10 @@ public class MultiplayerMenu {
                                 }
                         }          
                     }
+
                     ImGui.tableSetColumnIndex(2);
-                    try{
-                        ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][0]*2+Multiplayer.playerScoreData[i][1]*2)+(Multiplayer.playerScoreData[i][2]+Multiplayer.playerScoreData[i][3])));
+                    //try{
+                        //ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][0]*2+Multiplayer.playerScoreData[i][1]*2)+(Multiplayer.playerScoreData[i][2]+Multiplayer.playerScoreData[i][3])));
                         /* later feature
                         if(ImGui.isItemHovered()){
                             ImGui.beginTooltip();
@@ -243,16 +245,19 @@ public class MultiplayerMenu {
                             ImGui.endTooltip();
                         }
                         */
-                    }catch(ArrayIndexOutOfBoundsException e){
-                        ImGui.text("Loading...");
-                    }
+                    //}catch(IndexOutOfBoundsException e){
+                    //    ImGui.text("Loading...");
+                    //}
                     ImGui.tableSetColumnIndex(3);
                     ImGui.text("#1");                    
                 }
+                }catch(IndexOutOfBoundsException e){
+                    ImGui.text("Loading...");
+                }   
                 ImGui.endTable();
             }
             ImGui.text(statusText); 
-            ImGui.text(Multiplayer.playerName); 
+            ImGui.text(Multiplayer.playerName);
         }
         ImGui.end();
     }

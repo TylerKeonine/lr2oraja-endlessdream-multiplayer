@@ -46,6 +46,7 @@ public class MultiplayerClient {
                 while(socket.isConnected()){
                     try{
                         //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
+                        MultiplayerMenu.statusText = "done";
                         msgType = dataInputStream.readByte();
                         switch(msgType){
                             case(0): // test messages
@@ -97,14 +98,11 @@ public class MultiplayerClient {
                                 Multiplayer.lobbyPlaying = false;
                             break;
                             case(8): // update score
-                                repeats = dataInputStream.readInt();
-                                //MultiplayerMenu.statusText = Integer.toString(repeats);
-                                int[][] temparr = new int[repeats][12];
-                                for(int i=0;i<12*repeats;i++){
-                                    temparr[i/12][i%12] = dataInputStream.readInt();
-                                }
-                                Multiplayer.playerScoreData = temparr;
-                                //MultiplayerMenu.statusText = Arrays.toString(Multiplayer.playerScoreData[0]);
+                                MultiplayerMenu.statusText = "reading..";
+                                int player = dataInputStream.readInt();
+                                int judge = dataInputStream.readInt();
+                                int value = dataInputStream.readInt();            
+                                //MultiplayerMenu.statusText = player+","+judge+","+value;
                             break;
                         }
                     }catch(IOException e){
@@ -115,7 +113,7 @@ public class MultiplayerClient {
         }).start();
     }
 
-    public static void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
+    public static void closeEverything(Socket skt, DataInputStream dIn, DataOutputStream dOut){
         Multiplayer.leaveLobby(); // A bit of lag after host crashes? immediately fixed after pressing join
         MultiplayerMenu.statusText = "CLIENT LOST CONNECTION";
         try{
@@ -244,6 +242,7 @@ public class MultiplayerClient {
     public static void sendScore(){
         try{
             dataOutputStream.write(8);
+            /*
             dataOutputStream.writeUTF(socket.toString());
             for(int i=0;i<12;i++){
                 if(i%2==0){
@@ -251,7 +250,7 @@ public class MultiplayerClient {
                 }else{
                     dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, false));
                 }
-            }
+            }*/
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
