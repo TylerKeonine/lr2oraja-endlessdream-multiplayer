@@ -277,7 +277,7 @@ public class MultiplayerMenu {
                         ImGui.text("Loading...");
                     }
                     ImGui.tableSetColumnIndex(3);
-                    ImGui.text("#1");                    
+                    //ImGui.text("#1");                    
                 }
                 }catch(IndexOutOfBoundsException e){
                     ImGui.text("Loading...");

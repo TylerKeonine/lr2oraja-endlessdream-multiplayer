@@ -85,10 +85,12 @@ public class MultiplayerClientHandler implements Runnable{
                     case(2): // host
                         messageFromClient = dataInputStream.readUTF();
                         playerStates.set(socketList.indexOf(messageFromClient),"Host");
-                        sendPlayerStates();                    
+                        sendPlayerStates();   
+                        sendPlayerScoreData();                 
                     break;
                     case(3): // start
                         broadcastStart();
+                        sendPlayerScoreData();
                     break;               
                     case(4): // update
                         broadcastUpdate();
@@ -104,10 +106,12 @@ public class MultiplayerClientHandler implements Runnable{
                         bool = dataInputStream.readBoolean();
                         playerPlaying.set(index, bool);
                         sendPlayerPlaying();
+                        sendPlayerScoreData();
                     break;
                     case(7): // force end
                         playerPlaying.replaceAll(e -> false);
                         broadcastEnd();
+                        sendPlayerScoreData();
                     break;
                     case(8): // send score
                         messageFromClient = dataInputStream.readUTF();
