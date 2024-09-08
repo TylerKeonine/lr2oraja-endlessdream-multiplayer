@@ -433,7 +433,7 @@ public class MusicSelector extends MainState {
 
 	public void playSong(String fullTitle){
 		// Can't figure out how to play song from this function so I'm having render() do it
-		if(fullTitle.equals("")||fullTitle==null){
+		if(fullTitle.equals("")||fullTitle==null){ // TODO: bug where it plays incorrect chart with similar titles but different ending (ie. selected title - chart123 but plays title - chart321)
 			MultiplayerMenu.statusText = "No song selected.";
 		}else{
 			multiplayerSong = findSong(fullTitle);

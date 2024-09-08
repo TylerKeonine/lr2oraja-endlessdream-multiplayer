@@ -46,7 +46,6 @@ public class MultiplayerClient {
                 while(socket.isConnected()){
                     try{
                         //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
-                        MultiplayerMenu.statusText = "done";
                         msgType = dataInputStream.readByte();
                         switch(msgType){
                             case(0): // test messages
@@ -98,11 +97,21 @@ public class MultiplayerClient {
                                 Multiplayer.lobbyPlaying = false;
                             break;
                             case(8): // update score
-                                MultiplayerMenu.statusText = "reading..";
-                                int player = dataInputStream.readInt();
-                                int judge = dataInputStream.readInt();
-                                int value = dataInputStream.readInt();            
-                                //MultiplayerMenu.statusText = player+","+judge+","+value;
+                                String printstr = "";
+                                repeats = dataInputStream.readInt();
+                                int[][] temparr = new int[repeats][12];
+                                for (int i=0;i<repeats*12;i++){
+                                    temparr[i/12][i%12] = dataInputStream.readInt();
+                                    Multiplayer.playerScoreData = temparr;
+                                }
+                                //  testing
+                                for(int i=0;i<Multiplayer.playerScoreData.length;i++){
+                                    for(int v=0;v<Multiplayer.playerScoreData[i].length;v++){
+                                        printstr = printstr+Integer.toString(Multiplayer.playerScoreData[i][v])+",";
+                                    }
+                                    printstr = printstr+'|';
+                                }
+                                MultiplayerMenu.statusText = printstr;
                             break;
                         }
                     }catch(IOException e){
@@ -242,7 +251,6 @@ public class MultiplayerClient {
     public static void sendScore(){
         try{
             dataOutputStream.write(8);
-            /*
             dataOutputStream.writeUTF(socket.toString());
             for(int i=0;i<12;i++){
                 if(i%2==0){
@@ -250,7 +258,7 @@ public class MultiplayerClient {
                 }else{
                     dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, false));
                 }
-            }*/
+            }
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);

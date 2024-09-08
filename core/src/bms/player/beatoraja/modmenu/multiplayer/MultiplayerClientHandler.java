@@ -15,6 +15,11 @@ public class MultiplayerClientHandler implements Runnable{
     private String clientUsername;
     private String clientSocket;
 
+    // Score send limits
+    private static final long DEBOUNCE_TOLERANCE = 100;
+    private static long debounce = System.currentTimeMillis();
+    private static boolean ableToSend = true;
+
     // Lobby Information
     // 3d Arrays might be better? desync between arraylists could be possible
     public static ArrayList<String> socketList = new ArrayList<>();
@@ -46,7 +51,7 @@ public class MultiplayerClientHandler implements Runnable{
             sendPlayerStates();
             sendSelectedSong();
             sendPlayerPlaying();
-            sendPlayerScoreData(0,0,0);
+            sendPlayerScoreData();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -105,18 +110,14 @@ public class MultiplayerClientHandler implements Runnable{
                         broadcastEnd();
                     break;
                     case(8): // send score
-                    /* 
                         messageFromClient = dataInputStream.readUTF();
                         index = socketList.indexOf(messageFromClient);
                         int[] newarr = new int[12];
                         for(int i=0;i<12;i++){
                             newarr[i] = dataInputStream.readInt(); 
                         }
-                        MultiplayerMenu.statusText = Integer.toString(playerScoreData.length);
-                        */
-                        //playerScoreData[index] = newarr;
-                        
-                        sendPlayerScoreData(0,0,0); // crash here
+                        playerScoreData[index] = newarr;
+                        sendPlayerScoreData();
                     break;
                 }
                 
@@ -230,20 +231,26 @@ public class MultiplayerClientHandler implements Runnable{
         }
     }
 
-    public void sendPlayerScoreData(int player, int judge, int value) {
-        for(MultiplayerClientHandler clientHandler : clientHandlers){
-            try{
-                clientHandler.dataOutputStream.write(8);
-                clientHandler.dataOutputStream.flush();
-                clientHandler.dataOutputStream.writeInt(player);
-                clientHandler.dataOutputStream.flush();
-                clientHandler.dataOutputStream.writeInt(judge);
-                clientHandler.dataOutputStream.flush();
-                clientHandler.dataOutputStream.writeInt(value);
-                clientHandler.dataOutputStream.flush();
-            }catch(IOException e){
-                closeEverything(socket, dataInputStream, dataOutputStream);
-            }          
+    public void sendPlayerScoreData() {
+        if (System.currentTimeMillis() > debounce+DEBOUNCE_TOLERANCE&&ableToSend==true){
+            debounce = System.currentTimeMillis();
+            ableToSend = false;
+            for(MultiplayerClientHandler clientHandler : clientHandlers){
+                try{
+                    clientHandler.dataOutputStream.write(8);
+                    int repeats = playerScoreData.length;
+                    clientHandler.dataOutputStream.writeInt(repeats);
+                    for(int i=0;i<repeats;i++){
+                        for(int v=0;v<playerScoreData[i].length;v++){
+                            clientHandler.dataOutputStream.writeInt(playerScoreData[i][v]);
+                        }
+                    }
+                    clientHandler.dataOutputStream.flush();
+                }catch(IOException e){
+                    closeEverything(socket, dataInputStream, dataOutputStream);
+                }          
+            }  
+            ableToSend = true;
         }
     }
     public void removeClientHandler(){
@@ -264,7 +271,7 @@ public class MultiplayerClientHandler implements Runnable{
         sendPlayerNames();
         sendPlayerStates();
         sendPlayerPlaying();
-        sendPlayerScoreData(0,0,0);
+        sendPlayerScoreData();
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){
