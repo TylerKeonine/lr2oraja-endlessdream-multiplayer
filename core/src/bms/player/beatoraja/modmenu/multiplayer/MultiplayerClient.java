@@ -99,9 +99,9 @@ public class MultiplayerClient {
                             case(8): // update score
                                 String printstr = "";
                                 repeats = dataInputStream.readInt();
-                                int[][] temparr = new int[repeats][12];
-                                for (int i=0;i<repeats*12;i++){
-                                    temparr[i/12][i%12] = dataInputStream.readInt();
+                                int[][] temparr = new int[repeats][13];
+                                for (int i=0;i<repeats*13;i++){
+                                    temparr[i/13][i%13] = dataInputStream.readInt();
                                     Multiplayer.playerScoreData = temparr;
                                 }
                                 //  testing
@@ -248,10 +248,11 @@ public class MultiplayerClient {
         }
     }
 
-    public static void sendScore(){
+    public static void sendScore(int judge){
         try{
             dataOutputStream.write(8);
             dataOutputStream.writeUTF(socket.toString());
+            dataOutputStream.writeInt(judge);
             for(int i=0;i<12;i++){
                 if(i%2==0){
                     dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, true));

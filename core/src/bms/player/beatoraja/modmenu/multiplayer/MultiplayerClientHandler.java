@@ -45,7 +45,7 @@ public class MultiplayerClientHandler implements Runnable{
             playerStates.add("Not Ready");
             playerPlaying.add(false);
             playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
-            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0};
+            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0}; // Prioritizing getting this working for 7SP. This would need to be compatable with all keymodes.
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
@@ -112,8 +112,8 @@ public class MultiplayerClientHandler implements Runnable{
                     case(8): // send score
                         messageFromClient = dataInputStream.readUTF();
                         index = socketList.indexOf(messageFromClient);
-                        int[] newarr = new int[12];
-                        for(int i=0;i<12;i++){
+                        int[] newarr = new int[playerScoreData[index].length];
+                        for(int i=0;i<playerScoreData[index].length;i++){
                             newarr[i] = dataInputStream.readInt(); 
                         }
                         playerScoreData[index] = newarr;
@@ -244,6 +244,7 @@ public class MultiplayerClientHandler implements Runnable{
                         for(int v=0;v<playerScoreData[i].length;v++){
                             clientHandler.dataOutputStream.writeInt(playerScoreData[i][v]);
                         }
+
                     }
                     clientHandler.dataOutputStream.flush();
                 }catch(IOException e){

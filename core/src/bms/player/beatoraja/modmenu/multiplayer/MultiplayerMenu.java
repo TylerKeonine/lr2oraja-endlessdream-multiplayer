@@ -157,9 +157,8 @@ public class MultiplayerMenu {
                     }
 
                     ImGui.tableSetColumnIndex(2);
-                    //try{
-                        //ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][0]*2+Multiplayer.playerScoreData[i][1]*2)+(Multiplayer.playerScoreData[i][2]+Multiplayer.playerScoreData[i][3])));
-                        /* later feature
+                    try{
+                        ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][1]*2+Multiplayer.playerScoreData[i][2]*2)+(Multiplayer.playerScoreData[i][3]+Multiplayer.playerScoreData[i][4])));
                         if(ImGui.isItemHovered()){
                             ImGui.beginTooltip();
                             ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
@@ -243,11 +242,10 @@ public class MultiplayerMenu {
                             ImGui.endTable();
                             ImGui.popTextWrapPos();
                             ImGui.endTooltip();
-                        }
-                        */
-                    //}catch(IndexOutOfBoundsException e){
-                    //    ImGui.text("Loading...");
-                    //}
+                        } 
+                    }catch(IndexOutOfBoundsException e){
+                        ImGui.text("Loading...");
+                    }
                     ImGui.tableSetColumnIndex(3);
                     ImGui.text("#1");                    
                 }

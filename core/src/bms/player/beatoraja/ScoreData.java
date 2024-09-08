@@ -311,7 +311,7 @@ public class ScoreData implements Validatable {
 			break;
 		}
 		// For Multiplayer
-		MultiplayerClient.sendScore();
+		MultiplayerClient.sendScore(judge);
 	}
 
 	public int getCombo() {
