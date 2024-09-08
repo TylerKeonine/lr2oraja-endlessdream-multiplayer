@@ -1,5 +1,12 @@
 package bms.player.beatoraja.modmenu.multiplayer;
 
+import static bms.player.beatoraja.modmenu.ImGuiRenderer.windowHeight;
+import static bms.player.beatoraja.modmenu.ImGuiRenderer.windowWidth;
+
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import imgui.ImColor;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -7,17 +14,6 @@ import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-
-import static bms.player.beatoraja.modmenu.ImGuiRenderer.*;
-
-import bms.player.beatoraja.MainController;
-import bms.player.beatoraja.PlayerConfig;
 
 public class MultiplayerMenu {
 
@@ -158,8 +154,41 @@ public class MultiplayerMenu {
 
                     ImGui.tableSetColumnIndex(2);
                     try{
-                        
-                        ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][1]*2+Multiplayer.playerScoreData[i][2]*2)+(Multiplayer.playerScoreData[i][3]+Multiplayer.playerScoreData[i][4])));
+                        switch(Multiplayer.playerScoreData[i][0]){
+                            case(0):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(3, 211, 252));
+                                ImGui.text("GREAT "+Multiplayer.playerScoreData[i][1]);
+                                ImGui.popStyleColor();
+                            break;
+                            case(1):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(252, 227, 3));
+                                ImGui.text("GREAT "+Multiplayer.playerScoreData[i][1]);
+                                ImGui.popStyleColor();
+                            break;
+                            case(2):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(252, 227, 3));
+                                ImGui.text("GOOD "+Multiplayer.playerScoreData[i][1]);
+                                ImGui.popStyleColor();
+                            break;
+                            case(3):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(217, 0, 0));
+                                ImGui.text("BAD "+Multiplayer.playerScoreData[i][1]);
+                                ImGui.popStyleColor();
+                            break;
+                            case(4):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(217, 0, 0));
+                                ImGui.text("POOR "+Multiplayer.playerScoreData[i][1]);
+                                ImGui.popStyleColor();
+                            break;
+                            case(5):
+                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(217, 0, 0));
+                                ImGui.text("MISS "+Multiplayer.playerScoreData[i][1]);
+                                ImGui.popStyleColor();
+                            break;
+                        }
+                        ImGui.sameLine();
+                        ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][2]*2+Multiplayer.playerScoreData[i][3]*2)+(Multiplayer.playerScoreData[i][4]+Multiplayer.playerScoreData[i][5])));
+                        /* later feature
                         if(ImGui.isItemHovered()){
                             ImGui.beginTooltip();
                             ImGui.pushTextWrapPos(ImGui.getFontSize() * 35.0f);
@@ -243,7 +272,7 @@ public class MultiplayerMenu {
                             ImGui.endTable();
                             ImGui.popTextWrapPos();
                             ImGui.endTooltip();
-                        } 
+                        } */
                     }catch(IndexOutOfBoundsException e){
                         ImGui.text("Loading...");
                     }
