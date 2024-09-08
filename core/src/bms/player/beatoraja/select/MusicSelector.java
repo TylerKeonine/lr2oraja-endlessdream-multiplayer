@@ -284,7 +284,7 @@ public class MusicSelector extends MainState {
 									String currenturl = ((TableBar) bar).getUrl();
 									if (currenturl != null && urls.contains(currenturl, false)) {
 										isdtable = true;
-										resource.setTablename(bar.getTitle());
+										resource.setTablename(bar.getTitle());  // TODO: this is the reason why results display wrong table. this cannot be bar
 									}
 								}
 								if (bar instanceof HashBar && isdtable) {
@@ -312,7 +312,7 @@ public class MusicSelector extends MainState {
 					if(current instanceof SongBar){
 						SongData song = ((SongBar) current).getSongData();
 						if (((SongBar) current).existsSong()) { 
-							Multiplayer.selectSong(song.getFullTitle());
+							Multiplayer.selectSong(song.getMd5(),song.getFullTitle());
 							main.getMessageRenderer().addMessage("Multiplayer : Song selected! Please wait for others...", 2400, Color.TEAL, 1);
 						} else if (song.getIpfs() != null && main.getMusicDownloadProcessor() != null
 								&& main.getMusicDownloadProcessor().isAlive()) {
@@ -431,21 +431,27 @@ public class MusicSelector extends MainState {
 
 	// Multiplayer
 
-	public void playSong(String fullTitle){
+	public void playSong(String md5){
 		// Can't figure out how to play song from this function so I'm having render() do it
-		if(fullTitle.equals("")||fullTitle==null){ // TODO: bug where it plays incorrect chart with similar titles but different ending (ie. selected title - chart123 but plays title - chart321)
+		if(md5.equals("")||md5==null){ 
 			MultiplayerMenu.statusText = "No song selected.";
 		}else{
-			multiplayerSong = findSong(fullTitle);
-			multiplayerStart = true;
-			play = BMSPlayerMode.PLAY;			
+			multiplayerSong = findSongData(md5);
+			if(multiplayerSong==null){
+				MultiplayerMenu.statusText = "Song start failed";
+			}else{
+				multiplayerStart = true;
+				play = BMSPlayerMode.PLAY;						
+			}
 		}
 	}
 
-	public SongData findSong(String fullTitle){
-		SongData[] arr = getSongDatabase().getSongDatasByText(fullTitle);
-		if(arr.length>0){
-			return arr[0];
+	public SongData findSongData(String md5){
+		SongData[] arr = getSongDatabase().getSongDatas(new String[]{md5});
+		for(int i=0;i<arr.length;i++){
+			if (arr[i].getMd5().equals(md5)){
+				return arr[i];
+			}
 		}
 		return null;
 	}

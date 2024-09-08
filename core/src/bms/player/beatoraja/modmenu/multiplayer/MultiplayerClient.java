@@ -76,8 +76,8 @@ public class MultiplayerClient {
                             case(4): //update
                             break;
                             case(5): // update song
-                                msgFromGroupChat = dataInputStream.readUTF();
-                                Multiplayer.selectedSong = msgFromGroupChat;
+                                Multiplayer.selectedSong = dataInputStream.readUTF();
+                                Multiplayer.selectedSongTitle = dataInputStream.readUTF();
                             break;
                             case(6): // update playing
                                 repeats = dataInputStream.readInt();
@@ -219,10 +219,11 @@ public class MultiplayerClient {
         }
     }
 
-    public static void sendSong(String song){
+    public static void sendSong(String md5, String title){
         try{
             dataOutputStream.write(5);
-            dataOutputStream.writeUTF(song);
+            dataOutputStream.writeUTF(md5);
+            dataOutputStream.writeUTF(title);
             dataOutputStream.flush();
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);

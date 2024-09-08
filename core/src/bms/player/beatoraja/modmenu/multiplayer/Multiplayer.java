@@ -20,6 +20,7 @@ public class Multiplayer {
     // Lobby Info
     public static String hostIp = "";
     public static String selectedSong = "";
+    public static String selectedSongTitle = "";
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
@@ -74,9 +75,9 @@ public class Multiplayer {
         }
     }
 
-    public static void selectSong(String song){
+    public static void selectSong(String md5, String title){
         if(isHost){
-            MultiplayerClient.sendSong(song);
+            MultiplayerClient.sendSong(md5, title);
         }
     }
 

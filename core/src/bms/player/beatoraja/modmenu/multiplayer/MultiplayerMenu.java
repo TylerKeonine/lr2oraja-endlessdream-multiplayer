@@ -63,7 +63,7 @@ public class MultiplayerMenu {
                 }else{
                     copytext = "Click to copy me!";
                 }
-                ImGui.text(Multiplayer.selectedSong); // this needs to be capped
+                ImGui.text(Multiplayer.selectedSongTitle); // this needs to be capped
                 
                 if (Multiplayer.isHost){
                     if(Multiplayer.lobbyPlaying){

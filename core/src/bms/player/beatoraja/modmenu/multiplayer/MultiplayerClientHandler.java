@@ -28,6 +28,7 @@ public class MultiplayerClientHandler implements Runnable{
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];
     public static String selectedSong = "";
+    public static String selectedSongTitle = "";
 
 
     public MultiplayerClientHandler(Socket socket){
@@ -96,8 +97,8 @@ public class MultiplayerClientHandler implements Runnable{
                         broadcastUpdate();
                     break;
                     case(5): // select song
-                        messageFromClient = dataInputStream.readUTF();
-                        selectedSong = messageFromClient;
+                        selectedSong = dataInputStream.readUTF();
+                        selectedSongTitle = dataInputStream.readUTF();
                         sendSelectedSong();
                     break;
                     case(6): // playing status
@@ -201,6 +202,7 @@ public class MultiplayerClientHandler implements Runnable{
             try{
                 clientHandler.dataOutputStream.write(5);
                 clientHandler.dataOutputStream.writeUTF(selectedSong);
+                clientHandler.dataOutputStream.writeUTF(selectedSongTitle);
                 clientHandler.dataOutputStream.flush();
             }catch(IOException e){
                 closeEverything(socket,dataInputStream,dataOutputStream);
