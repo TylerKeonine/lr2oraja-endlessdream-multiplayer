@@ -97,7 +97,7 @@ public class MultiplayerClient {
                                 Multiplayer.lobbyPlaying = false;
                             break;
                             case(8): // update score
-                                String printstr = "";
+                                //String printstr = "";
                                 repeats = dataInputStream.readInt();
                                 int[][] temparr = new int[repeats][14];
                                 for (int i=0;i<repeats*14;i++){
@@ -105,6 +105,7 @@ public class MultiplayerClient {
                                     Multiplayer.playerScoreData = temparr;
                                 }
                                 //  testing
+                                /*
                                 for(int i=0;i<Multiplayer.playerScoreData.length;i++){
                                     for(int v=0;v<Multiplayer.playerScoreData[i].length;v++){
                                         printstr = printstr+Integer.toString(Multiplayer.playerScoreData[i][v])+",";
@@ -112,6 +113,7 @@ public class MultiplayerClient {
                                     printstr = printstr+'|';
                                 }
                                 MultiplayerMenu.statusText = printstr;
+                                */
                             break;
                         }
                     }catch(IOException e){
