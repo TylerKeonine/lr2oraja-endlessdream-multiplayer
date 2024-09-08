@@ -21,6 +21,7 @@ A fork of [Endless Dream](https://github.com/seraxis/lr2oraja-endlessdream) that
 
 ### Downloads
 Be sure to open port '5730' in order for it to work.
+
 Download the latest release under the 'Releases' tab [here](https://github.com/TylerKeonine/lr2oraja-endlessdream/releases)
 
 ### Installing from scratch
