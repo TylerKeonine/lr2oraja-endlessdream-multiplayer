@@ -45,7 +45,7 @@ public class MultiplayerClientHandler implements Runnable{
             playerStates.add("Not Ready");
             playerPlaying.add(false);
             playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
-            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0}; // Prioritizing getting this working for 7SP. This would need to be compatable with all keymodes.
+            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // TODO: only supports 7sp. make it work for all keymodes
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();

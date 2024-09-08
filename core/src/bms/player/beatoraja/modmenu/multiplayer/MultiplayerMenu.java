@@ -158,6 +158,7 @@ public class MultiplayerMenu {
 
                     ImGui.tableSetColumnIndex(2);
                     try{
+                        
                         ImGui.text("SCORE: "+Integer.toString((Multiplayer.playerScoreData[i][1]*2+Multiplayer.playerScoreData[i][2]*2)+(Multiplayer.playerScoreData[i][3]+Multiplayer.playerScoreData[i][4])));
                         if(ImGui.isItemHovered()){
                             ImGui.beginTooltip();

@@ -698,7 +698,7 @@ public class JudgeManager {
             return;
         }
         n.setMicroPlayTime(mfast);
-        score.addJudgeCount(judge, mfast >= 0, 1);
+        score.addJudgeCount(judge, mfast >= 0, 1, combo);
 
         if (judge < 4) {
             recentJudgesIndex = (recentJudgesIndex + 1) % recentJudges.length;

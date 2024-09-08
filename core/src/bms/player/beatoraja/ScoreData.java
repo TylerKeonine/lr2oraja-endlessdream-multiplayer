@@ -265,7 +265,7 @@ public class ScoreData implements Validatable {
 		return 0;
 	}
 
-	public void addJudgeCount(int judge, boolean fast, int count) {
+	public void addJudgeCount(int judge, boolean fast, int count, int combo) {
 		switch (judge) {
 		case 0:
 			if(fast) {
@@ -311,7 +311,7 @@ public class ScoreData implements Validatable {
 			break;
 		}
 		// For Multiplayer
-		MultiplayerClient.sendScore(judge);
+		MultiplayerClient.sendScore(judge, combo);
 	}
 
 	public int getCombo() {
