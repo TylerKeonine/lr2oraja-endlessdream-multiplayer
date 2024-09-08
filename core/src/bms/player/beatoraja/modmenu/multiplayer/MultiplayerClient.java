@@ -78,6 +78,12 @@ public class MultiplayerClient {
                             case(5): // update song
                                 Multiplayer.selectedSong = dataInputStream.readUTF();
                                 Multiplayer.selectedSongTitle = dataInputStream.readUTF();
+                                // check if song is missing
+                                if(selector.findSongData(Multiplayer.selectedSong)==null){
+                                    sendMissing(true);
+                                }else{
+                                    sendMissing(false);
+                                }
                             break;
                             case(6): // update playing
                                 repeats = dataInputStream.readInt();
@@ -96,23 +102,19 @@ public class MultiplayerClient {
                                 Multiplayer.lobbyPlaying = false;
                             break;
                             case(8): // update score
-                                //String printstr = "";
                                 repeats = dataInputStream.readInt();
                                 int[][] temparr = new int[repeats][14];
                                 for (int i=0;i<repeats*14;i++){
                                     temparr[i/14][i%14] = dataInputStream.readInt();
                                     Multiplayer.playerScoreData = temparr;
                                 }
-                                //  testing
-                                /*
-                                for(int i=0;i<Multiplayer.playerScoreData.length;i++){
-                                    for(int v=0;v<Multiplayer.playerScoreData[i].length;v++){
-                                        printstr = printstr+Integer.toString(Multiplayer.playerScoreData[i][v])+",";
-                                    }
-                                    printstr = printstr+'|';
+                            break;
+                            case(9): // update players missing
+                                repeats = dataInputStream.readInt();
+                                Multiplayer.playerMissing.clear();
+                                for(int i=0;i<repeats;i++){
+                                    Multiplayer.playerMissing.add(dataInputStream.readBoolean());
                                 }
-                                MultiplayerMenu.statusText = printstr;
-                                */
                             break;
                         }
                     }catch(IOException e){
@@ -264,6 +266,18 @@ public class MultiplayerClient {
                 }
             }
             dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+    
+    public static void sendMissing(boolean isMissing){
+        Multiplayer.isMissing = isMissing;
+        try{
+            dataOutputStream.write(9);
+            dataOutputStream.writeUTF(socket.toString());
+            dataOutputStream.writeBoolean(isMissing);
+            dataOutputStream.flush();            
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }

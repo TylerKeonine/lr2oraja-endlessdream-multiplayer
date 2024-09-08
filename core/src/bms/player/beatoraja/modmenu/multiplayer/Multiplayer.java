@@ -24,11 +24,13 @@ public class Multiplayer {
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
+    public static ArrayList<Boolean> playerMissing = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];
 
     // Player Information
     public static boolean isReady = false; // could completely remove isReady and replace with playerState
     public static boolean isHost = true;
+    public static boolean isMissing = true;
 
     public static void hostLobby(){ // hostLobby is different from pressing the host button. must be compatitable for pressing the host button AND being transfered host.
         // set up server
@@ -54,7 +56,7 @@ public class Multiplayer {
         MultiplayerMenu.statusText = "You have left the lobby.";
     }
 
-    public static void transferHost(){
+    public static void transferHost(int target, boolean switchto){
         // check if host
         // tell target client to hostLobby
         // copy over info to new host

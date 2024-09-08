@@ -1,9 +1,11 @@
 package bms.player.beatoraja.modmenu.multiplayer;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.io.*;
 
 public class MultiplayerClientHandler implements Runnable{
 
@@ -26,6 +28,7 @@ public class MultiplayerClientHandler implements Runnable{
     public static ArrayList<String> playerNames = new ArrayList<>();
     public static ArrayList<String> playerStates = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
+    public static ArrayList<Boolean> playerMissing = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];
     public static String selectedSong = "";
     public static String selectedSongTitle = "";
@@ -45,6 +48,7 @@ public class MultiplayerClientHandler implements Runnable{
             playerNames.add(clientUsername);
             playerStates.add("Not Ready");
             playerPlaying.add(false);
+            playerMissing.add(true);
             playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
             playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // TODO: only supports 7sp. make it work for all keymodes
             // update new player to current info
@@ -53,6 +57,7 @@ public class MultiplayerClientHandler implements Runnable{
             sendSelectedSong();
             sendPlayerPlaying();
             sendPlayerScoreData();
+            sendPlayerMissing();
         }catch(IOException e){
             closeEverything(socket,dataInputStream,dataOutputStream);
         }
@@ -124,6 +129,15 @@ public class MultiplayerClientHandler implements Runnable{
                         playerScoreData[index] = newarr;
                         sendPlayerScoreData();
                     break;
+                    case(9): // send ismissing
+                        messageFromClient = dataInputStream.readUTF();
+                        index = socketList.indexOf(messageFromClient);
+                        bool = dataInputStream.readBoolean();
+                        playerMissing.set(index,bool);
+                        // ensures sendPlayerMissing only sends once
+                        if(index==playerMissing.size()-1){
+                            sendPlayerMissing();
+                        }
                 }
                 
             }catch(IOException e){
@@ -260,6 +274,23 @@ public class MultiplayerClientHandler implements Runnable{
             ableToSend = true;
         }
     }
+
+    public void sendPlayerMissing(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            try{
+                clientHandler.dataOutputStream.write(9);
+                int repeats = playerMissing.size();
+                clientHandler.dataOutputStream.writeInt(repeats);
+                for(int i=0;i<repeats;i++){
+                    clientHandler.dataOutputStream.writeBoolean(playerMissing.get(i));
+                }
+                clientHandler.dataOutputStream.flush();
+            }catch(IOException e){
+                closeEverything(socket,dataInputStream,dataOutputStream);
+            }
+        }
+    }   
+
     public void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("Server: "+clientUsername+" has left the chat!");
@@ -269,6 +300,7 @@ public class MultiplayerClientHandler implements Runnable{
         playerNames.remove(index);
         playerStates.remove(index);
         playerPlaying.remove(index);
+        playerMissing.remove(index);
         for(int i=index;i<playerScoreData.length-1;i++){
             playerScoreData[i]=playerScoreData[i+1];
         }

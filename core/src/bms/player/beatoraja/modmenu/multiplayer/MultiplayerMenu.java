@@ -116,40 +116,49 @@ public class MultiplayerMenu {
                             }     
                         }
                     }else{
-                        switch(Multiplayer.playerStates.get(i)){
-                            case("Host"):
-                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
-                                ImGui.text("(H)");
-                                ImGui.popStyleColor();
-                                if (ImGui.isItemHovered()) {
-                                    tooltip("Host");
-                                }
-                            break;
-                            case("Ready"):
-                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
-                                ImGui.text("(R)");
-                                ImGui.popStyleColor();
-                                if (ImGui.isItemHovered()) {
-                                    tooltip("Ready");
-                                }
-                            break;
-                            case("Not Ready"):
-                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
-                                ImGui.text("(N)");
-                                ImGui.popStyleColor();
-                                if (ImGui.isItemHovered()) {
-                                    tooltip("Not Ready");
-                                }
-                            break;
+                        if(Multiplayer.playerMissing.get(i)==true){
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(140,140,140));
+                            ImGui.text("(M)");
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Missing File");
+                            }
+                        }else{
+                            switch(Multiplayer.playerStates.get(i)){
+                                case("Host"):
+                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
+                                    ImGui.text("(H)");
+                                    ImGui.popStyleColor();
+                                    if (ImGui.isItemHovered()) {
+                                        tooltip("Host");
+                                    }
+                                break;
+                                case("Ready"):
+                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
+                                    ImGui.text("(R)");
+                                    ImGui.popStyleColor();
+                                    if (ImGui.isItemHovered()) {
+                                        tooltip("Ready");
+                                    }
+                                break;
+                                case("Not Ready"):
+                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
+                                    ImGui.text("(N)");
+                                    ImGui.popStyleColor();
+                                    if (ImGui.isItemHovered()) {
+                                        tooltip("Not Ready");
+                                    }
+                                break;
 
-                            default:
-                                ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,255,255));
-                                ImGui.text("(?)");
-                                ImGui.popStyleColor();
-                                if (ImGui.isItemHovered()) {
-                                    tooltip("Unknown");
-                                }
-                        }          
+                                default:
+                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,255,255));
+                                    ImGui.text("(?)");
+                                    ImGui.popStyleColor();
+                                    if (ImGui.isItemHovered()) {
+                                        tooltip("Unknown");
+                                    }
+                            }                                 
+                        }
                     }
 
                     ImGui.tableSetColumnIndex(2);
