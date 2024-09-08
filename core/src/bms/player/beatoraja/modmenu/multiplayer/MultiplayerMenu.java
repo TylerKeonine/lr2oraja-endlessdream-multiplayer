@@ -285,7 +285,7 @@ public class MultiplayerMenu {
                 ImGui.endTable();
             }
             ImGui.text(statusText); 
-            ImGui.text(Multiplayer.playerName);
+            ImGui.text(Multiplayer.username);
         }
         ImGui.end();
     }

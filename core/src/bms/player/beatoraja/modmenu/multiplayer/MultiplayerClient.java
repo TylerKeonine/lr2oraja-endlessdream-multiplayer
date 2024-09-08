@@ -19,7 +19,6 @@ public class MultiplayerClient {
     private static Socket socket;
     private static DataInputStream dataInputStream;
     private static DataOutputStream dataOutputStream;
-    private static String username = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
 
     public static MusicSelector selector;
     public static ScoreData liveScoreData;
@@ -173,7 +172,7 @@ public class MultiplayerClient {
     // Commands
     public void sendJoin(){
         try{
-            dataOutputStream.writeUTF(username);
+            dataOutputStream.writeUTF(Multiplayer.username);
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.flush();
         }catch(IOException e){

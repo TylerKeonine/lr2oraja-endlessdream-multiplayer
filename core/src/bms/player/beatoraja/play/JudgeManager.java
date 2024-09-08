@@ -144,7 +144,7 @@ public class JudgeManager {
         judgefast = new long[judgeregion];
         mjudgefast = new long[judgeregion];
         score = new ScoreData(orgmode);
-        MultiplayerClient.liveScoreData = score; // Multiplayer
+        MultiplayerClient.liveScoreData = score; // For multiplayer
         score.setNotes(model.getTotalNotes());
         score.setSha256(model.getSHA256());
         ghost = new int[model.getTotalNotes()];

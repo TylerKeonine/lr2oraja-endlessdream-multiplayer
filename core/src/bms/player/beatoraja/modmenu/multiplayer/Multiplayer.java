@@ -14,6 +14,7 @@ import java.net.*;
 
 public class Multiplayer {
     // Client variables
+    public static String username = ""; // This is set in MainController.java
     public static boolean inLobby = false;
     public static boolean lobbyPlaying = false;
     // Lobby Info
@@ -25,7 +26,6 @@ public class Multiplayer {
     public static int[][] playerScoreData = new int[0][12];
 
     // Player Information
-    public static String playerName = PlayerConfig.name.substring(0, Math.min(PlayerConfig.name.length(), 20));
     public static boolean isReady = false; // could completely remove isReady and replace with playerState
     public static boolean isHost = true;
 

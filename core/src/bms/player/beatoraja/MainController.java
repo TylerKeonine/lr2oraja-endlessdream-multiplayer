@@ -133,6 +133,9 @@ public class MainController {
 		this.config = config;
 		this.songUpdated = songUpdated;
 
+		// For multiplayer
+		Multiplayer.username = player.getName();
+
 		for(int i = 0;i < offset.length;i++) {
 			offset[i] = new SkinOffset();
 		}
