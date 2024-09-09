@@ -4,9 +4,19 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+import bms.player.beatoraja.PlayerConfig;
 
 import bms.player.beatoraja.ScoreData;
 import bms.player.beatoraja.select.MusicSelector;
+
+import bms.player.beatoraja.song.SongData;
+
+import java.io.*;
 
 
 public class MultiplayerClient {
@@ -166,7 +176,10 @@ public class MultiplayerClient {
             client.sendJoin();
             Multiplayer.inLobby = true;
             Multiplayer.hostIp = ipInput;
-        }catch (IOException e) {
+        } catch (UnknownHostException e) {
+            closeSocket();
+        }
+        catch (IOException e) {
             closeSocket();
         }
     }
