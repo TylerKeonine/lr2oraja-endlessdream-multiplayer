@@ -56,10 +56,10 @@ public class Multiplayer {
         MultiplayerMenu.statusText = "You have left the lobby.";
     }
 
-    public static void transferHost(int target, boolean switchto){
-        // check if host
-        // tell target client to hostLobby
-        // copy over info to new host
+    public static void transferHost(int target, Boolean switchto){
+        if (Multiplayer.isHost){ // doesn't hurt to double check?
+            MultiplayerClient.toggleHost(target,switchto);
+        }
     }
 
     public static void readyPressed(){

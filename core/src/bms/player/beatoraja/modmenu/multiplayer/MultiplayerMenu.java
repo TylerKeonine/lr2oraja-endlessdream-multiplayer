@@ -116,37 +116,58 @@ public class MultiplayerMenu {
                             }     
                         }
                     }else{
+                        boolean hostClick = false;
                         if(Multiplayer.playerMissing.get(i)==true){
                             ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(140,140,140));
                             ImGui.text("(M)");
+                            hostClick = ImGui.isItemClicked();
                             ImGui.popStyleColor();
                             if (ImGui.isItemHovered()) {
-                                tooltip("Missing File");
+                                if (Multiplayer.isHost == false){
+                                    tooltip("Missing File");
+                                }else{
+                                    tooltip("Missing File (Click to grant host)");
+                                }
                             }
                         }else{
                             switch(Multiplayer.playerStates.get(i)){
                                 case("Host"):
                                     ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
                                     ImGui.text("(H)");
+                                    hostClick = ImGui.isItemClicked();
                                     ImGui.popStyleColor();
                                     if (ImGui.isItemHovered()) {
-                                        tooltip("Host");
+                                        if (Multiplayer.isHost == false){
+                                            tooltip("Host");
+                                        }else{
+                                            tooltip("Host"); // TODO: click to remove host
+                                        }
                                     }
                                 break;
                                 case("Ready"):
                                     ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
                                     ImGui.text("(R)");
+                                    hostClick = ImGui.isItemClicked();
                                     ImGui.popStyleColor();
                                     if (ImGui.isItemHovered()) {
-                                        tooltip("Ready");
+                                        if (Multiplayer.isHost == false){
+                                            tooltip("Ready");
+                                        }else{
+                                            tooltip("Ready (Click to grant host)");
+                                        }
                                     }
                                 break;
                                 case("Not Ready"):
                                     ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
                                     ImGui.text("(N)");
+                                    hostClick = ImGui.isItemClicked();
                                     ImGui.popStyleColor();
                                     if (ImGui.isItemHovered()) {
-                                        tooltip("Not Ready");
+                                        if (Multiplayer.isHost == false){
+                                            tooltip("Not Ready");
+                                        }else{
+                                            tooltip("Not Ready (Click to grant host)");
+                                        }
                                     }
                                 break;
 
@@ -158,6 +179,9 @@ public class MultiplayerMenu {
                                         tooltip("Unknown");
                                     }
                             }                                 
+                        }
+                        if(hostClick&&Multiplayer.isHost){
+                            Multiplayer.transferHost(i, true);
                         }
                     }
 

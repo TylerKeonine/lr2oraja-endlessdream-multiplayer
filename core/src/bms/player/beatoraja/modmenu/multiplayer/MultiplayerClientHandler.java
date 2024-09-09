@@ -138,6 +138,21 @@ public class MultiplayerClientHandler implements Runnable{
                         if(index==playerMissing.size()-1){
                             sendPlayerMissing();
                         }
+                    break;
+                    case(10):
+                        messageFromClient = dataInputStream.readUTF();
+                        if(playerStates.get(socketList.indexOf(messageFromClient)).equals("Host")){
+                            index = dataInputStream.readInt();
+                            bool = dataInputStream.readBoolean();
+                            if (bool==true){
+                                playerStates.set(index,"Host");
+                            }else{
+                                playerStates.set(index,"Not Ready");
+                            }
+                            sendPlayerStates();
+                            updateHost(clientHandlers.get(index),bool);
+                        }
+                    break;
                 }
                 
             }catch(IOException e){
@@ -290,6 +305,17 @@ public class MultiplayerClientHandler implements Runnable{
             }
         }
     }   
+
+    // update host for target
+    public void updateHost(MultiplayerClientHandler clientHandler, Boolean bool){
+        try{
+            clientHandler.dataOutputStream.write(10);
+            clientHandler.dataOutputStream.writeBoolean(bool);
+            clientHandler.dataOutputStream.flush();
+        }catch(IOException e){
+            closeEverything(socket,dataInputStream,dataOutputStream);
+        }
+    }
 
     public void removeClientHandler(){
         clientHandlers.remove(this);

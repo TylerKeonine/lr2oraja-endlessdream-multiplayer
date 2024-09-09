@@ -1,17 +1,12 @@
 package bms.player.beatoraja.modmenu.multiplayer;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
-import bms.player.beatoraja.PlayerConfig;
 import bms.player.beatoraja.ScoreData;
 import bms.player.beatoraja.select.MusicSelector;
-import bms.player.beatoraja.song.SongData;
-
-import java.io.*;
 
 
 public class MultiplayerClient {
@@ -63,7 +58,7 @@ public class MultiplayerClient {
                                 Multiplayer.playerStates.clear();
                                 for(int i=0;i<repeats;i++){
                                     Multiplayer.playerStates.add(dataInputStream.readUTF());
-                                }                                
+                                }                 
                             break;
                             case(3): // start message
                                 // do playSong from MusicSelector.java using Multiplayer.selectedSong
@@ -116,6 +111,13 @@ public class MultiplayerClient {
                                     Multiplayer.playerMissing.add(dataInputStream.readBoolean());
                                 }
                             break;
+                            case (10): // update host
+                                if(dataInputStream.readBoolean()==true){
+                                    Multiplayer.isHost=true;
+                                }else{
+                                    Multiplayer.isHost=false;
+                                }
+                            break;
                         }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
@@ -164,9 +166,7 @@ public class MultiplayerClient {
             client.sendJoin();
             Multiplayer.inLobby = true;
             Multiplayer.hostIp = ipInput;
-        } catch (UnknownHostException e) {
-            closeSocket();
-        } catch (IOException e) {
+        }catch (IOException e) {
             closeSocket();
         }
     }
@@ -277,6 +277,19 @@ public class MultiplayerClient {
             dataOutputStream.write(9);
             dataOutputStream.writeUTF(socket.toString());
             dataOutputStream.writeBoolean(isMissing);
+            dataOutputStream.flush();            
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    // Gives/removes host status
+    public static void toggleHost(int target, Boolean switchto){
+        try{
+            dataOutputStream.write(10);
+dataOutputStream.writeUTF(socket.toString());
+            dataOutputStream.writeInt(target);
+            dataOutputStream.writeBoolean(switchto);
             dataOutputStream.flush();            
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
