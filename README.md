@@ -19,10 +19,12 @@ A fork of [Endless Dream](https://github.com/seraxis/lr2oraja-endlessdream) that
     * Browse public lobbies
 * [LR2Arena](https://github.com/SayakaIsBaka/LR2Arena) crossplay (big maybe!)
 
-### Downloads
-Be sure to open port '5730' in order for it to work.
+### Download
+As of now, the easiest way to get it working is for all players to use a program such as [Tailscale](https://tailscale.com/) and have everyone connect to a single network.
 
-Download the latest release under the 'Releases' tab [here](https://github.com/TylerKeonine/lr2oraja-endlessdream/releases)
+After that, download the latest release under the 'Releases' tab [here](https://github.com/TylerKeonine/lr2oraja-endlessdream/releases) and drag the .jar file into your beatoraja install.
+
+You may choose not to replace your old jar file and make a new .bat file for the new jar but this is completely optional.
 
 ### Installing from scratch
 If you don't have an existing beatoraja installation download the latest [`beatoraja-0.8.7 JRE`](https://mocha-repository.info/download/beatoraja0.8.7-jre-win64.zip) bundled version, or choose a version yourself from the [release page](https://mocha-repository.info/download.php).
