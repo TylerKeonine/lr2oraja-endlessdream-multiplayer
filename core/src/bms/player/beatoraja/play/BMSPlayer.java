@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import bms.player.beatoraja.modmenu.FreqTrainerMenu;
 import bms.player.beatoraja.modmenu.RandomTrainer;
+import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
 import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
 
 import com.badlogic.gdx.utils.Array;
@@ -978,7 +979,9 @@ public class BMSPlayer extends MainState {
 	public void stopPlay() {
 
 		// For Multiplayer
-		MultiplayerClient.sendPlaying(false);
+		if(Multiplayer.lobbyPlaying==true&&Multiplayer.inLobby==true){
+			MultiplayerClient.sendPlaying(false);
+		}
 
 		if (state == STATE_PRACTICE) {
 			practice.saveProperty();
