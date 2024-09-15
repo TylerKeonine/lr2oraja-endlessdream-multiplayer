@@ -22,7 +22,9 @@ A fork of [Endless Dream](https://github.com/seraxis/lr2oraja-endlessdream) that
 ### Download
 As of now, the easiest way to get it working is for all players to use a program such as [Tailscale](https://tailscale.com/) and have everyone connect to a single network.
 
-After that, download the latest release under the 'Releases' tab [here](https://github.com/TylerKeonine/lr2oraja-endlessdream/releases) and drag the .jar file into your beatoraja install.
+Alternatively, you can also have all players open port "5730" and that should let everyone be able to connect in-game. 
+
+After doing either of those, you can download the latest release under the 'Releases' tab [here](https://github.com/TylerKeonine/lr2oraja-endlessdream/releases) and drag the .jar file into your beatoraja install.
 
 You may choose not to replace your old jar file and make a new .bat file for the new jar but this is completely optional.
 
