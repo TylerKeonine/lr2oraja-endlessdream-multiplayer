@@ -14,25 +14,72 @@ public class MultiplayerJson {
         return outMessage;
     }
 
-    public String addMessageIntArray(String outMessage, String name, int arr[]){
+    public static String addMessageInt(String outMessage, String name, int val){
+        outMessage += '\"'+name+"\":\"" + val + "\",";
+        return outMessage;
+    }
+
+    public static String addMessageBool(String outMessage, String name, Boolean val){
+        // not sure how bool converts?
+        outMessage += '\"'+name+"\":\"" + val + "\",";
+        return outMessage;
+    }
+
+    public static String addMessageIntArray(String outMessage, String name, int arr[]){
         outMessage += '\"'+name+"\":[";
         for(int i=0;i<arr.length;i++){
             outMessage += arr[i] + ',';
         }
-        outMessage += "],";
+        outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
         return outMessage;
     }
 
-    public static void sendMessage(String outMessage, DataOutputStream dataOutputStream){
+    public static String addMessageInt2dArray(String outMessage, String name, int arr[][]){
+        outMessage += '\"'+name+"\":[";
+        for(int i=0;i<arr.length;i++){
+            outMessage += '[';
+            for(int v=0;v<arr[i].length;v++){
+                outMessage += arr[i][v] + ',';
+            } 
+            outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
+        }
+        outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
+        return outMessage;
+    }
+
+    public static String addMessageStringArray(String outMessage, String name, String arr[]){
+        outMessage += '\"'+name+"\":[";
+        for(int i=0;i<arr.length;i++){
+            outMessage += '\"' + arr[i] + "\",";
+        }
+        outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
+        return outMessage;
+    }
+
+    public static String addMessageBoolArray(String outMessage, String name, Boolean arr[]){
+        outMessage += '\"'+name+"\":[";
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]==true){
+                outMessage += "true" + ',';
+            }else{
+                outMessage += "false" + ',';
+            }
+        }
+        outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
+        return outMessage;
+    }
+
+    public static String sendMessage(String outMessage, DataOutputStream dataOutputStream){
         try{
-            outMessage += '}';
+            outMessage = outMessage.substring(0,outMessage.length()-1)+'}';
             dataOutputStream.writeUTF(outMessage);
             dataOutputStream.flush();
-            outMessage = "{";
         }catch(IOException e){
             //closeEverything(socket, dataInputStream, dataOutputStream);
             e.printStackTrace();
         }
+        outMessage = "{";
+        return outMessage;
     }
 
     public static String readMessageString(String inMessage, String key){

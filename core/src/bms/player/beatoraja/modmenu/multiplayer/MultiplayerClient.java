@@ -29,6 +29,7 @@ public class MultiplayerClient {
     public static ScoreData liveScoreData;
 
     public String outMessage = "{";
+    public String inMessage;
 
     public MultiplayerClient(Socket socket){
         try {
@@ -51,8 +52,9 @@ public class MultiplayerClient {
                 int repeats;
                 while(socket.isConnected()){
                     try{
-                        //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
-                        msgType = dataInputStream.readByte();
+                        inMessage = dataInputStream.readUTF();
+                        MultiplayerMenu.statusText = inMessage;
+                        msgType = -1;
                         switch(msgType){
                             case(0): // test messages
                                 msgFromGroupChat = dataInputStream.readUTF();
