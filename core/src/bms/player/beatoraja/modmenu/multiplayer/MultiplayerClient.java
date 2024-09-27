@@ -28,6 +28,8 @@ public class MultiplayerClient {
     public static MusicSelector selector;
     public static ScoreData liveScoreData;
 
+    public String outMessage = "{";
+
     public MultiplayerClient(Socket socket){
         try {
             this.socket = socket;
@@ -37,6 +39,37 @@ public class MultiplayerClient {
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
+
+    // message format (json)
+    // TODO  shouldnt have duplicate functions in here and clienthandler
+    public void addMessageType(String type){
+        outMessage += "\"MessageType\":\"" + type + "\",";
+    }
+
+    public void addMessageString(String name, String str){
+        outMessage += '\"'+name+"\":\"" + str + "\",";
+    }
+
+    public void addMessageIntArray(String name, int arr[]){
+        outMessage += '\"'+name+"\":[";
+        for(int i=0;i<arr.length;i++){
+            outMessage += arr[i] + ',';
+        }
+        outMessage += "],";
+    }
+
+    public void sendMessage(){
+        try{
+            outMessage += '}';
+            dataOutputStream.writeUTF(outMessage);
+            dataOutputStream.flush();
+            outMessage = "{";
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+
 
     // Socket Control
 
@@ -186,13 +219,10 @@ public class MultiplayerClient {
 
     // Commands
     public void sendJoin(){
-        try{
-            dataOutputStream.writeUTF(Multiplayer.username);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        addMessageType("Join");
+        addMessageString("Username",Multiplayer.username);
+        addMessageString("Socket",socket.toString());
+        sendMessage();
     }
 
     public static void sendReady(){

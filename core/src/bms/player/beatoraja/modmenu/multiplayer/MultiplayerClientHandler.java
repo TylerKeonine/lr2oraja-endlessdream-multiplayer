@@ -33,14 +33,56 @@ public class MultiplayerClientHandler implements Runnable{
     public static String selectedSong = "";
     public static String selectedSongTitle = "";
 
+    public String outMessage = "{";
+    public String inMessage;
+
+    // message format (json)
+    public void addMessageType(String type){
+        outMessage += "\"MessageType\":\"" + type + "\",";
+    }
+
+    public void addMessageString(String name, String str){
+        outMessage += '\"'+name+"\":\"" + str + "\",";
+    }
+
+    public void addMessageIntArray(String name, int arr[]){
+        outMessage += '\"'+name+"\":[";
+        for(int i=0;i<arr.length;i++){
+            outMessage += arr[i] + ',';
+        }
+        outMessage += "],";
+    }
+
+    public void sendMessage(){
+        try{
+            outMessage += '}';
+            dataOutputStream.writeUTF(outMessage);
+            dataOutputStream.flush();
+            outMessage = "{";
+        }catch(IOException e){
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+    }
+
+    public String readMessageString(String key){
+        String str = "";
+        int i = inMessage.indexOf(key)+key.length()+3; // +2 for the quote and semicolon
+        while(inMessage.charAt(i)!='\"'){
+            str += inMessage.charAt(i++);
+        }
+        return str;
+    }
 
     public MultiplayerClientHandler(Socket socket){
         try{
             this.socket = socket;
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
             this.dataInputStream = new DataInputStream(socket.getInputStream());
-            this.clientUsername = dataInputStream.readUTF();
-            this.clientSocket = dataInputStream.readUTF();
+            inMessage = dataInputStream.readUTF();
+            // TODO verify that messagetype is join
+            String messageType = readMessageString("MessageType");
+            this.clientUsername = readMessageString("Username");
+            this.clientSocket = readMessageString("Socket");
             clientHandlers.add(this);
             broadcastMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
@@ -72,6 +114,7 @@ public class MultiplayerClientHandler implements Runnable{
 
         while(socket.isConnected()){
             try{
+                MultiplayerMenu.statusText = inMessage;
                 msgType = dataInputStream.readByte();
                 switch(msgType){
                     case(0): // test
