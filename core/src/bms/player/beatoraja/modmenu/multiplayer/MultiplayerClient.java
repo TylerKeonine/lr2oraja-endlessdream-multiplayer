@@ -40,37 +40,6 @@ public class MultiplayerClient {
         }
     }
 
-    // message format (json)
-    // TODO  shouldnt have duplicate functions in here and clienthandler
-    public void addMessageType(String type){
-        outMessage += "\"MessageType\":\"" + type + "\",";
-    }
-
-    public void addMessageString(String name, String str){
-        outMessage += '\"'+name+"\":\"" + str + "\",";
-    }
-
-    public void addMessageIntArray(String name, int arr[]){
-        outMessage += '\"'+name+"\":[";
-        for(int i=0;i<arr.length;i++){
-            outMessage += arr[i] + ',';
-        }
-        outMessage += "],";
-    }
-
-    public void sendMessage(){
-        try{
-            outMessage += '}';
-            dataOutputStream.writeUTF(outMessage);
-            dataOutputStream.flush();
-            outMessage = "{";
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
-    }
-
-
-
     // Socket Control
 
     public void listenForMessage(){
@@ -219,10 +188,10 @@ public class MultiplayerClient {
 
     // Commands
     public void sendJoin(){
-        addMessageType("Join");
-        addMessageString("Username",Multiplayer.username);
-        addMessageString("Socket",socket.toString());
-        sendMessage();
+        outMessage=MultiplayerJson.addMessageType(outMessage,"Join");
+        outMessage=MultiplayerJson.addMessageString(outMessage,"Username",Multiplayer.username);
+        outMessage=MultiplayerJson.addMessageString(outMessage,"Socket",socket.toString());
+        MultiplayerJson.sendMessage(outMessage,dataOutputStream);
     }
 
     public static void sendReady(){
