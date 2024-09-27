@@ -1,16 +1,43 @@
 package bms.player.beatoraja.modmenu.multiplayer;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.Buffer;
 
-public class MultiplayerServer {
+public class MultiplayerServer extends Thread{
     
-    private static ServerSocket serverSocket;
+    protected DatagramSocket socket = null;
 
-    public MultiplayerServer(ServerSocket serverSocket){
-        this.serverSocket = serverSocket;
+    public MultiplayerServer() throws IOException{
+        socket = new DatagramSocket(444);
+    }
+
+    public void run(){
+        while (socket.isClosed()==false){
+            try{
+                byte[] buf = new byte[256];
+
+                DatagramPacket packet = new DatagramPacket(buf,buf.length);
+                socket.receive(packet);
+
+                String msg = "hi from server";
+
+                buf = msg.getBytes();
+
+                InetAddress ipaddr = packet.getAddress();
+                int port = packet.getPort();
+                packet = new DatagramPacket(buf,buf.length,ipaddr,port);
+
+                socket.send(packet);
+            }catch(IOException e){
+                e.printStackTrace();
+                break;
+            }
+        }
     }
 
     public void startServer(){
@@ -41,15 +68,10 @@ public class MultiplayerServer {
         }
     }
 
-    public static void hostLobby(){
-        try {
-            ServerSocket serverSocket;
-            serverSocket = new ServerSocket(5730,0,InetAddress.getLocalHost()); // manual ip input for host later
-            MultiplayerServer server = new MultiplayerServer(serverSocket);
-            new Thread(() -> server.startServer()).start();
-            Multiplayer.hostIp = serverSocket.getInetAddress().getHostAddress();
-        } catch (IOException e) {
-            closeServerSocket();
-        }
+    public static void hostLobby() throws IOException{
+        // probably dont want to have a main function here. start the server somewhere else
+        // should be able to make multiple servers?
+        MultiplayerServer server = new MultiplayerServer();
+        server.start();
     }
 }
