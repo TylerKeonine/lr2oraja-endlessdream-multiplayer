@@ -219,7 +219,7 @@ public class MultiplayerClientHandler implements Runnable{
 
     public void sendSelectedSong(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
-            outMessage = MultiplayerJson.addMessageType(outMessage, "BroadcastStart");
+            outMessage = MultiplayerJson.addMessageType(outMessage, "SendSelectedSong");
             outMessage = MultiplayerJson.addMessageString(outMessage, "SelectedSong", selectedSong);
             outMessage = MultiplayerJson.addMessageString(outMessage, "SelectedSongTitle", selectedSongTitle);
             outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);

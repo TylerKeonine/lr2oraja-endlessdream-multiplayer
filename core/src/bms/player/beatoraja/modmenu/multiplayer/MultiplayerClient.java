@@ -47,26 +47,26 @@ public class MultiplayerClient {
         new Thread(new Runnable(){
             @Override
             public void run(){
-                String msgFromGroupChat;
-                Byte msgType;
-                int repeats;
                 while(socket.isConnected()){
                     try{
                         inMessage = dataInputStream.readUTF();
+                        //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
                         MultiplayerMenu.statusText = inMessage;
-                        msgType = -1;
+                        String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
+                        //MultiplayerMenu.statusText = msgType;
                         switch(msgType){
+                            /* 
                             case(0): // test messages
                                 msgFromGroupChat = dataInputStream.readUTF();
                                 MultiplayerMenu.statusText = msgFromGroupChat;
                             break;
-                            case(1): //update lobby player names
-                                repeats = dataInputStream.readInt();
-                                Multiplayer.playerNames.clear();
-                                for(int i=0;i<repeats;i++){
-                                    Multiplayer.playerNames.add(dataInputStream.readUTF());
-                                }
+                            */
+                            case("SendPlayerNames"): //update lobby player names
+                                MultiplayerMenu.statusText = MultiplayerJson.readMessageStringList(inMessage, "PlayerNames").toString();
+                                //Multiplayer.playerNames = MultiplayerJson.readMessageStringList(inMessage, "PlayerNames");
+                                //Multiplayer.playerNames.add("test");
                             break;
+                            /*
                             case(2): // update player states
                                 repeats = dataInputStream.readInt();
                                 Multiplayer.playerStates.clear();
@@ -132,6 +132,7 @@ public class MultiplayerClient {
                                     Multiplayer.isHost=false;
                                 }
                             break;
+                            */
                         }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
