@@ -53,7 +53,7 @@ public class MultiplayerClient {
                         //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
                         //MultiplayerMenu.statusText = inMessage;
                         String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
-                        //MultiplayerMenu.statusText = msgType;
+                        MultiplayerMenu.statusText = Multiplayer.playerNames.toString();
                         switch(msgType){
                             /* 
                             case(0): // test messages
@@ -62,10 +62,7 @@ public class MultiplayerClient {
                             break;
                             */
                             case("SendPlayerNames"): //update lobby player names
-                                String arr[] = MultiplayerJson.readMessageStringArray(inMessage, "PlayerNames");
-                                MultiplayerMenu.statusText = Arrays.toString(arr);
-                                //Multiplayer.playerNames = MultiplayerJson.readMessageStringList(inMessage, "PlayerNames");
-                                //Multiplayer.playerNames.add("test");
+                                Multiplayer.playerNames = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerNames")));
                             break;
                             /*
                             case(2): // update player states
