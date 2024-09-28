@@ -62,7 +62,7 @@ public class MultiplayerJson {
     public static String addMessageBoolArray(String outMessage, String name, Boolean arr[]){
         outMessage += '\"'+name+"\":[";
         for(int i=0;i<arr.length;i++){
-            if(arr[i]==true){
+            if(arr[i].equals(true)){
                 outMessage += "true" + ',';
             }else{
                 outMessage += "false" + ',';
@@ -94,7 +94,6 @@ public class MultiplayerJson {
         return str;
     }
     public static String[] readMessageStringArray(String inMessage, String key){
-        //"Array":["123","234","345"],
         // find array size
         int i = inMessage.indexOf('\"'+key+'\"')+key.length()+2; // +2 quotes
         int size = 0;
@@ -121,6 +120,41 @@ public class MultiplayerJson {
                     break;
                 }else{
                     i=i+2;
+                }
+                i++;
+            }
+        }
+        return arr;
+    }
+
+    public static Boolean[] readMessageBooleanArray(String inMessage, String key){
+        //"Array":[true,false],
+        // find array size
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+3; // +3 quotes and colon
+        int size = 0;
+        while(inMessage.charAt(i)!=']'&&i<inMessage.length()-1){
+            if((inMessage.charAt(i)=='['&&inMessage.charAt(i+1)!=']')||inMessage.charAt(i)==','){
+                size++;
+            }
+            i++;            
+        }
+        // read to array
+        int end = i;
+        Boolean arr[] = new Boolean[size];
+        int element = 0;
+        i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
+        while(i<=end&&element<size){
+            if(inMessage.charAt(i)==','||inMessage.charAt(i)=='['){
+                if(inMessage.charAt(i+1)=='t'||inMessage.charAt(i+1)=='T'){
+                    arr[element++]=true;
+                    i+=5;
+                }else{
+                    arr[element++]=false;
+                    i+=6;
+                }
+            }else{
+                if(inMessage.charAt(i+1)==']'){
+                    break;
                 }
                 i++;
             }

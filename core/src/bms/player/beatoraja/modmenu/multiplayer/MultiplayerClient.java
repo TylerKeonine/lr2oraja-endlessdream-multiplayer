@@ -76,7 +76,6 @@ public class MultiplayerClient {
                             case("SendSelectedSong"): // update song
                                 Multiplayer.selectedSong = MultiplayerJson.readMessageString(inMessage, "SelectedSong");
                                 Multiplayer.selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "SelectedSongTitle");
-                                MultiplayerMenu.statusText = "md5: "+Multiplayer.selectedSong+"   json:"+inMessage;
                                 // check if song is missing
                                 if(selector.findSongData(Multiplayer.selectedSong)==null){
                                     sendMissing(true);
@@ -84,19 +83,16 @@ public class MultiplayerClient {
                                     sendMissing(false);
                                 }
                             break;
-                            /*
-                            case(6): // update playing
-                                repeats = dataInputStream.readInt();
-                                Multiplayer.playerPlaying.clear();
-                                for(int i=0;i<repeats;i++){
-                                    Multiplayer.playerPlaying.add(dataInputStream.readBoolean());
-                                }
+                            case("SendPlayerPlaying"): // update playing
+                                Multiplayer.playerPlaying = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBooleanArray(inMessage,"PlayersPlaying")));
+                                //MultiplayerMenu.statusText = Multiplayer.playerPlaying.toString();
                                 if(Multiplayer.playerPlaying.contains(true)){
                                     Multiplayer.lobbyPlaying = true;
                                 }else{
                                     Multiplayer.lobbyPlaying = false;
                                 }
                             break;
+                            /*
                             case(7): // force end
                                 Multiplayer.playerPlaying.replaceAll(e -> false);
                                 Multiplayer.lobbyPlaying = false;
