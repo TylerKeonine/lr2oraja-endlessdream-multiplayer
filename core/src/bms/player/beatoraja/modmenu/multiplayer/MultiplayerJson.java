@@ -87,33 +87,44 @@ public class MultiplayerJson {
 
     public static String readMessageString(String inMessage, String key){
         String str = "";
-        int i = inMessage.indexOf(key)+key.length()+3; // +3 for the quote and semicolon
+        int i = inMessage.indexOf(key)+key.length()+3; // +3 for the quote and colon
         while(inMessage.charAt(i)!='\"'){
             str += inMessage.charAt(i++);
         }
         return str;
     }
-    public static ArrayList<String> readMessageStringList(String inMessage, String key){
-        String str = "";
-        ArrayList<String> list = new ArrayList<>();
+    public static String[] readMessageStringArray(String inMessage, String key){
         //"Array":["123","234","345"],
-        int i = inMessage.indexOf(key)+key.length()+3; // +3 for the quote and semicolon
-        while(inMessage.charAt(i)!=']'){
+        // find array size
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+2; // +2 colon
+        int size = 0;
+        while(inMessage.charAt(i)!=']'&&i<inMessage.length()-1){
+            if(inMessage.charAt(i)=='\"'){
+                size++;
+            }
+            i++;
+        }
+        size/=2;
+        // read to array
+        int end = i;
+        String str = "";
+        String arr[] = new String[size];
+        int element = 0;
+        i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
+        while(i<=end&&element<size){
             if(inMessage.charAt(i)!='\"'){
-                str += inMessage.charAt(i);
+                str += inMessage.charAt(i++);
             }else{
-                //str = "hi";
-                //list.add(str);
+                arr[element++] = str;
                 str = "";
                 if(inMessage.charAt(i+1)==']'){
                     break;
                 }else{
-                    i=i+3;
+                    i=i+2;
                 }
-                i+=1;
+                i++;
             }
         }
-        list.add("hi");
-        return list;
+        return arr;
     }
 }
