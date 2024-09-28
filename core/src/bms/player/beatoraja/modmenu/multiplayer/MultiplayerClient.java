@@ -73,12 +73,10 @@ public class MultiplayerClient {
                                     selector.playSong(Multiplayer.selectedSong);
                                 }
                             break;
-                            /*
-                            case(4): //update
-                            break;
-                            case(5): // update song
-                                Multiplayer.selectedSong = dataInputStream.readUTF();
-                                Multiplayer.selectedSongTitle = dataInputStream.readUTF();
+                            case("SendSelectedSong"): // update song
+                                Multiplayer.selectedSong = MultiplayerJson.readMessageString(inMessage, "SelectedSong");
+                                Multiplayer.selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "SelectedSongTitle");
+                                MultiplayerMenu.statusText = "md5: "+Multiplayer.selectedSong+"   json:"+inMessage;
                                 // check if song is missing
                                 if(selector.findSongData(Multiplayer.selectedSong)==null){
                                     sendMissing(true);
@@ -86,6 +84,7 @@ public class MultiplayerClient {
                                     sendMissing(false);
                                 }
                             break;
+                            /*
                             case(6): // update playing
                                 repeats = dataInputStream.readInt();
                                 Multiplayer.playerPlaying.clear();

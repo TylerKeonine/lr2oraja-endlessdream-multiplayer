@@ -87,7 +87,7 @@ public class MultiplayerJson {
 
     public static String readMessageString(String inMessage, String key){
         String str = "";
-        int i = inMessage.indexOf(key)+key.length()+3; // +3 for the quote and colon
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+4; // +4 for the quote and colon
         while(inMessage.charAt(i)!='\"'){
             str += inMessage.charAt(i++);
         }
@@ -96,7 +96,7 @@ public class MultiplayerJson {
     public static String[] readMessageStringArray(String inMessage, String key){
         //"Array":["123","234","345"],
         // find array size
-        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+2; // +2 colon
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+2; // +2 quotes
         int size = 0;
         while(inMessage.charAt(i)!=']'&&i<inMessage.length()-1){
             if(inMessage.charAt(i)=='\"'){
