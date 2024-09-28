@@ -53,7 +53,7 @@ public class MultiplayerClient {
                         //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
                         //MultiplayerMenu.statusText = inMessage;
                         String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
-                        MultiplayerMenu.statusText = Multiplayer.playerNames.toString();
+                        MultiplayerMenu.statusText = Multiplayer.playerStates.toString();
                         switch(msgType){
                             /* 
                             case(0): // test messages
@@ -64,14 +64,11 @@ public class MultiplayerClient {
                             case("SendPlayerNames"): //update lobby player names
                                 Multiplayer.playerNames = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerNames")));
                             break;
-                            /*
-                            case(2): // update player states
-                                repeats = dataInputStream.readInt();
-                                Multiplayer.playerStates.clear();
-                                for(int i=0;i<repeats;i++){
-                                    Multiplayer.playerStates.add(dataInputStream.readUTF());
-                                }                 
+                            
+                            case("SendPlayerStates"): //update lobby player names
+                                Multiplayer.playerStates = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerState")));
                             break;
+                            /*
                             case(3): // start message
                                 // do playSong from MusicSelector.java using Multiplayer.selectedSong
                                 // prone to crashing ever since adding this? happens on selecting a song too fast, not even pressing start.
