@@ -84,20 +84,20 @@ public class MultiplayerClient {
                                 }
                             break;
                             case("SendPlayerPlaying"): // update playing
-                                Multiplayer.playerPlaying = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBooleanArray(inMessage,"PlayersPlaying")));
-                                //MultiplayerMenu.statusText = Multiplayer.playerPlaying.toString();
+                                Multiplayer.playerPlaying = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage,"PlayersPlaying")));
+                                MultiplayerMenu.statusText = Multiplayer.playerPlaying.toString()+" json:"+inMessage;
                                 if(Multiplayer.playerPlaying.contains(true)){
                                     Multiplayer.lobbyPlaying = true;
                                 }else{
                                     Multiplayer.lobbyPlaying = false;
                                 }
                             break;
-                            /*
-                            case(7): // force end
+                            case("BroadcastEnd"): // force end
                                 Multiplayer.playerPlaying.replaceAll(e -> false);
                                 Multiplayer.lobbyPlaying = false;
                             break;
-                            case(8): // update score
+                            /* 
+                            case("SendPlayerScoreData"): // update score
                                 repeats = dataInputStream.readInt();
                                 int[][] temparr = new int[repeats][14];
                                 for (int i=0;i<repeats*14;i++){
@@ -105,6 +105,7 @@ public class MultiplayerClient {
                                     Multiplayer.playerScoreData = temparr;
                                 }
                             break;
+                            /*
                             case(9): // update players missing
                                 repeats = dataInputStream.readInt();
                                 Multiplayer.playerMissing.clear();

@@ -127,7 +127,7 @@ public class MultiplayerJson {
         return arr;
     }
 
-    public static Boolean[] readMessageBooleanArray(String inMessage, String key){
+    public static Boolean[] readMessageBoolArray(String inMessage, String key){
         //"Array":[true,false],
         // find array size
         int i = inMessage.indexOf('\"'+key+'\"')+key.length()+3; // +3 quotes and colon
@@ -142,7 +142,8 @@ public class MultiplayerJson {
         int end = i;
         Boolean arr[] = new Boolean[size];
         int element = 0;
-        i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
+        i = inMessage.indexOf('\"'+key+'\"')+key.length()+3; // +5 for the quote, colon, bracket
+        MultiplayerMenu.statusText = "i:"+i+"  json:"+inMessage;
         while(i<=end&&element<size){
             if(inMessage.charAt(i)==','||inMessage.charAt(i)=='['){
                 if(inMessage.charAt(i+1)=='t'||inMessage.charAt(i+1)=='T'){
@@ -152,6 +153,8 @@ public class MultiplayerJson {
                     arr[element++]=false;
                     i+=6;
                 }
+                //MultiplayerMenu.statusText = Boolean.toString(arr[element-1]);
+                
             }else{
                 if(inMessage.charAt(i+1)==']'){
                     break;
