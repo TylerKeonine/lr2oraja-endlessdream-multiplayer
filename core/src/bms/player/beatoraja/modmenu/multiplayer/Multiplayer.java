@@ -46,7 +46,7 @@ public class Multiplayer {
         // if connection succeeds, have host send info
         isHost = false;
         MultiplayerClient.joinLobby(MultiplayerMenu.ipInputText.get());
-        MultiplayerMenu.statusText = "Failed to join lobby."; // You didn't actually fail if this runs but it should get overwritten if it join is successful
+        //MultiplayerMenu.statusText = "Failed to join lobby."; // You didn't actually fail if this runs but it should get overwritten if it join is successful
     }
 
     public static void leaveLobby(){

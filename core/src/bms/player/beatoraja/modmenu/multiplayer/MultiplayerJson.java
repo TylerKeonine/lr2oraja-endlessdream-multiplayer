@@ -32,9 +32,10 @@ public class MultiplayerJson {
     public static String addMessageIntArray(String outMessage, String name, int arr[]){
         outMessage += '\"'+name+"\":[";
         for(int i=0;i<arr.length;i++){
-            outMessage += arr[i] + ',';
+            outMessage += Integer.toString(arr[i]) + ',';
         }
         outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
+        //MultiplayerMenu.statusText = outMessage;
         return outMessage;
     }
 
@@ -249,13 +250,25 @@ public class MultiplayerJson {
         int end = i;
         String str = "";
         int arr[] = new int[size];
-        i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
+        i = inMessage.indexOf('\"'+key+'\"')+key.length()+4; // +5 for the quote, colon, bracket
         str = "";
+        //MultiplayerMenu.statusText = inMessage.substring(i-2,i+4);  
+        //MultiplayerMenu.statusText = inMessage;  
         for(int s=0;s<size;s++){
+            //MultiplayerMenu.statusText = Integer.toString(s); 
+            //"key":[1,2,3]
             while(inMessage.charAt(i)!=','&&inMessage.charAt(i)!=']'&&i<=end){
-                str += inMessage.charAt(i++);
+                if(inMessage.charAt(i)==']'||i>end){
+                    break;
+                }                
+                str += inMessage.charAt(i++); 
                 
-            }        
+
+                //MultiplayerMenu.statusText = Integer.toString(i); 
+            }   
+            //MultiplayerMenu.statusText = "str:"+str+" in:"+inMessage;  
+            //str+=',';   
+            i++;
             arr[s] = Integer.parseInt(str);
             str = "";
         }

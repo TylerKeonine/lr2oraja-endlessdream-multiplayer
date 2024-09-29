@@ -17,7 +17,7 @@ public class MultiplayerServer {
         try{
             while(!serverSocket.isClosed()){      
                 Socket socket = serverSocket.accept();
-                MultiplayerMenu.statusText = ("A new client has connected!"+socket.toString());
+                //MultiplayerMenu.statusText = ("A new client has connected!"+socket.toString());
                 MultiplayerClientHandler clientHandler = new MultiplayerClientHandler(socket);
                 
                 Thread thread = new Thread(clientHandler);

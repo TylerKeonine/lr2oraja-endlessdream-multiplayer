@@ -222,7 +222,9 @@ public class MultiplayerClient {
         outMessage = MultiplayerJson.addMessageType(outMessage, "SendScore");
         outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
         int[] newarr = new int[14]; // TODO fix hardcoded value later
-        for(int i=0;i<12;i++){
+        newarr[0]=judge;
+        newarr[1]=combo;
+        for(int i=2;i<14;i++){
             if(i%2==0){
                 newarr[i] = (liveScoreData.getJudgeCount(i/2, true));
             }else{
@@ -230,6 +232,8 @@ public class MultiplayerClient {
             }
         }
         outMessage = MultiplayerJson.addMessageIntArray(outMessage, "PlayerScoreData", newarr);
+        //MultiplayerMenu.statusText = Arrays.toString(newarr);
+        //MultiplayerMenu.statusText = outMessage;
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
     
