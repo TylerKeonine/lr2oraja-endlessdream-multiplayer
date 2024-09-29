@@ -28,8 +28,8 @@ public class MultiplayerClient {
     public static MusicSelector selector;
     public static ScoreData liveScoreData;
 
-    public String outMessage = "{";
-    public String inMessage;
+    public static String outMessage = "{";
+    public static String inMessage;
 
     public MultiplayerClient(Socket socket){
         try {
@@ -168,39 +168,28 @@ public class MultiplayerClient {
         outMessage=MultiplayerJson.addMessageType(outMessage,"Join");
         outMessage=MultiplayerJson.addMessageString(outMessage,"Username",Multiplayer.username);
         outMessage=MultiplayerJson.addMessageString(outMessage,"Socket",socket.toString());
-        MultiplayerJson.sendMessage(outMessage,dataOutputStream);
+        outMessage=MultiplayerJson.sendMessage(outMessage,dataOutputStream);
     }
 
     public static void sendReady(){
-        try{
-            dataOutputStream.write(1);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendReady");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
     // Requests for host status
     public static void sendHost(){
-        try{
-            dataOutputStream.write(2);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendHost");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
     public static void sendStart(){
-        try{
-            dataOutputStream.write(3);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendStart");
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
+    /*
     public static void requestUpdate(){
         try{
             dataOutputStream.write(4);
@@ -208,80 +197,56 @@ public class MultiplayerClient {
         }catch(IOException e){
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
-    }
+    }*/
 
     public static void sendSong(String md5, String title){
-        try{
-            dataOutputStream.write(5);
-            dataOutputStream.writeUTF(md5);
-            dataOutputStream.writeUTF(title);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendSong");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Md5", md5);
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Title", title);
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
     public static void sendPlaying(Boolean playing){
-        try{
-            dataOutputStream.write(6);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.writeBoolean(playing);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlaying");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.addMessageBool(outMessage, "IsPlaying", playing);
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
     public static void sendEnd(){
-        try{
-            dataOutputStream.write(7);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendEnd");
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
     public static void sendScore(int judge, int combo){
-        try{
-            dataOutputStream.write(8);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.writeInt(judge);
-            dataOutputStream.writeInt(combo);
-            for(int i=0;i<12;i++){
-                if(i%2==0){
-                    dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, true));
-                }else{
-                    dataOutputStream.writeInt(liveScoreData.getJudgeCount(i/2, false));
-                }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendScore");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        int[] newarr = new int[14]; // TODO fix hardcoded value later
+        for(int i=0;i<12;i++){
+            if(i%2==0){
+                newarr[i] = (liveScoreData.getJudgeCount(i/2, true));
+            }else{
+                newarr[i] = (liveScoreData.getJudgeCount(i/2, false));
             }
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
         }
+        outMessage = MultiplayerJson.addMessageIntArray(outMessage, "PlayerScoreData", newarr);
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
     
     public static void sendMissing(boolean isMissing){
-        Multiplayer.isMissing = isMissing;
-        try{
-            dataOutputStream.write(9);
-            dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.writeBoolean(isMissing);
-            dataOutputStream.flush();            
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        Multiplayer.isMissing = isMissing; // TODO why is this here
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendMissing");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.addMessageBool(outMessage, "IsMissing", isMissing);
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 
     // Gives/removes host status
     public static void toggleHost(int target, Boolean switchto){
-        try{
-            dataOutputStream.write(10);
-dataOutputStream.writeUTF(socket.toString());
-            dataOutputStream.writeInt(target);
-            dataOutputStream.writeBoolean(switchto);
-            dataOutputStream.flush();            
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
+        outMessage = MultiplayerJson.addMessageType(outMessage, "ToggleHost");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.addMessageInt(outMessage, "TargetIndex", target); // why not use socket instead of index?
+        outMessage = MultiplayerJson.addMessageBool(outMessage, "SwitchTo", switchto);
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 }

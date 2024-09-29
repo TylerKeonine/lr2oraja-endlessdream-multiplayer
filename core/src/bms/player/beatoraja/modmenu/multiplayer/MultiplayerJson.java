@@ -95,6 +95,16 @@ public class MultiplayerJson {
         return str;
     }
 
+    public static int readMessageInt(String inMessage, String key){
+        // "Key":1
+        String str = "";
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+4; // +4 for the quote and colon
+        while(inMessage.charAt(i)!='\"'){
+            str += inMessage.charAt(i++);
+        }
+        return Integer.parseInt(str);
+    }
+
     public static Boolean readMessageBool(String inMessage, String key){
         int i = inMessage.indexOf('\"'+key+'\"')+key.length()+4;
         if(inMessage.charAt(i)=='t'||inMessage.charAt(i)=='T'){
@@ -217,6 +227,39 @@ public class MultiplayerJson {
                 str = "";
             temp = new int[sizey];
         }
+        return arr;
+    }
+
+    public static int[] readMessageIntArray(String inMessage, String key){
+        //"key":[[1,2,3],[4,5,6],[7,8,9]],
+        //"key":[[1,2,3]]
+        // find array size
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+4; // +2 quotes
+        int size = 0;
+        while(inMessage.charAt(i)!=']'&&i<inMessage.length()-1){
+            if(inMessage.charAt(i)==','){
+                size++;
+            }
+            i++;
+        }
+        if(inMessage.charAt(i-1)!='['){
+            size++;
+        }
+        // read to array
+        int end = i;
+        String str = "";
+        int arr[] = new int[size];
+        i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
+        str = "";
+        for(int s=0;s<size;s++){
+            while(inMessage.charAt(i)!=','&&inMessage.charAt(i)!=']'&&i<=end){
+                str += inMessage.charAt(i++);
+                
+            }        
+            arr[s] = Integer.parseInt(str);
+            str = "";
+        }
+
         return arr;
     }
 }

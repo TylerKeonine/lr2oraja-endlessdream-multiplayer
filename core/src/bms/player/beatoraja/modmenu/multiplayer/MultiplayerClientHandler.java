@@ -71,22 +71,24 @@ public class MultiplayerClientHandler implements Runnable{
     @Override
     public void run(){
         String messageFromClient;
-        Byte msgType;
+        String msgType;
         int index;
         Boolean bool;
 
         while(socket.isConnected()){
             try{
                 //MultiplayerMenu.statusText = inMessage;
-                msgType = dataInputStream.readByte();
+                inMessage = dataInputStream.readUTF();
+                msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
                 switch(msgType){
+                    /*
                     case(0): // test
                         messageFromClient = dataInputStream.readUTF();
                         //broadcastMessage(messageFromClient); 
                     break;
-                    case(1): // ready
-                        messageFromClient = dataInputStream.readUTF();
-                        index = socketList.indexOf(messageFromClient);
+                    */
+                    case("SendReady"): // ready
+                        index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
                         if(playerStates.get(index).equals("Ready")){
                             playerStates.set(index,"Not Ready");
                         }else{
@@ -94,62 +96,58 @@ public class MultiplayerClientHandler implements Runnable{
                         }
                         sendPlayerStates();
                     break;
-                    case(2): // host
-                        messageFromClient = dataInputStream.readUTF();
-                        playerStates.set(socketList.indexOf(messageFromClient),"Host");
+                    case("SendHost"): // host
+                        playerStates.set(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")),"Host");
                         sendPlayerStates();   
                         sendPlayerScoreData();                 
                     break;
-                    case(3): // start
+                    case("SendStart"): // start
                         broadcastStart();
                         sendPlayerScoreData();
-                    break;               
+                    break;     
+                    /*          
                     case(4): // update
                         //broadcastUpdate();
                     break;
-                    case(5): // select song
-                        selectedSong = dataInputStream.readUTF();
-                        selectedSongTitle = dataInputStream.readUTF();
+                    */
+                    case("SendSong"): // select song
+                        selectedSong = MultiplayerJson.readMessageString(inMessage, "Md5");
+                        selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "Title");
                         sendSelectedSong();
                     break;
-                    case(6): // playing status
-                        messageFromClient = dataInputStream.readUTF();
-                        index = socketList.indexOf(messageFromClient);
-                        bool = dataInputStream.readBoolean();
-                        playerPlaying.set(index, bool);
+                    case("SendPlaying"): // playing status
+                        playerPlaying.set(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")), MultiplayerJson.readMessageBool(inMessage, "IsPlaying"));
                         sendPlayerPlaying();
                         sendPlayerScoreData();
                     break;
-                    case(7): // force end
+                    case("SendEnd"): // force end
                         playerPlaying.replaceAll(e -> false);
                         broadcastEnd();
                         sendPlayerScoreData();
                     break;
-                    case(8): // send score
-                        messageFromClient = dataInputStream.readUTF();
-                        index = socketList.indexOf(messageFromClient);
+                    case("SendScore"): // send score
+                        index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
                         int[] newarr = new int[playerScoreData[index].length];
                         for(int i=0;i<playerScoreData[index].length;i++){
                             newarr[i] = dataInputStream.readInt(); 
                         }
-                        playerScoreData[index] = newarr;
+                        playerScoreData[socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))] = MultiplayerJson.readMessageIntArray(inMessage, "PlayerScoreData");
                         sendPlayerScoreData();
                     break;
-                    case(9): // send ismissing
-                        messageFromClient = dataInputStream.readUTF();
-                        index = socketList.indexOf(messageFromClient);
-                        bool = dataInputStream.readBoolean();
-                        playerMissing.set(index,bool);
+                    case("SendMissing"): // send ismissing
+                        index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
+                        playerMissing.set(index,MultiplayerJson.readMessageBool(inMessage, "IsMissing"));
                         // ensures sendPlayerMissing only sends once
                         if(index==playerMissing.size()-1){
                             sendPlayerMissing();
                         }
                     break;
-                    case(10):
-                        messageFromClient = dataInputStream.readUTF();
-                        if(playerStates.get(socketList.indexOf(messageFromClient)).equals("Host")){
-                            index = dataInputStream.readInt();
-                            bool = dataInputStream.readBoolean();
+                    case("ToggleHost"):
+                        //MultiplayerMenu.statusText = "host recieved:"+playerStates.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")));
+                        if(playerStates.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))).equals("Host")){
+                            //MultiplayerMenu.statusText = "im running";
+                            index = MultiplayerJson.readMessageInt(inMessage, "TargetIndex");
+                            bool = MultiplayerJson.readMessageBool(inMessage, "SwitchTo");
                             if (bool==true){
                                 playerStates.set(index,"Host");
                             }else{
