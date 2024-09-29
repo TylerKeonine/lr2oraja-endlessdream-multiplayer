@@ -190,8 +190,6 @@ public class MultiplayerJson {
         int arr[][] = new int[sizex][sizey];
         int temp[] = new int[sizey];
         i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
-        //MultiplayerMenu.statusText = "sizex:"+sizex+" sizey:"+sizey;
-        //MultiplayerMenu.statusText = inMessage;
         for(int x=0;x<sizex;x++){
             for(int y=0;y<sizey;y++){
                 str = "";
@@ -202,10 +200,6 @@ public class MultiplayerJson {
                     break;
                 }
                 i++;
-                /* 
-                if(x==1){
-                    MultiplayerMenu.statusText = "str:"+str+"   sizex:"+sizex+"  x:"+x+"  charat:"+inMessage.charAt(i)+"  y:"+y+"  json:"+inMessage;
-                }*/
                 temp[y] = Integer.parseInt(str);
             }
             i+=3;

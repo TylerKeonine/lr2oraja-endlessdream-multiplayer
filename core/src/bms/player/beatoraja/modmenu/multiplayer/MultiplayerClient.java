@@ -96,18 +96,11 @@ public class MultiplayerClient {
                             break;
                             case("SendPlayerScoreData"): // update score
                                 Multiplayer.playerScoreData = MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData");
-                                //MultiplayerMenu.statusText = Arrays.deepToString(MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData"));
-                                //MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData");
-
+                            break;
+                            case("SendPlayerMissing"): // update players missing
+                                Multiplayer.playerMissing = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersMissing")));
                             break;
                             /*
-                            case(9): // update players missing
-                                repeats = dataInputStream.readInt();
-                                Multiplayer.playerMissing.clear();
-                                for(int i=0;i<repeats;i++){
-                                    Multiplayer.playerMissing.add(dataInputStream.readBoolean());
-                                }
-                            break;
                             case (10): // update host
                                 if(dataInputStream.readBoolean()==true){
                                     Multiplayer.isHost=true;
