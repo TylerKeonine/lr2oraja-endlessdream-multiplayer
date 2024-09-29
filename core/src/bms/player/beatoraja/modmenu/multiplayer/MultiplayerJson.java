@@ -94,6 +94,16 @@ public class MultiplayerJson {
         }
         return str;
     }
+
+    public static Boolean readMessageBool(String inMessage, String key){
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+4;
+        if(inMessage.charAt(i)=='t'||inMessage.charAt(i)=='T'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public static String[] readMessageStringArray(String inMessage, String key){
         // find array size
         int i = inMessage.indexOf('\"'+key+'\"')+key.length()+2; // +2 quotes

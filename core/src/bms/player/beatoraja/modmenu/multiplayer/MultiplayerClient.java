@@ -100,15 +100,13 @@ public class MultiplayerClient {
                             case("SendPlayerMissing"): // update players missing
                                 Multiplayer.playerMissing = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersMissing")));
                             break;
-                            /*
-                            case (10): // update host
-                                if(dataInputStream.readBoolean()==true){
+                            case ("UpdateHost"): // update host
+                                if(MultiplayerJson.readMessageBool(inMessage,"IsHost")==true){
                                     Multiplayer.isHost=true;
                                 }else{
                                     Multiplayer.isHost=false;
                                 }
                             break;
-                            */
                         }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
