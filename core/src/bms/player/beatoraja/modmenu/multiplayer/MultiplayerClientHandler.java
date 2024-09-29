@@ -246,6 +246,7 @@ public class MultiplayerClientHandler implements Runnable{
             debounce = System.currentTimeMillis();
             ableToSend = false;
             for(MultiplayerClientHandler clientHandler : clientHandlers){
+                // maybe seperate judge/combo and judge counts
                 outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlayerScoreData");
                 outMessage = MultiplayerJson.addMessageInt2dArray(outMessage, "PlayerScoreData", playerScoreData);
                 outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);

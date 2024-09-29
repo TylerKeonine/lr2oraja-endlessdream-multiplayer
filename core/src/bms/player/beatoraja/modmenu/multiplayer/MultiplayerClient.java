@@ -64,7 +64,6 @@ public class MultiplayerClient {
                             case("SendPlayerNames"): //update lobby player names
                                 Multiplayer.playerNames = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerNames")));
                             break;
-                            
                             case("SendPlayerStates"): //update lobby player names
                                 Multiplayer.playerStates = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerState")));
                             break;
@@ -85,7 +84,6 @@ public class MultiplayerClient {
                             break;
                             case("SendPlayerPlaying"): // update playing
                                 Multiplayer.playerPlaying = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage,"PlayersPlaying")));
-                                MultiplayerMenu.statusText = Multiplayer.playerPlaying.toString()+" json:"+inMessage;
                                 if(Multiplayer.playerPlaying.contains(true)){
                                     Multiplayer.lobbyPlaying = true;
                                 }else{
@@ -96,14 +94,11 @@ public class MultiplayerClient {
                                 Multiplayer.playerPlaying.replaceAll(e -> false);
                                 Multiplayer.lobbyPlaying = false;
                             break;
-                            /* 
                             case("SendPlayerScoreData"): // update score
-                                repeats = dataInputStream.readInt();
-                                int[][] temparr = new int[repeats][14];
-                                for (int i=0;i<repeats*14;i++){
-                                    temparr[i/14][i%14] = dataInputStream.readInt();
-                                    Multiplayer.playerScoreData = temparr;
-                                }
+                                Multiplayer.playerScoreData = MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData");
+                                //MultiplayerMenu.statusText = Arrays.deepToString(MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData"));
+                                //MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData");
+
                             break;
                             /*
                             case(9): // update players missing

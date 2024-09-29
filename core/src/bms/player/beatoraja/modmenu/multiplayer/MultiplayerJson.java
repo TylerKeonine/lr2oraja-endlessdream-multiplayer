@@ -3,6 +3,7 @@ package bms.player.beatoraja.modmenu.multiplayer;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.bytedeco.ffmpeg.avformat.av_format_control_message;
 
@@ -42,7 +43,7 @@ public class MultiplayerJson {
         for(int i=0;i<arr.length;i++){
             outMessage += '[';
             for(int v=0;v<arr[i].length;v++){
-                outMessage += arr[i][v] + ',';
+                outMessage += Integer.toString(arr[i][v]) + ',';
             } 
             outMessage = outMessage.substring(0,outMessage.length()-1)+"],";
         }
@@ -143,7 +144,6 @@ public class MultiplayerJson {
         Boolean arr[] = new Boolean[size];
         int element = 0;
         i = inMessage.indexOf('\"'+key+'\"')+key.length()+3; // +5 for the quote, colon, bracket
-        MultiplayerMenu.statusText = "i:"+i+"  json:"+inMessage;
         while(i<=end&&element<size){
             if(inMessage.charAt(i)==','||inMessage.charAt(i)=='['){
                 if(inMessage.charAt(i+1)=='t'||inMessage.charAt(i+1)=='T'){
@@ -153,7 +153,6 @@ public class MultiplayerJson {
                     arr[element++]=false;
                     i+=6;
                 }
-                //MultiplayerMenu.statusText = Boolean.toString(arr[element-1]);
                 
             }else{
                 if(inMessage.charAt(i+1)==']'){
@@ -161,6 +160,58 @@ public class MultiplayerJson {
                 }
                 i++;
             }
+        }
+        return arr;
+    }
+
+    public static int[][] readMessageInt2dArray(String inMessage, String key){
+        //"key":[[1,2,3],[4,5,6],[7,8,9]],
+        //"key":[[1,2,3]]
+        // find array size
+        int i = inMessage.indexOf('\"'+key+'\"')+key.length()+4; // +2 quotes
+        int sizex = 0;
+        int sizey = 0;
+        while((inMessage.charAt(i)!=']'||inMessage.charAt(i+1)!=']')&&i<inMessage.length()-1){
+            if(inMessage.charAt(i)=='['){
+                sizex++;
+            }
+            if(inMessage.charAt(i)==','||inMessage.charAt(i)==']'){
+                sizey++;
+            }
+            i++;
+        }
+        if(inMessage.charAt(i-1)!='['){
+            sizey++;
+        }
+        sizey/=sizex;
+        // read to array
+        int end = i;
+        String str = "";
+        int arr[][] = new int[sizex][sizey];
+        int temp[] = new int[sizey];
+        i = inMessage.indexOf('\"'+key+'\"')+key.length()+5; // +5 for the quote, colon, bracket
+        //MultiplayerMenu.statusText = "sizex:"+sizex+" sizey:"+sizey;
+        //MultiplayerMenu.statusText = inMessage;
+        for(int x=0;x<sizex;x++){
+            for(int y=0;y<sizey;y++){
+                str = "";
+                while(inMessage.charAt(i)!=','&&inMessage.charAt(i)!=']'&&i<=end){
+                    str += inMessage.charAt(i++);
+                }
+                if(inMessage.charAt(i)==']'){
+                    break;
+                }
+                i++;
+                /* 
+                if(x==1){
+                    MultiplayerMenu.statusText = "str:"+str+"   sizex:"+sizex+"  x:"+x+"  charat:"+inMessage.charAt(i)+"  y:"+y+"  json:"+inMessage;
+                }*/
+                temp[y] = Integer.parseInt(str);
+            }
+            i+=3;
+            arr[x] = temp;
+                str = "";
+            temp = new int[sizey];
         }
         return arr;
     }
