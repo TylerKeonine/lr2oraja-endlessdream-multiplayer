@@ -49,6 +49,7 @@ public class MultiplayerClient {
             public void run(){
                 while(socket.isConnected()){
                     try{
+                        //MultiplayerMenu.statusText = "score:"+Arrays.deepToString(Multiplayer.playerScoreData)+"  missing:"+Multiplayer.playerMissing;
                         inMessage = dataInputStream.readUTF();
                         //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
                         //MultiplayerMenu.statusText = inMessage;
@@ -96,6 +97,7 @@ public class MultiplayerClient {
                             break;
                             case("SendPlayerScoreData"): // update score
                                 Multiplayer.playerScoreData = MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData");
+                                //MultiplayerMenu.statusText = inMessage;
                             break;
                             case("SendPlayerMissing"): // update players missing
                                 Multiplayer.playerMissing = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersMissing")));
@@ -226,9 +228,9 @@ public class MultiplayerClient {
         newarr[1]=combo;
         for(int i=2;i<14;i++){
             if(i%2==0){
-                newarr[i] = (liveScoreData.getJudgeCount(i/2, true));
+                newarr[i] = (liveScoreData.getJudgeCount((i-2)/2, true));
             }else{
-                newarr[i] = (liveScoreData.getJudgeCount(i/2, false));
+                newarr[i] = (liveScoreData.getJudgeCount((i-2)/2, false));
             }
         }
         outMessage = MultiplayerJson.addMessageIntArray(outMessage, "PlayerScoreData", newarr);

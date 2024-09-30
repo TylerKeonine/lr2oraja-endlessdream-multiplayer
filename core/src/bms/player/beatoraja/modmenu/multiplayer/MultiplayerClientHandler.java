@@ -126,7 +126,7 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerScoreData();
                     break;
                     case("SendScore"): // send score
-                        //MultiplayerMenu.statusText =  Arrays.toString(MultiplayerJson.readMessageIntArray(inMessage, "PlayerScoreData"));
+                        MultiplayerMenu.statusText =  inMessage;
                         playerScoreData[socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))] = MultiplayerJson.readMessageIntArray(inMessage, "PlayerScoreData");
                         sendPlayerScoreData();
                     break;
