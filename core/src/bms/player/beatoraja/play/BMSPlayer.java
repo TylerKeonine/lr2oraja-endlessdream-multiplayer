@@ -12,6 +12,7 @@ import bms.player.beatoraja.modmenu.FreqTrainerMenu;
 import bms.player.beatoraja.modmenu.RandomTrainer;
 import bms.player.beatoraja.modmenu.multiplayer.Multiplayer;
 import bms.player.beatoraja.modmenu.multiplayer.MultiplayerClient;
+import bms.player.beatoraja.modmenu.multiplayer.MultiplayerMenu;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -638,17 +639,24 @@ public class BMSPlayer extends MainState {
 			break;
 			// GET READY
 		case STATE_READY:
+			if(Multiplayer.isLoaded==true){
+				Multiplayer.sendLoaded(false);
+			}
 			if (timer.getNowTime(TIMER_READY) > skin.getPlaystart()) {
-				replayConfig = lanerender.getPlayConfig().clone();
-				state = STATE_PLAY;
-				timer.setMicroTimer(TIMER_PLAY, micronow - starttimeoffset * 1000);
-				timer.setMicroTimer(TIMER_RHYTHM, micronow - starttimeoffset * 1000);
+				if(!Multiplayer.playerLoaded.contains(false)){
+					replayConfig = lanerender.getPlayConfig().clone();
+					state = STATE_PLAY;
+					timer.setMicroTimer(TIMER_PLAY, micronow - starttimeoffset * 1000);
+					timer.setMicroTimer(TIMER_RHYTHM, micronow - starttimeoffset * 1000);
 
-				input.setStartTime(micronow + timer.getStartMicroTime() - starttimeoffset * 1000);
-				input.setKeyLogMarginTime(resource.getMarginTime());
-				keyinput.startJudge(model, replay != null ? replay.keylog : null, resource.getMarginTime());
-				keysound.startBGPlay(model, starttimeoffset * 1000);
-				Logger.getGlobal().info("STATE_PLAYに移行");
+					input.setStartTime(micronow + timer.getStartMicroTime() - starttimeoffset * 1000);
+					input.setKeyLogMarginTime(resource.getMarginTime());
+					keyinput.startJudge(model, replay != null ? replay.keylog : null, resource.getMarginTime());
+					keysound.startBGPlay(model, starttimeoffset * 1000);
+					Logger.getGlobal().info("STATE_PLAYに移行");
+				}else if(Multiplayer.isLoaded==false){
+					Multiplayer.sendLoaded(true);
+				}
 			}
 			break;
 		// プレイ

@@ -29,6 +29,7 @@ public class MultiplayerClientHandler implements Runnable{
     public static ArrayList<String> playerStates = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
     public static ArrayList<Boolean> playerMissing = new ArrayList<>();
+    public static ArrayList<Boolean> playerLoaded = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];
     public static String selectedSong = "";
     public static String selectedSongTitle = "";
@@ -54,6 +55,7 @@ public class MultiplayerClientHandler implements Runnable{
             playerStates.add("Not Ready");
             playerPlaying.add(false);
             playerMissing.add(true);
+            playerLoaded.add(true);
             playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
             playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // TODO: only supports 7sp. make it work for all keymodes
             // update new player to current info
@@ -99,6 +101,8 @@ public class MultiplayerClientHandler implements Runnable{
                     case("SendStart"): // start
                         broadcastStart();
                         sendPlayerScoreData();
+                        playerLoaded.replaceAll(e -> true);
+                        sendPlayerLoaded();
                     break;     
                     case("SendSong"): // select song
                         selectedSong = MultiplayerJson.readMessageString(inMessage, "Md5");
@@ -123,10 +127,12 @@ public class MultiplayerClientHandler implements Runnable{
                     case("SendMissing"): // send ismissing
                         index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
                         playerMissing.set(index,MultiplayerJson.readMessageBool(inMessage, "IsMissing"));
+                        /* TODO need to substitute this with something else
                         // ensures sendPlayerMissing only sends once
                         if(index==playerMissing.size()-1){
                             sendPlayerMissing();
-                        }
+                        }*/
+                        sendPlayerMissing();
                     break;
                     case("ToggleHost"):
                         if(playerStates.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))).equals("Host")){
@@ -140,6 +146,11 @@ public class MultiplayerClientHandler implements Runnable{
                             sendPlayerStates();
                             updateHost(clientHandlers.get(index),bool);
                         }
+                    break;
+                    case("SendLoaded"):
+                        index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
+                        playerLoaded.set(index,MultiplayerJson.readMessageBool(inMessage, "IsLoaded")); 
+                        sendPlayerLoaded();                    
                     break;
                 }
                 
@@ -234,6 +245,14 @@ public class MultiplayerClientHandler implements Runnable{
         outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
     }
 
+    public void sendPlayerLoaded(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlayerLoaded");
+            outMessage = MultiplayerJson.addMessageBoolArray(outMessage, "PlayerLoaded", playerLoaded.toArray(new Boolean[0]));
+            outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
+        }
+    }       
+
     public void removeClientHandler(){
         clientHandlers.remove(this);
         // every list needs to be updated
@@ -243,6 +262,7 @@ public class MultiplayerClientHandler implements Runnable{
         playerStates.remove(index);
         playerPlaying.remove(index);
         playerMissing.remove(index);
+        playerLoaded.remove(index);
         for(int i=index;i<playerScoreData.length-1;i++){
             playerScoreData[i]=playerScoreData[i+1];
         }

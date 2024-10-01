@@ -103,6 +103,9 @@ public class MultiplayerClient {
                                     Multiplayer.isHost=false;
                                 }
                             break;
+                            case("SendPlayerLoaded"): // update players missing
+                                Multiplayer.playerLoaded = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersMissing")));
+                            break;                           
                         }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
@@ -242,5 +245,13 @@ public class MultiplayerClient {
         outMessage = MultiplayerJson.addMessageInt(outMessage, "TargetIndex", target); // why not use socket instead of index?
         outMessage = MultiplayerJson.addMessageBool(outMessage, "SwitchTo", switchto);
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
+    }
+
+    public static void sendLoaded(Boolean isloaded){
+        outMessage = MultiplayerJson.addMessageType(outMessage, "SendLoaded");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.addMessageBool(outMessage, "IsLoaded", isloaded);
+        outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
+        Multiplayer.isLoaded = isloaded;
     }
 }
