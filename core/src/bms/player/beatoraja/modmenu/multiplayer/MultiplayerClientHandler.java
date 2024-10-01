@@ -47,7 +47,7 @@ public class MultiplayerClientHandler implements Runnable{
             this.clientUsername = MultiplayerJson.readMessageString(inMessage,"Username");
             this.clientSocket = MultiplayerJson.readMessageString(inMessage,"Socket");
             clientHandlers.add(this);
-            sendStatusMessage("Server: "+clientUsername+" has entered the chat!");
+            sendStatusMessage(clientUsername+" has entered the lobby");
             // every list needs to be added to
             socketList.add(clientSocket);  // add client socket
             playerNames.add(clientUsername);
