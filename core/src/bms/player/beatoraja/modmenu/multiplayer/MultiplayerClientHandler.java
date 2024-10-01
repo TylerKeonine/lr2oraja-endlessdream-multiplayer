@@ -43,11 +43,11 @@ public class MultiplayerClientHandler implements Runnable{
             this.dataInputStream = new DataInputStream(socket.getInputStream());
             inMessage = dataInputStream.readUTF();
             // TODO verify that messagetype is join
-            String messageType = MultiplayerJson.readMessageString(inMessage,"MessageType");
+            MultiplayerJson.readMessageString(inMessage,"MessageType");
             this.clientUsername = MultiplayerJson.readMessageString(inMessage,"Username");
             this.clientSocket = MultiplayerJson.readMessageString(inMessage,"Socket");
             clientHandlers.add(this);
-            //broadcastMessage("Server: "+clientUsername+" has entered the chat!");
+            sendStatusMessage("Server: "+clientUsername+" has entered the chat!");
             // every list needs to be added to
             socketList.add(clientSocket);  // add client socket
             playerNames.add(clientUsername);
@@ -70,23 +70,18 @@ public class MultiplayerClientHandler implements Runnable{
 
     @Override
     public void run(){
-        String messageFromClient;
         String msgType;
         int index;
         Boolean bool;
 
         while(socket.isConnected()){
             try{
-                //MultiplayerMenu.statusText = inMessage;
                 inMessage = dataInputStream.readUTF();
                 msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
                 switch(msgType){
-                    /*
-                    case(0): // test
-                        messageFromClient = dataInputStream.readUTF();
-                        //broadcastMessage(messageFromClient); 
+                    case("StatusMessage"):
+                        sendStatusMessage(MultiplayerJson.readMessageString(inMessage, "Message"));
                     break;
-                    */
                     case("SendReady"): // ready
                         index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
                         if(playerStates.get(index).equals("Ready")){
@@ -105,11 +100,6 @@ public class MultiplayerClientHandler implements Runnable{
                         broadcastStart();
                         sendPlayerScoreData();
                     break;     
-                    /*          
-                    case(4): // update
-                        //broadcastUpdate();
-                    break;
-                    */
                     case("SendSong"): // select song
                         selectedSong = MultiplayerJson.readMessageString(inMessage, "Md5");
                         selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "Title");
@@ -139,9 +129,7 @@ public class MultiplayerClientHandler implements Runnable{
                         }
                     break;
                     case("ToggleHost"):
-                        //MultiplayerMenu.statusText = "host recieved:"+playerStates.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")));
                         if(playerStates.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))).equals("Host")){
-                            //MultiplayerMenu.statusText = "im running";
                             index = MultiplayerJson.readMessageInt(inMessage, "TargetIndex");
                             bool = MultiplayerJson.readMessageBool(inMessage, "SwitchTo");
                             if (bool==true){
@@ -162,19 +150,13 @@ public class MultiplayerClientHandler implements Runnable{
         }
     }
 
-    /* delete later
-    public void broadcastMessage(String messageToSend){
+    public void sendStatusMessage(String msg){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
-            try{
-                clientHandler.dataOutputStream.write(0); // note these will be a different set of msgTypes
-                clientHandler.dataOutputStream.writeUTF(messageToSend);
-                clientHandler.dataOutputStream.flush();
-            }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
-            }
+            outMessage = MultiplayerJson.addMessageType(outMessage, "SendStatusMessage");
+            outMessage = MultiplayerJson.addMessageString(outMessage, "Message", msg);
+            outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
         }
     }
-        */
 
     public void sendPlayerNames(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
@@ -198,18 +180,6 @@ public class MultiplayerClientHandler implements Runnable{
             outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
         }
     }
-
-    /* not sure if this is still needed
-    public void broadcastUpdate(){
-        for(MultiplayerClientHandler clientHandler : clientHandlers){
-            try{
-                clientHandler.dataOutputStream.write(4);
-                clientHandler.dataOutputStream.flush();
-            }catch(IOException e){
-                closeEverything(socket,dataInputStream,dataOutputStream);
-            }
-        }
-    }*/
 
     public void sendSelectedSong(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
@@ -266,7 +236,6 @@ public class MultiplayerClientHandler implements Runnable{
 
     public void removeClientHandler(){
         clientHandlers.remove(this);
-        //broadcastMessage("Server: "+clientUsername+" has left the chat!");
         // every list needs to be updated
         int index = socketList.indexOf(clientSocket.toString());
         socketList.remove(index);

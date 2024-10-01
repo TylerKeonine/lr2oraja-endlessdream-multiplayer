@@ -49,19 +49,13 @@ public class MultiplayerClient {
             public void run(){
                 while(socket.isConnected()){
                     try{
-                        //MultiplayerMenu.statusText = "score:"+Arrays.deepToString(Multiplayer.playerScoreData)+"  missing:"+Multiplayer.playerMissing;
                         inMessage = dataInputStream.readUTF();
-                        //MultiplayerMenu.statusText = String.join(", ", Multiplayer.playerNames);
-                        //MultiplayerMenu.statusText = inMessage;
-                        String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
-                        //MultiplayerMenu.statusText = Multiplayer.playerStates.toString();
+                        String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");;
                         switch(msgType){
-                            /* 
-                            case(0): // test messages
-                                msgFromGroupChat = dataInputStream.readUTF();
-                                MultiplayerMenu.statusText = msgFromGroupChat;
+                            case("SendStatusMessage"): // test messages
+                                String msg = MultiplayerJson.readMessageString(inMessage, "Message");
+                                MultiplayerMenu.statusText = msg;
                             break;
-                            */
                             case("SendPlayerNames"): //update lobby player names
                                 Multiplayer.playerNames = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerNames")));
                             break;
@@ -166,6 +160,12 @@ public class MultiplayerClient {
     }
 
     // Commands
+    public static void sendStatusMessage(String msg){
+        outMessage=MultiplayerJson.addMessageType(outMessage, "StatusMessage");
+        outMessage=MultiplayerJson.addMessageString(outMessage,"Message",msg);
+        outMessage=MultiplayerJson.sendMessage(outMessage,dataOutputStream);
+    }
+
     public void sendJoin(){
         outMessage=MultiplayerJson.addMessageType(outMessage,"Join");
         outMessage=MultiplayerJson.addMessageString(outMessage,"Username",Multiplayer.username);
@@ -190,16 +190,6 @@ public class MultiplayerClient {
         outMessage = MultiplayerJson.addMessageType(outMessage, "SendStart");
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
-
-    /*
-    public static void requestUpdate(){
-        try{
-            dataOutputStream.write(4);
-            dataOutputStream.flush();
-        }catch(IOException e){
-            closeEverything(socket, dataInputStream, dataOutputStream);
-        }
-    }*/
 
     public static void sendSong(String md5, String title){
         outMessage = MultiplayerJson.addMessageType(outMessage, "SendSong");
@@ -234,8 +224,6 @@ public class MultiplayerClient {
             }
         }
         outMessage = MultiplayerJson.addMessageIntArray(outMessage, "PlayerScoreData", newarr);
-        //MultiplayerMenu.statusText = Arrays.toString(newarr);
-        //MultiplayerMenu.statusText = outMessage;
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
     
