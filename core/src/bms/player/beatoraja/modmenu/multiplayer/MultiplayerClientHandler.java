@@ -57,7 +57,7 @@ public class MultiplayerClientHandler implements Runnable{
             playerMissing.add(true);
             playerLoaded.add(true);
             playerScoreData = Arrays.copyOf(playerScoreData, playerScoreData.length+1);
-            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // TODO: only supports 7sp. make it work for all keymodes
+            playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0};
             // update new player to current info
             sendPlayerNames();
             sendPlayerStates();
@@ -101,7 +101,7 @@ public class MultiplayerClientHandler implements Runnable{
                     case("SendStart"): // start
                         broadcastStart();
                         sendPlayerScoreData();
-                        playerLoaded.replaceAll(e -> true);
+                        playerLoaded.replaceAll(e -> false);
                         sendPlayerLoaded();
                     break;     
                     case("SendSong"): // select song
@@ -120,7 +120,6 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerScoreData();
                     break;
                     case("SendScore"): // send score
-                        MultiplayerMenu.statusText =  inMessage;
                         playerScoreData[socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))] = MultiplayerJson.readMessageIntArray(inMessage, "PlayerScoreData");
                         sendPlayerScoreData();
                     break;
@@ -248,7 +247,7 @@ public class MultiplayerClientHandler implements Runnable{
     public void sendPlayerLoaded(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
             outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlayerLoaded");
-            outMessage = MultiplayerJson.addMessageBoolArray(outMessage, "PlayerLoaded", playerLoaded.toArray(new Boolean[0]));
+            outMessage = MultiplayerJson.addMessageBoolArray(outMessage, "PlayersLoaded", playerLoaded.toArray(new Boolean[0]));
             outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
         }
     }       
@@ -273,6 +272,7 @@ public class MultiplayerClientHandler implements Runnable{
         sendPlayerStates();
         sendPlayerPlaying();
         sendPlayerScoreData();
+        sendStatusMessage(clientUsername+" has left the lobby");
     }
 
     public void closeEverything(Socket skt,DataInputStream dIn, DataOutputStream dOut){

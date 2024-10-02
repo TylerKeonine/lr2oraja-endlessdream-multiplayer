@@ -639,11 +639,11 @@ public class BMSPlayer extends MainState {
 			break;
 			// GET READY
 		case STATE_READY:
-			if(Multiplayer.isLoaded==true){
-				Multiplayer.sendLoaded(false);
-			}
 			if (timer.getNowTime(TIMER_READY) > skin.getPlaystart()) {
-				if(!Multiplayer.playerLoaded.contains(false)){
+				if(Multiplayer.inLobby==true){
+					Multiplayer.sendLoaded(true);
+				}
+				if((!Multiplayer.playerLoaded.contains(false)||Multiplayer.inLobby==false)||timer.getNowTime(TIMER_READY)>10000){
 					replayConfig = lanerender.getPlayConfig().clone();
 					state = STATE_PLAY;
 					timer.setMicroTimer(TIMER_PLAY, micronow - starttimeoffset * 1000);
@@ -654,8 +654,6 @@ public class BMSPlayer extends MainState {
 					keyinput.startJudge(model, replay != null ? replay.keylog : null, resource.getMarginTime());
 					keysound.startBGPlay(model, starttimeoffset * 1000);
 					Logger.getGlobal().info("STATE_PLAYに移行");
-				}else if(Multiplayer.isLoaded==false){
-					Multiplayer.sendLoaded(true);
 				}
 			}
 			break;

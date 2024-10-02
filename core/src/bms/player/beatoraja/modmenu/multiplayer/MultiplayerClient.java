@@ -91,7 +91,6 @@ public class MultiplayerClient {
                             break;
                             case("SendPlayerScoreData"): // update score
                                 Multiplayer.playerScoreData = MultiplayerJson.readMessageInt2dArray(inMessage, "PlayerScoreData");
-                                //MultiplayerMenu.statusText = inMessage;
                             break;
                             case("SendPlayerMissing"): // update players missing
                                 Multiplayer.playerMissing = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersMissing")));
@@ -104,7 +103,7 @@ public class MultiplayerClient {
                                 }
                             break;
                             case("SendPlayerLoaded"): // update players missing
-                                Multiplayer.playerLoaded = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersMissing")));
+                                Multiplayer.playerLoaded = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersLoaded")));
                             break;                           
                         }
                     }catch(IOException e){
@@ -252,6 +251,5 @@ public class MultiplayerClient {
         outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
         outMessage = MultiplayerJson.addMessageBool(outMessage, "IsLoaded", isloaded);
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
-        Multiplayer.isLoaded = isloaded;
     }
 }
