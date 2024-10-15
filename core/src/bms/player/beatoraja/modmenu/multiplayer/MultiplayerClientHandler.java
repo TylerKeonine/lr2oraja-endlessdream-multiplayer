@@ -26,13 +26,15 @@ public class MultiplayerClientHandler implements Runnable{
     // 3d Arrays might be better? desync between arraylists could be possible
     public static ArrayList<String> socketList = new ArrayList<>();
     public static ArrayList<String> playerNames = new ArrayList<>();
-    public static ArrayList<String> playerStates = new ArrayList<>();
+    public static ArrayList<Boolean> playerReady = new ArrayList<>();
+    public static ArrayList<Boolean> playerHost = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
     public static ArrayList<Boolean> playerMissing = new ArrayList<>();
     public static ArrayList<Boolean> playerLoaded = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];
     public static String selectedSong = "";
     public static String selectedSongTitle = "";
+    public static int selectedLeader = 0;
 
     public String outMessage = "{";
     public String inMessage;
@@ -52,7 +54,8 @@ public class MultiplayerClientHandler implements Runnable{
             // every list needs to be added to
             socketList.add(clientSocket);  // add client socket
             playerNames.add(clientUsername);
-            playerStates.add("Not Ready");
+            playerReady.add(false);
+            playerHost.add(false);
             playerPlaying.add(false);
             playerMissing.add(true);
             playerLoaded.add(true);
@@ -60,7 +63,8 @@ public class MultiplayerClientHandler implements Runnable{
             playerScoreData[playerScoreData.length-1] = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0};
             // update new player to current info
             sendPlayerNames();
-            sendPlayerStates();
+            sendPlayerReady();
+            sendPlayerHosts();
             sendSelectedSong();
             sendPlayerPlaying();
             sendPlayerScoreData();
@@ -86,17 +90,15 @@ public class MultiplayerClientHandler implements Runnable{
                     break;
                     case("SendReady"): // ready
                         index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
-                        if(playerStates.get(index).equals("Ready")){
-                            playerStates.set(index,"Not Ready");
-                        }else{
-                            playerStates.set(index,"Ready");
-                        }
-                        sendPlayerStates();
+                        playerReady.set(index,!playerReady.get(index));
+                        sendPlayerReady();
                     break;
                     case("SendHost"): // host
-                        playerStates.set(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")),"Host");
-                        sendPlayerStates();   
-                        sendPlayerScoreData();                 
+                        index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
+                        MultiplayerMenu.statusText = "Host given Index: "+index;
+                        playerHost.set(index,true);
+                        sendPlayerHosts();   
+                        updateHost(clientHandlers.get(index),true);              
                     break;
                     case("SendStart"): // start
                         broadcastStart();
@@ -105,6 +107,7 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerLoaded();
                     break;     
                     case("SendSong"): // select song
+                        selectedLeader = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
                         selectedSong = MultiplayerJson.readMessageString(inMessage, "Md5");
                         selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "Title");
                         sendSelectedSong();
@@ -134,15 +137,12 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerMissing();
                     break;
                     case("ToggleHost"):
-                        if(playerStates.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"))).equals("Host")){
+                        if(playerHost.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")))==true){
                             index = MultiplayerJson.readMessageInt(inMessage, "TargetIndex");
+                            MultiplayerMenu.statusText = "Host given Index: "+index;
                             bool = MultiplayerJson.readMessageBool(inMessage, "SwitchTo");
-                            if (bool==true){
-                                playerStates.set(index,"Host");
-                            }else{
-                                playerStates.set(index,"Not Ready");
-                            }
-                            sendPlayerStates();
+                            playerHost.set(index, bool);
+                            sendPlayerHosts();
                             updateHost(clientHandlers.get(index),bool);
                         }
                     break;
@@ -176,10 +176,10 @@ public class MultiplayerClientHandler implements Runnable{
         }
     }
 
-    public void sendPlayerStates(){
+    public void sendPlayerReady(){
         for(MultiplayerClientHandler clientHandler : clientHandlers){
-            outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlayerStates");
-            outMessage = MultiplayerJson.addMessageStringArray(outMessage, "PlayerState",playerStates.toArray(new String[0]));
+            outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlayerReady");
+            outMessage = MultiplayerJson.addMessageBoolArray(outMessage, "PlayerReady",playerReady.toArray(new Boolean[0]));
             outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
         }
     }
@@ -250,7 +250,15 @@ public class MultiplayerClientHandler implements Runnable{
             outMessage = MultiplayerJson.addMessageBoolArray(outMessage, "PlayersLoaded", playerLoaded.toArray(new Boolean[0]));
             outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
         }
-    }       
+    }
+    
+    public void sendPlayerHosts(){
+        for(MultiplayerClientHandler clientHandler : clientHandlers){
+            outMessage = MultiplayerJson.addMessageType(outMessage, "SendPlayerHosts");
+            outMessage = MultiplayerJson.addMessageBoolArray(outMessage, "PlayerHosts", playerHost.toArray(new Boolean[0]));
+            outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);        
+        }
+    }
 
     public void removeClientHandler(){
         clientHandlers.remove(this);
@@ -258,7 +266,8 @@ public class MultiplayerClientHandler implements Runnable{
         int index = socketList.indexOf(clientSocket.toString());
         socketList.remove(index);
         playerNames.remove(index);
-        playerStates.remove(index);
+        playerReady.remove(index);
+        playerHost.remove(index);
         playerPlaying.remove(index);
         playerMissing.remove(index);
         playerLoaded.remove(index);
@@ -269,7 +278,8 @@ public class MultiplayerClientHandler implements Runnable{
 
         // send info to others
         sendPlayerNames();
-        sendPlayerStates();
+        sendPlayerReady();
+        sendPlayerHosts();
         sendPlayerPlaying();
         sendPlayerScoreData();
         sendStatusMessage(clientUsername+" has left the lobby");

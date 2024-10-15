@@ -123,63 +123,50 @@ public class MultiplayerMenu {
                             hostClick = ImGui.isItemClicked();
                             ImGui.popStyleColor();
                             if (ImGui.isItemHovered()) {
-                                if (Multiplayer.isHost == false){
+                                if(Multiplayer.playerHost.get(i)==true){
+                                    tooltip("Missing File (Host)");
+                                }else if (Multiplayer.isHost == false){
                                     tooltip("Missing File");
                                 }else{
                                     tooltip("Missing File (Click to grant host)");
                                 }
                             }
+                        }else if(Multiplayer.playerHost.get(i)==true){
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
+                            ImGui.text("(H)");
+                            hostClick = ImGui.isItemClicked();
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                tooltip("Host");
+                            }
+                        }else if(Multiplayer.playerReady.get(i)==true){
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
+                            ImGui.text("(R)");
+                            hostClick = ImGui.isItemClicked();
+                            ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                if(Multiplayer.playerHost.get(i)==true){
+                                    tooltip("Ready (Host)");
+                                }else if (Multiplayer.isHost == false){
+                                    tooltip("Ready");
+                                }else{
+                                    tooltip("Ready (Click to grant host)");
+                                }
+                            }                                    
                         }else{
-                            switch(Multiplayer.playerStates.get(i)){
-                                case("Host"):
-                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
-                                    ImGui.text("(H)");
-                                    hostClick = ImGui.isItemClicked();
-                                    ImGui.popStyleColor();
-                                    if (ImGui.isItemHovered()) {
-                                        if (Multiplayer.isHost == false){
-                                            tooltip("Host");
-                                        }else{
-                                            tooltip("Host"); // TODO: click to remove host
-                                        }
-                                    }
-                                break;
-                                case("Ready"):
-                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(0,255,0));
-                                    ImGui.text("(R)");
-                                    hostClick = ImGui.isItemClicked();
-                                    ImGui.popStyleColor();
-                                    if (ImGui.isItemHovered()) {
-                                        if (Multiplayer.isHost == false){
-                                            tooltip("Ready");
-                                        }else{
-                                            tooltip("Ready (Click to grant host)");
-                                        }
-                                    }
-                                break;
-                                case("Not Ready"):
-                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
-                                    ImGui.text("(N)");
-                                    hostClick = ImGui.isItemClicked();
-                                    ImGui.popStyleColor();
-                                    if (ImGui.isItemHovered()) {
-                                        if (Multiplayer.isHost == false){
-                                            tooltip("Not Ready");
-                                        }else{
-                                            tooltip("Not Ready (Click to grant host)");
-                                        }
-                                    }
-                                break;
-
-                                default:
-                                    ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,255,255));
-                                    ImGui.text("(?)");
-                                    ImGui.popStyleColor();
-                                    if (ImGui.isItemHovered()) {
-                                        tooltip("Unknown");
-                                    }
-                            }                                 
-                        }
+                            ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
+                            ImGui.text("(N)");
+                            hostClick = ImGui.isItemClicked();                                    ImGui.popStyleColor();
+                            if (ImGui.isItemHovered()) {
+                                if(Multiplayer.playerHost.get(i)==true){
+                                    tooltip("Not Ready (Host)");
+                                }else if (Multiplayer.isHost == false){
+                                    tooltip("Not Ready");
+                                }else{
+                                    tooltip("Not Ready (Click to grant host)");
+                                }
+                            }                                    
+                        }                                 
                         if(hostClick&&Multiplayer.isHost){
                             Multiplayer.transferHost(i, true);
                         }

@@ -22,7 +22,8 @@ public class Multiplayer {
     public static String selectedSong = "";
     public static String selectedSongTitle = "";
     public static ArrayList<String> playerNames = new ArrayList<>();
-    public static ArrayList<String> playerStates = new ArrayList<>();
+    public static ArrayList<Boolean> playerReady = new ArrayList<>();
+    public static ArrayList<Boolean> playerHost = new ArrayList<>();
     public static ArrayList<Boolean> playerPlaying = new ArrayList<>();
     public static ArrayList<Boolean> playerMissing = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];

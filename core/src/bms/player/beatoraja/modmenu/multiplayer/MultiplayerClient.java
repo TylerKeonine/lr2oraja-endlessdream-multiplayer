@@ -49,6 +49,13 @@ public class MultiplayerClient {
             public void run(){
                 while(socket.isConnected()){
                     try{
+                        /*
+                        String test = "";
+                        for(int i=0;i<Multiplayer.playerHost.size();i++){
+                            test += Boolean.toString(Multiplayer.playerHost.get(i));
+                        }
+                        MultiplayerMenu.statusText = test;
+                        test = "";*/
                         inMessage = dataInputStream.readUTF();
                         String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");;
                         switch(msgType){
@@ -59,8 +66,8 @@ public class MultiplayerClient {
                             case("SendPlayerNames"): //update lobby player names
                                 Multiplayer.playerNames = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerNames")));
                             break;
-                            case("SendPlayerStates"): //update lobby player names
-                                Multiplayer.playerStates = new ArrayList<String>(Arrays.asList(MultiplayerJson.readMessageStringArray(inMessage, "PlayerState")));
+                            case("SendPlayerReady"): //update lobby player names
+                                Multiplayer.playerReady = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayerReady")));
                             break;
                             case("BroadcastStart"): // start message
                                 if(selector!=null){
@@ -98,13 +105,18 @@ public class MultiplayerClient {
                             case ("UpdateHost"): // update host
                                 if(MultiplayerJson.readMessageBool(inMessage,"IsHost")==true){
                                     Multiplayer.isHost=true;
+                                    MultiplayerMenu.statusText = "You have been granted host";
                                 }else{
                                     Multiplayer.isHost=false;
+                                    MultiplayerMenu.statusText = "You have lost host";
                                 }
                             break;
-                            case("SendPlayerLoaded"): // update players missing
+                            case("SendPlayerLoaded"):
                                 Multiplayer.playerLoaded = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayersLoaded")));
-                            break;                           
+                            break;        
+                            case("SendPlayerHosts"):
+                                Multiplayer.playerHost = new ArrayList<Boolean>(Arrays.asList(MultiplayerJson.readMessageBoolArray(inMessage, "PlayerHosts")));
+                            break;                          
                         }
                     }catch(IOException e){
                         closeEverything(socket, dataInputStream, dataOutputStream);
@@ -150,7 +162,7 @@ public class MultiplayerClient {
             socket = new Socket(ipInput,5730);
             MultiplayerClient client = new MultiplayerClient(socket);
             client.listenForMessage();
-            client.sendJoin();
+            client.sendJoin(); // TODO thread this so it doesnt freeze
             Multiplayer.inLobby = true;
             Multiplayer.hostIp = ipInput;
         } catch (UnknownHostException e) {
@@ -195,6 +207,7 @@ public class MultiplayerClient {
 
     public static void sendSong(String md5, String title){
         outMessage = MultiplayerJson.addMessageType(outMessage, "SendSong");
+        outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
         outMessage = MultiplayerJson.addMessageString(outMessage, "Md5", md5);
         outMessage = MultiplayerJson.addMessageString(outMessage, "Title", title);
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
