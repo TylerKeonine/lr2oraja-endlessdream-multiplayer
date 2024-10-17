@@ -49,13 +49,6 @@ public class MultiplayerClient {
             public void run(){
                 while(socket.isConnected()){
                     try{
-                        /*
-                        String test = "";
-                        for(int i=0;i<Multiplayer.playerHost.size();i++){
-                            test += Boolean.toString(Multiplayer.playerHost.get(i));
-                        }
-                        MultiplayerMenu.statusText = test;
-                        test = "";*/
                         inMessage = dataInputStream.readUTF();
                         String msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");;
                         switch(msgType){
@@ -77,6 +70,8 @@ public class MultiplayerClient {
                             case("SendSelectedSong"): // update song
                                 Multiplayer.selectedSong = MultiplayerJson.readMessageString(inMessage, "SelectedSong");
                                 Multiplayer.selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "SelectedSongTitle");
+                                Multiplayer.leaderSocket = MultiplayerJson.readMessageString(inMessage, "LeaderSocket");
+                                Multiplayer.leaderIndex = MultiplayerJson.readMessageInt(inMessage, "LeaderIndex");
                                 // check if song is missing
                                 if(selector.findSongData(Multiplayer.selectedSong)==null){
                                     sendMissing(true);

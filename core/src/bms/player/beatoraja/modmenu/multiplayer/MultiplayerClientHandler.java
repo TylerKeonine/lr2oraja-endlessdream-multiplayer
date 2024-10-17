@@ -18,7 +18,7 @@ public class MultiplayerClientHandler implements Runnable{
     private String clientSocket;
 
     // Score send limits
-    private static final long DEBOUNCE_TOLERANCE = 100;
+    private static final long DEBOUNCE_TOLERANCE = 0;
     private static long debounce = System.currentTimeMillis();
     private static boolean ableToSend = true;
 
@@ -34,7 +34,8 @@ public class MultiplayerClientHandler implements Runnable{
     public static int[][] playerScoreData = new int[0][12];
     public static String selectedSong = "";
     public static String selectedSongTitle = "";
-    public static int selectedLeader = 0;
+    public static String leaderSocket = "";
+    public static int leaderIndex = 0;
 
     public String outMessage = "{";
     public String inMessage;
@@ -82,6 +83,7 @@ public class MultiplayerClientHandler implements Runnable{
 
         while(socket.isConnected()){
             try{
+                MultiplayerMenu.statusText="leader:"+Multiplayer.leaderIndex;
                 inMessage = dataInputStream.readUTF();
                 msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
                 switch(msgType){
@@ -95,7 +97,6 @@ public class MultiplayerClientHandler implements Runnable{
                     break;
                     case("SendHost"): // host
                         index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
-                        MultiplayerMenu.statusText = "Host given Index: "+index;
                         playerHost.set(index,true);
                         sendPlayerHosts();   
                         updateHost(clientHandlers.get(index),true);              
@@ -107,7 +108,8 @@ public class MultiplayerClientHandler implements Runnable{
                         sendPlayerLoaded();
                     break;     
                     case("SendSong"): // select song
-                        selectedLeader = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
+                        leaderSocket = MultiplayerJson.readMessageString(inMessage, "Socket");
+                        leaderIndex = socketList.indexOf(leaderSocket);
                         selectedSong = MultiplayerJson.readMessageString(inMessage, "Md5");
                         selectedSongTitle = MultiplayerJson.readMessageString(inMessage, "Title");
                         sendSelectedSong();
@@ -139,7 +141,6 @@ public class MultiplayerClientHandler implements Runnable{
                     case("ToggleHost"):
                         if(playerHost.get(socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket")))==true){
                             index = MultiplayerJson.readMessageInt(inMessage, "TargetIndex");
-                            MultiplayerMenu.statusText = "Host given Index: "+index;
                             bool = MultiplayerJson.readMessageBool(inMessage, "SwitchTo");
                             playerHost.set(index, bool);
                             sendPlayerHosts();
@@ -196,6 +197,8 @@ public class MultiplayerClientHandler implements Runnable{
             outMessage = MultiplayerJson.addMessageType(outMessage, "SendSelectedSong");
             outMessage = MultiplayerJson.addMessageString(outMessage, "SelectedSong", selectedSong);
             outMessage = MultiplayerJson.addMessageString(outMessage, "SelectedSongTitle", selectedSongTitle);
+            outMessage = MultiplayerJson.addMessageString(outMessage, "LeaderSocket", leaderSocket);
+            outMessage = MultiplayerJson.addMessageInt(outMessage, "LeaderIndex", leaderIndex);
             outMessage = MultiplayerJson.sendMessage(outMessage, clientHandler.dataOutputStream);
         }
     }

@@ -131,7 +131,7 @@ public class MultiplayerMenu {
                                     tooltip("Missing File (Click to grant host)");
                                 }
                             }
-                        }else if(Multiplayer.playerHost.get(i)==true){
+                        }else if(Multiplayer.playerHost.get(i)==true&&i==Multiplayer.leaderIndex){//&&i==Multiplayer.leaderIndex
                             ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(196,196,196));
                             ImGui.text("(H)");
                             hostClick = ImGui.isItemClicked();
@@ -156,7 +156,8 @@ public class MultiplayerMenu {
                         }else{
                             ImGui.pushStyleColor(ImGuiCol.Text, ImColor.rgb(255,0,0));
                             ImGui.text("(N)");
-                            hostClick = ImGui.isItemClicked();                                    ImGui.popStyleColor();
+                            hostClick = ImGui.isItemClicked();
+                            ImGui.popStyleColor();
                             if (ImGui.isItemHovered()) {
                                 if(Multiplayer.playerHost.get(i)==true){
                                     tooltip("Not Ready (Host)");

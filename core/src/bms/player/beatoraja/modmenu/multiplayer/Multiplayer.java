@@ -28,6 +28,8 @@ public class Multiplayer {
     public static ArrayList<Boolean> playerMissing = new ArrayList<>();
     public static int[][] playerScoreData = new int[0][12];
     public static ArrayList<Boolean> playerLoaded = new ArrayList<>();
+    public static String leaderSocket = "";
+    public static int leaderIndex = 0;
 
     // Player Information
     public static boolean isReady = false; // could completely remove isReady and replace with playerState
