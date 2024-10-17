@@ -66,6 +66,7 @@ public class MultiplayerClient {
                                 if(selector!=null){
                                     selector.playSong(Multiplayer.selectedSong);
                                 }
+                                sendReady(false,true);
                             break;
                             case("SendSelectedSong"): // update song
                                 Multiplayer.selectedSong = MultiplayerJson.readMessageString(inMessage, "SelectedSong");
@@ -77,6 +78,15 @@ public class MultiplayerClient {
                                     sendMissing(true);
                                 }else{
                                     sendMissing(false);
+                                }
+                                if(Multiplayer.leaderSocket.equals(socket.toString())){
+                                    Multiplayer.isLeader = true;
+                                    sendReady(true,true);
+                                    Multiplayer.isReady = true;
+                                }else{
+                                    Multiplayer.isLeader = false;
+                                    sendReady(false,true);
+                                    Multiplayer.isReady = false;
                                 }
                             break;
                             case("SendPlayerPlaying"): // update playing
@@ -182,9 +192,11 @@ public class MultiplayerClient {
         outMessage=MultiplayerJson.sendMessage(outMessage,dataOutputStream);
     }
 
-    public static void sendReady(){
+    public static void sendReady(boolean isready,boolean auto){
         outMessage = MultiplayerJson.addMessageType(outMessage, "SendReady");
         outMessage = MultiplayerJson.addMessageString(outMessage, "Socket", socket.toString());
+        outMessage = MultiplayerJson.addMessageBool(outMessage, "IsReady", isready);
+        outMessage = MultiplayerJson.addMessageBool(outMessage, "Auto", auto);
         outMessage = MultiplayerJson.sendMessage(outMessage, dataOutputStream);
     }
 

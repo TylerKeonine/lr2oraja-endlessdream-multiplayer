@@ -35,6 +35,7 @@ public class Multiplayer {
     public static boolean isReady = false; // could completely remove isReady and replace with playerState
     public static boolean isHost = true;
     public static boolean isMissing = true;
+    public static boolean isLeader = false;
     
     public static void hostLobby(){ // hostLobby is different from pressing the host button. must be compatitable for pressing the host button AND being transfered host.
         // set up server
@@ -72,7 +73,7 @@ public class Multiplayer {
         }else{
             isReady = true;
         }
-        MultiplayerClient.sendReady();
+        MultiplayerClient.sendReady(isReady,false);
     }
 
     public static void startPressed(){

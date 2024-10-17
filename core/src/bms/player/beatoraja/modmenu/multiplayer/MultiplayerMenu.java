@@ -65,7 +65,7 @@ public class MultiplayerMenu {
                 }
                 ImGui.text(Multiplayer.selectedSongTitle); // this needs to be capped
                 
-                if (Multiplayer.isHost){
+                if (Multiplayer.isHost&&Multiplayer.isLeader){
                     if(Multiplayer.lobbyPlaying){
                         if(ImGui.button("Force End")) {
                             Multiplayer.endPressed();

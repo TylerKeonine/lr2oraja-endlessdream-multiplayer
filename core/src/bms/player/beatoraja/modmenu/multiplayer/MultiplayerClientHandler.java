@@ -18,7 +18,7 @@ public class MultiplayerClientHandler implements Runnable{
     private String clientSocket;
 
     // Score send limits
-    private static final long DEBOUNCE_TOLERANCE = 0;
+    private static final long DEBOUNCE_TOLERANCE = -1;
     private static long debounce = System.currentTimeMillis();
     private static boolean ableToSend = true;
 
@@ -83,7 +83,6 @@ public class MultiplayerClientHandler implements Runnable{
 
         while(socket.isConnected()){
             try{
-                MultiplayerMenu.statusText="leader:"+Multiplayer.leaderIndex;
                 inMessage = dataInputStream.readUTF();
                 msgType = MultiplayerJson.readMessageString(inMessage, "MessageType");
                 switch(msgType){
@@ -92,8 +91,12 @@ public class MultiplayerClientHandler implements Runnable{
                     break;
                     case("SendReady"): // ready
                         index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
-                        playerReady.set(index,!playerReady.get(index));
+                        bool = MultiplayerJson.readMessageBool(inMessage, "IsReady");
+                        playerReady.set(index,bool);
                         sendPlayerReady();
+                        if(!playerReady.contains(false)&&MultiplayerJson.readMessageBool(inMessage, "Auto")){
+                            broadcastStart();
+                        }
                     break;
                     case("SendHost"): // host
                         index = socketList.indexOf(MultiplayerJson.readMessageString(inMessage, "Socket"));
